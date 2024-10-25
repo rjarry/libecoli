@@ -6,7 +6,7 @@
 Name: libecoli
 Version: 0.2.0
 Summary: Extensible COmmand LIne library
-License: BSD 3-Clause License and/or Public domain
+License: BSD-3-Clause AND LicenseRef-Fedora-Public-Domain
 
 %forgemeta
 
@@ -84,10 +84,13 @@ This package contains the HTML documentation for %{name}.
 %{_datadir}/doc/libecoli
 
 %changelog
+* Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-4
+- Fixed license expression.
+
 * Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-3
 - Add missing licence to doc package.
 - Fix soname in main package.
-- Add missing requires %{name}%{?_isa} = %{version}-%{release} in devel.
+- Add missing requires in devel.
 - Add public domain in license for murmur hash.
 
 * Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-2
