@@ -47,6 +47,13 @@ Summary: Development files for %{name}
 %description devel
 This package contains development files for %{name}.
 
+%package doc
+BuildArch: noarch
+Summary: Documentation for %{name}
+
+%description doc
+This package contains the HTML documentation for %{name}.
+
 %prep
 %forgesetup
 
@@ -63,14 +70,21 @@ This package contains development files for %{name}.
 %files
 %doc README.md
 %license LICENSE
-%{_libdir}/%{name}.so*
+%{_libdir}/%{name}.so.*
 
 %files devel
 %{_mandir}/man3/*
 %{_includedir}/ecoli*.h
+%{_libdir}/%{name}.so
 %{_libdir}/pkgconfig/libecoli.pc
+
+%files doc
 %{_datadir}/doc/libecoli
 
 %changelog
-* Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0
-- First packaged version
+* Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-2
+- Add noarch doc subpackage.
+- Move libecoli.so into devel subpackage.
+
+* Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-1
+- First packaged version.
