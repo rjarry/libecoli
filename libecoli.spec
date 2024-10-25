@@ -6,7 +6,7 @@
 Name: libecoli
 Version: 0.2.0
 Summary: Extensible COmmand LIne library
-License: BSD-3-Clause
+License: BSD 3-Clause License and/or Public domain
 
 %forgemeta
 
@@ -43,6 +43,7 @@ Main Features
 
 %package devel
 Summary: Development files for %{name}
+Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %description devel
 This package contains development files for %{name}.
@@ -70,7 +71,7 @@ This package contains the HTML documentation for %{name}.
 %files
 %doc README.md
 %license LICENSE
-%{_libdir}/%{name}.so.*
+%{_libdir}/%{name}.so.0*
 
 %files devel
 %{_mandir}/man3/*
@@ -79,9 +80,16 @@ This package contains the HTML documentation for %{name}.
 %{_libdir}/pkgconfig/libecoli.pc
 
 %files doc
+%license LICENSE
 %{_datadir}/doc/libecoli
 
 %changelog
+* Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-3
+- Add missing licence to doc package.
+- Fix soname in main package.
+- Add missing requires %{name}%{?_isa} = %{version}-%{release} in devel.
+- Add public domain in license for murmur hash.
+
 * Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-2
 - Add noarch doc subpackage.
 - Move libecoli.so into devel subpackage.
