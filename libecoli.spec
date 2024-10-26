@@ -20,6 +20,7 @@ BuildRequires: ninja-build
 BuildRequires: libedit-devel
 BuildRequires: pkgconf
 BuildRequires: doxygen
+BuildRequires: fdupes
 
 %description
 libecoli stands for Extensible COmmand LIne library.
@@ -29,15 +30,15 @@ This library provides helpers to build interactive command line interfaces.
 What can it be used for?
 
 * Complex interactive command line interfaces in C (e.g.: a router CLI).
-* Application arguments parsing, natively supporting bash completion.
-* Generic parsers.
+* Application arguments parsing, native support for bash completion.
+* Generic text parsing.
 
 Main Features
 
 * Dynamic completion.
 * Contextual help.
 * Integrated with libedit, but can use any readline-like library.
-* Modular: the cli behavior is defined through an assembly of basic nodes.
+* Modular: the CLI behavior is defined through an assembly of basic nodes.
 * Extensible: the user can write its own nodes to provide specific features.
 * C API.
 
@@ -68,6 +69,23 @@ This package contains the HTML documentation for %{name}.
 %install
 %meson_install
 
+# Doxygen creates man links which are text files containing a reference to
+# another man page. Upstream tried to convert them to symlinks but meson
+# converts them back to regular files on install. Handle the conversion from
+# man "link" to symbolic link to avoid duplicated files in the rpm.
+for man in "%{buildroot}%{_mandir}"/*/*; do
+	read -r so link < "$man"
+	if [ "$so" = ".so" ]; then
+		rm -f "$man"
+		if [ -f "%{buildroot}%{_mandir}/$link" ]; then
+			ln -sr "%{buildroot}%{_mandir}/$link" "$man"
+		fi
+	fi
+done
+
+# Replace duplicate files with hardlinks.
+%fdupes "%{buildroot}%{_datadir}/doc/libecoli"
+
 %files
 %doc README.md
 %license LICENSE
@@ -84,6 +102,11 @@ This package contains the HTML documentation for %{name}.
 %{_datadir}/doc/libecoli
 
 %changelog
+* Sat Oct 26 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-5
+- Replace duplicate man pages with symlinks.
+- Fix typos in description.
+- Replace duplicate files in doc with hardlinks.
+
 * Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-4
 - Fixed license expression.
 
