@@ -7,13 +7,16 @@ libecoli_headers = files(
 	'ecoli_complete.h',
 	'ecoli_config.h',
 	'ecoli_dict.h',
+	'ecoli_editline.h',
 	'ecoli_init.h',
 	'ecoli_htable.h',
 	'ecoli_log.h',
 	'ecoli_malloc.h',
 	'ecoli_murmurhash.h',
 	'ecoli_node_any.h',
+	'ecoli_node_bypass.h',
 	'ecoli_node_cmd.h',
+	'ecoli_node_cond.h',
 	'ecoli_node_dynamic.h',
 	'ecoli_node_empty.h',
 	'ecoli_node_expr.h',
@@ -39,5 +42,6 @@ libecoli_headers = files(
 	'ecoli_test.h',
 	'ecoli_utils.h',
 	'ecoli_vec.h',
+	'ecoli_yaml.h',
 )
 install_headers(libecoli_headers)
