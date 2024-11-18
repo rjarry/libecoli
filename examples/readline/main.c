@@ -140,7 +140,7 @@ static int show_help(int ignore, int invoking_key)
 	struct ec_comp *c = NULL;
 	struct ec_pnode *p = NULL;
 	char *line = NULL;
-	size_t count;
+	size_t count = 0;
 	char **helps = NULL;
 	int match = 0;
 	int ret = 1;
@@ -176,7 +176,6 @@ static int show_help(int ignore, int invoking_key)
 		helps[1] = "<return>";
 
 	/* let's display one contextual help per node */
-	count = 0;
 	EC_COMP_FOREACH(item, c, EC_COMP_UNKNOWN | EC_COMP_FULL | EC_COMP_PARTIAL) {
 		char **tmp;
 
