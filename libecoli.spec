@@ -101,28 +101,4 @@ done
 %license LICENSE
 %{_datadir}/doc/libecoli
 
-%changelog
-* Mon Nov 18 2024 Robin Jarry <robin@jarry.cc> - 0.3.0-1
-- New upstream release.
-- Adjust meson options.
-
-* Sat Oct 26 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-5
-- Replace duplicate man pages with symlinks.
-- Fix typos in description.
-- Replace duplicate files in doc with hardlinks.
-
-* Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-4
-- Fixed license expression.
-
-* Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-3
-- Add missing licence to doc package.
-- Fix soname in main package.
-- Add missing requires in devel.
-- Add public domain in license for murmur hash.
-
-* Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-2
-- Add noarch doc subpackage.
-- Move libecoli.so into devel subpackage.
-
-* Fri Oct 25 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-1
-- First packaged version.
+%autochangelog
