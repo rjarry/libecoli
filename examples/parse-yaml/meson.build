@@ -1,6 +1,11 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2018, Olivier MATZ <zer0@droids-corp.org>
 
+if not get_option('examples').require(yaml_dep.found() and edit_dep.found(),
+		error_message: 'examples require libyaml and libedit').allowed()
+	subdir_done()
+endif
+
 parse_yaml_sources = files(
 	'parse-yaml.c',
 )

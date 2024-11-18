@@ -11,12 +11,12 @@ project('libecoli',
 		'c_std=c99',
 	])
 
-edit_dep = dependency('libedit', required: get_option('with_editline'))
-yaml_dep = dependency('yaml-0.1', required: get_option('with_yaml'))
+edit_dep = dependency('libedit', required: get_option('editline'))
+yaml_dep = dependency('yaml-0.1', required: get_option('yaml'))
 
 add_project_arguments('-Wmissing-prototypes', language : 'c')
 add_project_arguments('-D_GNU_SOURCE', language : 'c')
-if get_option('build_tests')
+if get_option('tests').allowed()
 	add_project_arguments('--coverage', language : 'c')
 	add_project_link_arguments('--coverage' , language: 'c')
 endif
@@ -53,12 +53,6 @@ else
 		description : 'Extensible COmmand LIne library.')
 endif
 
-if get_option('build_tests')
-	subdir('test')
-endif
-if get_option('build_examples')
-	subdir('examples')
-endif
-if get_option('build_doc')
-	subdir('doc')
-endif
+subdir('test')
+subdir('examples')
+subdir('doc')

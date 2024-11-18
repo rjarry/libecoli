@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2018, Olivier MATZ <zer0@droids-corp.org>
 
+if not get_option('tests').allowed()
+  subdir_done()
+endif
+
 test_sources = files(
 	'test.c',
 )

@@ -34,13 +34,8 @@ jobs:
             pkg-config
       - uses: actions/checkout@v4
       - run: |
-          meson setup \
-            -Db_sanitize=address \
-            -Dbuild_tests=true \
-            -Dbuild_examples=true \
-            -Dwith_yaml=true \
-            -Dwith_editline=true \
-            -Dbuild_doc=true \
-            build
+          meson setup build \
+            --auto-features=enabled \
+            -Db_sanitize=address
       - run: ninja -C build
       - run: build/test/ecoli-test

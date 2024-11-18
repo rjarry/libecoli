@@ -1,10 +1,10 @@
-option('with_yaml', type : 'boolean', value : false,
+option('yaml', type : 'feature', value : 'auto',
        description: 'Compile with yaml support using libyaml.')
-option('with_editline', type : 'boolean', value : true,
+option('editline', type : 'feature', value : 'auto',
        description: 'Compile with editline support using libedit.')
-option('build_doc', type : 'boolean', value : false,
+option('doc', type : 'feature', value : 'auto',
        description: 'Generate project documentation.')
-option('build_tests', type : 'boolean', value : false,
+option('tests', type : 'feature', value : 'auto',
        description: 'Build test binaries.')
-option('build_examples', type : 'boolean', value : false,
+option('examples', type : 'feature', value : 'auto',
        description: 'Build examples.')

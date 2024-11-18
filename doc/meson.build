@@ -1,11 +1,15 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2019, Olivier MATZ <zer0@droids-corp.org>
 
+doxygen = find_program('doxygen', required: get_option('doc'))
+if not doxygen.found()
+  subdir_done()
+endif
+
 cdata = configuration_data()
 cdata.set('VERSION', meson.project_version())
 cdata.set('OUTPUT', meson.current_build_dir())
 cdata.set('TOPDIR', meson.project_source_root())
-doxygen = find_program('doxygen')
 
 man_cdata = configuration_data()
 man_cdata.merge_from(cdata)
