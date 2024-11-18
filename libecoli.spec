@@ -4,7 +4,7 @@
 %global forgeurl https://github.com/rjarry/libecoli
 
 Name: libecoli
-Version: 0.2.0
+Version: 0.3.0
 Summary: Extensible COmmand LIne library
 License: BSD-3-Clause AND LicenseRef-Fedora-Public-Domain
 
@@ -60,7 +60,7 @@ This package contains the HTML documentation for %{name}.
 %forgesetup
 
 %build
-%meson -Dbuild_doc=true -Dbuild_tests=true -Dwith_editline=true
+%meson -Dexamples=disabled -Dyaml=disabled
 %meson_build
 
 %check
@@ -102,6 +102,10 @@ done
 %{_datadir}/doc/libecoli
 
 %changelog
+* Mon Nov 18 2024 Robin Jarry <robin@jarry.cc> - 0.3.0-1
+- New upstream release.
+- Adjust meson options.
+
 * Sat Oct 26 2024 Robin Jarry <robin@jarry.cc> - 0.2.0-5
 - Replace duplicate man pages with symlinks.
 - Fix typos in description.
