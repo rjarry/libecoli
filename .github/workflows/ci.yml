@@ -2,6 +2,9 @@
 # Copyright (c) 2024 Robin Jarry
 ---
 name: CI
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   push:
