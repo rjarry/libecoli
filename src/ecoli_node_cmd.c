@@ -129,6 +129,13 @@ ec_node_cmd_eval_post_op(void **result, void *userctx, void *operand,
 			return -1;
 		ec_node_free(in);
 		*result = out;
+	} else if (!strcmp(ec_strvec_val(vec, 0), "+")) {
+		out = ec_node_many(EC_NO_ID,
+				ec_node_clone(in), 1, 0);
+		if (out == NULL)
+			return -1;
+		ec_node_free(in);
+		*result = out;
 	} else {
 		errno = EINVAL;
 		return -1;
@@ -331,7 +338,7 @@ ec_node_cmd_build_parser(struct ec_node *expr)
 	ret = ec_node_re_lex_add(lex, "[a-zA-Z0-9_-]+", 1, NULL);
 	if (ret < 0)
 		goto fail;
-	ret = ec_node_re_lex_add(lex, "[*|,()]", 1, NULL);
+	ret = ec_node_re_lex_add(lex, "[*+|,()]", 1, NULL);
 	if (ret < 0)
 		goto fail;
 	ret = ec_node_re_lex_add(lex, "\\[", 1, NULL);
