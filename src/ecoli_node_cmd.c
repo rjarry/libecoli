@@ -290,7 +290,7 @@ ec_node_cmd_build_expr(void)
 	if (expr == NULL)
 		goto fail;
 	ret = ec_node_expr_set_val_node(expr, ec_node_re(EC_NO_ID,
-					"[a-zA-Z0-9_-]+"));
+					"[a-zA-Z0-9._-]+"));
 	if (ret < 0)
 		goto fail;
 	ret = ec_node_expr_add_bin_op(expr, ec_node_str(EC_NO_ID, ","));
@@ -335,7 +335,7 @@ ec_node_cmd_build_parser(struct ec_node *expr)
 	if (lex == NULL)
 		goto fail;
 
-	ret = ec_node_re_lex_add(lex, "[a-zA-Z0-9_-]+", 1, NULL);
+	ret = ec_node_re_lex_add(lex, "[a-zA-Z0-9._-]+", 1, NULL);
 	if (ret < 0)
 		goto fail;
 	ret = ec_node_re_lex_add(lex, "[*+|,()]", 1, NULL);
