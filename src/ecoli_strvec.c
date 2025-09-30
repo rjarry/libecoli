@@ -492,15 +492,16 @@ ec_strvec_sh_lex_str(const char *str, ec_strvec_flag_t flags,
 		token[t] = '\0';
 		if (ec_strvec_add(strvec, token) < 0)
 			goto fail;
+		if (sh_lex_set_attrs(strvec, ec_strvec_len(strvec) - 1,
+				     arg_start, i) < 0)
+			goto fail;
 	} else if (trailing_space && (flags & EC_STRVEC_TRAILSP)) {
 		if (ec_strvec_add(strvec, "") < 0)
 			goto fail;
-		arg_start++;
-		i++;
+		if (sh_lex_set_attrs(strvec, ec_strvec_len(strvec) - 1,
+				     arg_start + 1, i + 1) < 0)
+			goto fail;
 	}
-	if (sh_lex_set_attrs(strvec, ec_strvec_len(strvec) - 1,
-			     arg_start, i) < 0)
-		goto fail;
 
 	return strvec;
 
