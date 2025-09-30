@@ -16,6 +16,7 @@
 #include <ecoli_test.h>
 #include <ecoli_node.h>
 #include <ecoli_parse.h>
+#include <ecoli_node_seq.h>
 #include <ecoli_node_sh_lex.h>
 #include <ecoli_node_str.h>
 #include <ecoli_node_or.h>
@@ -187,6 +188,58 @@ struct ec_comp *ec_complete(const struct ec_node *node,
 
  fail:
 	ec_strvec_free(strvec);
+	return NULL;
+}
+
+struct ec_strvec *
+ec_complete_strvec_expand(const struct ec_node *node, enum ec_comp_type type,
+	const struct ec_strvec *strvec)
+{
+	struct ec_strvec *expanded = NULL;
+	const struct ec_comp_item *item;
+	struct ec_comp *comp = NULL;
+	const char *exp;
+	unsigned i;
+
+	if (node == NULL || strvec == NULL) {
+		errno = EINVAL;
+		goto err;
+	}
+
+	if ((expanded = ec_strvec()) == NULL)
+		goto err;
+
+	for (i = 0; i < ec_strvec_len(strvec); i++) {
+		const char *s = ec_strvec_val(strvec, i);
+
+		if (ec_strvec_add(expanded, s) < 0)
+			goto err;
+
+		if ((comp = ec_complete_strvec(node, expanded)) == NULL)
+			goto err;
+
+		if (ec_comp_count(comp, type) == 1) {
+			item = ec_comp_iter_first(comp, type);
+			exp = ec_comp_item_get_str(item);
+			if (exp != NULL && strcmp(s, exp) != 0) {
+				/*
+				 * The string expands to exactly one
+				 * non-ambiguous completion. Replace it with
+				 * the expanded word.
+				 */
+				if (ec_strvec_set(expanded, i, exp) < 0)
+					goto err;
+			}
+		}
+
+		ec_comp_free(comp);
+		comp = NULL;
+	}
+
+	return expanded;
+err:
+	ec_strvec_free(expanded);
+	ec_comp_free(comp);
 	return NULL;
 }
 
@@ -703,6 +756,7 @@ ec_comp_iter_first(const struct ec_comp *comp, enum ec_comp_type type)
 /* LCOV_EXCL_START */
 static int ec_comp_testcase(void)
 {
+	struct ec_strvec *vec1 = NULL, *vec2 = NULL;
 	struct ec_node *node = NULL;
 	struct ec_comp *c = NULL;
 	struct ec_comp_item *item;
@@ -795,9 +849,28 @@ static int ec_comp_testcase(void)
 	ec_comp_free(c);
 	ec_node_free(node);
 
+	node = EC_NODE_SEQ(EC_NO_ID,
+		ec_node_str("id_x", "xxx"),
+		ec_node_str("id_y", "yyyyyy"),
+		ec_node_str("id_z", "zzzzzzzzzzz"));
+	testres |= EC_TEST_CHECK(node != NULL, "null node");
+	vec1 = EC_STRVEC("x", "y", "z");
+	testres |= EC_TEST_CHECK(vec1 != NULL, "null vec");
+	vec2 = ec_complete_strvec_expand(node, EC_COMP_ALL, vec1);
+	testres |= EC_TEST_CHECK(vec2 != NULL, "expand failed");
+	ec_strvec_free(vec1);
+	vec1 = EC_STRVEC("xxx", "yyyyyy", "zzzzzzzzzzz");
+	testres |= EC_TEST_CHECK(vec2 != NULL, "expand failed");
+	testres |= EC_TEST_CHECK(ec_strvec_cmp(vec2, vec1) == 0, "expand invalid");
+	ec_strvec_free(vec1);
+	ec_strvec_free(vec2);
+	ec_node_free(node);
+
 	return testres;
 
 fail:
+	ec_strvec_free(vec1);
+	ec_strvec_free(vec2);
 	ec_comp_free(c);
 	ec_node_free(node);
 	if (f != NULL)

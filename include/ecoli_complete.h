@@ -98,6 +98,24 @@ struct ec_comp *ec_complete_strvec(const struct ec_node *node,
 	const struct ec_strvec *strvec);
 
 /**
+ * Return a new string vector based on the provided one using completion to
+ * expand non-ambiguous tokens to their full value.
+ *
+ * @param node
+ *   The grammar graph.
+ * @param type
+ *   Completion item type to consider.
+ * @param strvec
+ *   The input string vector.
+ * @return
+ *   A new string vector with non-ambiguous tokens expanded, or NULL
+ *   on error (errno is set).
+ */
+struct ec_strvec *
+ec_complete_strvec_expand(const struct ec_node *node, enum ec_comp_type type,
+	const struct ec_strvec *strvec);
+
+/**
  * Get the list of completions of a child node.
  *
  * This function is to be used by intermediate ecoli nodes, i.e. nodes
