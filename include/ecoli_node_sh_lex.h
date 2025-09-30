@@ -14,6 +14,8 @@
 
 struct ec_node *ec_node_sh_lex(const char *id, struct ec_node *child);
 
+struct ec_node *ec_node_sh_lex_expand(const char *id, struct ec_node *child);
+
 #endif
 
 /** @} */

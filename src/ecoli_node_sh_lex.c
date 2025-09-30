@@ -25,6 +25,7 @@ EC_LOG_TYPE_REGISTER(node_sh_lex);
 
 struct ec_node_sh_lex {
 	struct ec_node *child;
+	bool expand;
 };
 
 static int
@@ -48,6 +49,16 @@ ec_node_sh_lex_parse(const struct ec_node *node,
 		return EC_PARSE_NOMATCH;
 	if (new_vec == NULL)
 		goto fail;
+
+	if (priv->expand) {
+		struct ec_strvec *exp;
+		exp = ec_complete_strvec_expand(
+			priv->child, EC_COMP_FULL, new_vec);
+		if (exp == NULL)
+			goto fail;
+		ec_strvec_free(new_vec);
+		new_vec = exp;
+	}
 
 	ret = ec_parse_child(priv->child, pstate, new_vec);
 	if (ret < 0)
@@ -82,7 +93,7 @@ ec_node_sh_lex_complete(const struct ec_node *node,
 	struct ec_comp_item *item = NULL;
 	struct ec_htable *htable = NULL;
 	char *new_str = NULL;
-	const char *str;
+	const char *str, *last;
 	char missing_quote = '\0';
 	int ret;
 
@@ -105,16 +116,40 @@ ec_node_sh_lex_complete(const struct ec_node *node,
 	}
 
 	/* do the completion */
-	ret = ec_complete_child(priv->child, comp, new_vec);
+	if (priv->expand) {
+		struct ec_strvec *exp;
+		exp = ec_complete_strvec_expand(
+			priv->child, EC_COMP_FULL, new_vec);
+		if (exp == NULL)
+			goto fail;
+		ret = ec_complete_child(priv->child, comp, exp);
+		ec_strvec_free(exp);
+	} else {
+		ret = ec_complete_child(priv->child, comp, new_vec);
+	}
 	if (ret < 0)
 		goto fail;
 
-	/* add missing quote for any new full completions */
-	if (missing_quote != '\0') {
-		EC_COMP_FOREACH(item, comp, EC_COMP_FULL) {
-			if (ec_htable_has_key(htable, &item, sizeof(item)))
-				continue;
+	if (ec_strvec_len(new_vec) > 0)
+		last = ec_strvec_val(new_vec, ec_strvec_len(new_vec) - 1);
+	else
+		last = NULL;
 
+	EC_COMP_FOREACH(item, comp, EC_COMP_FULL) {
+		if (ec_htable_has_key(htable, &item, sizeof(item)))
+			continue;
+
+		/* update the complete chars to compensate those in the
+		   expanded string */
+		if (priv->expand && last != NULL) {
+			const char *s = ec_comp_item_get_str(item);
+			size_t prefix = ec_strcmp_count(s, last);
+			if (ec_comp_item_set_completion(item, s + prefix) < 0)
+				goto fail;
+		}
+
+		/* add missing quote for any new full completions */
+		if (missing_quote != '\0') {
 			str = ec_comp_item_get_str(item);
 			if (ec_asprintf(&new_str, "%c%s%c", missing_quote, str,
 					missing_quote) < 0) {
@@ -211,6 +246,21 @@ struct ec_node *ec_node_sh_lex(const char *id, struct ec_node *child)
 
 	priv = ec_node_priv(node);
 	priv->child = child;
+	priv->expand = false;
+
+	return node;
+}
+
+struct ec_node *ec_node_sh_lex_expand(const char *id, struct ec_node *child)
+{
+	struct ec_node *node = ec_node_sh_lex(id, child);
+	struct ec_node_sh_lex *priv;
+
+	if (node == NULL)
+		return NULL;
+
+	priv = ec_node_priv(node);
+	priv->expand = true;
 
 	return node;
 }
