@@ -570,6 +570,7 @@ ec_editline_complete(EditLine *el, int c)
 	int ret = CC_REFRESH;
 	struct ec_comp *cmpl = NULL;
 	char *append = NULL;
+	size_t comp_count;
 	void *clientdata;
 	FILE *out, *err;
 
@@ -604,6 +605,8 @@ ec_editline_complete(EditLine *el, int c)
 		goto fail;
 
 	append = ec_editline_append_chars(cmpl);
+	comp_count = ec_comp_count(cmpl, EC_COMP_FULL) +
+		ec_comp_count(cmpl, EC_COMP_PARTIAL);
 
 	if (c == '?') {
 		struct ec_editline_help *helps = NULL;
@@ -621,7 +624,7 @@ ec_editline_complete(EditLine *el, int c)
 
 		ec_editline_free_helps(helps, count);
 		ret = CC_REDISPLAY;
-	} else if (append == NULL || strcmp(append, "") == 0) {
+	} else if (append == NULL || (strcmp(append, "") == 0 && comp_count != 1)) {
 		char **matches = NULL;
 		ssize_t count = 0;
 
@@ -644,12 +647,11 @@ ec_editline_complete(EditLine *el, int c)
 		ec_editline_free_completions(matches, count);
 		ret = CC_REDISPLAY;
 	} else {
-		if (el_insertstr(el, append) < 0) {
+		if (strcmp(append, "") != 0 && el_insertstr(el, append) < 0) {
 			fprintf(err, "completion failure: cannot insert\n");
 			goto fail;
 		}
-		if (ec_comp_count(cmpl, EC_COMP_FULL) +
-			ec_comp_count(cmpl, EC_COMP_PARTIAL) == 1) {
+		if (comp_count == 1) {
 			if (el_insertstr(el, " ") < 0) {
 				fprintf(err, "completion failure: cannot insert space\n");
 				goto fail;
