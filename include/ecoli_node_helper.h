@@ -9,8 +9,7 @@
  * Helpers that are commonly used in nodes.
  */
 
-#ifndef ECOLI_NODE_HELPERS_
-#define ECOLI_NODE_HELPERS_
+#pragma once
 
 #include <stdarg.h>
 #include <stddef.h>
@@ -62,7 +61,5 @@ ec_node_config_node_list_to_table(const struct ec_config *config,
  */
 struct ec_config *
 ec_node_config_node_list_from_vargs(va_list ap);
-
-#endif
 
 /** @} */

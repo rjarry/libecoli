@@ -7,8 +7,7 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_SUBSET_
-#define ECOLI_NODE_SUBSET_
+#pragma once
 
 #include <ecoli_node.h>
 
@@ -24,7 +23,5 @@ struct ec_node *ec_node_subset(const char *id);
 
 /* child is consumed */
 int ec_node_subset_add(struct ec_node *node, struct ec_node *child);
-
-#endif
 
 /** @} */

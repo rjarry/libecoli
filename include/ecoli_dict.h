@@ -12,8 +12,7 @@
  * as keys.
  */
 
-#ifndef ECOLI_KEYVAL_
-#define ECOLI_KEYVAL_
+#pragma once
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -188,7 +187,5 @@ ec_dict_iter_get_key(const struct ec_dict_elt_ref *iter);
  */
 void *
 ec_dict_iter_get_val(const struct ec_dict_elt_ref *iter);
-
-#endif
 
 /** @} */

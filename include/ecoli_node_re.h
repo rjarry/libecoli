@@ -7,8 +7,7 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_RE_
-#define ECOLI_NODE_RE_
+#pragma once
 
 #include <ecoli_node.h>
 
@@ -16,7 +15,5 @@ struct ec_node *ec_node_re(const char *id, const char *str);
 
 /* re is duplicated */
 int ec_node_re_set_regexp(struct ec_node *node, const char *re);
-
-#endif
 
 /** @} */

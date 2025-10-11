@@ -7,8 +7,7 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_ANY_
-#define ECOLI_NODE_ANY_
+#pragma once
 
 /**
  * Create a "any" node.
@@ -26,7 +25,5 @@
  */
 struct ec_node *
 ec_node_any(const char *id, const char *attr);
-
-#endif
 
 /** @} */

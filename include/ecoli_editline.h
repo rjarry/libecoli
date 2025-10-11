@@ -14,8 +14,7 @@
  * XXX set prompt
  */
 
-#ifndef ECOLI_EDITLINE_
-#define ECOLI_EDITLINE_
+#pragma once
 
 #include <stdbool.h>
 
@@ -185,5 +184,3 @@ ec_editline_parse(struct ec_editline *editline, const struct ec_node *node);
 
 int
 ec_editline_complete(EditLine *el, int c);
-
-#endif

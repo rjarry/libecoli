@@ -7,8 +7,7 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_COND_
-#define ECOLI_NODE_COND_
+#pragma once
 
 struct ec_node;
 
@@ -30,7 +29,5 @@ struct ec_node;
  */
 struct ec_node *ec_node_cond(const char *id, const char *cond_str,
 	struct ec_node *child);
-
-#endif
 
 /** @} */

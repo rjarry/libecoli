@@ -9,8 +9,7 @@
  * @brief Helpers for unit tests
  */
 
-#ifndef ECOLI_TEST_
-#define ECOLI_TEST_
+#pragma once
 
 #include <sys/queue.h>
 
@@ -152,7 +151,5 @@ int ec_test_check_complete(struct ec_node *node,
 		EC_TEST_ERR("complete test failed");			\
 	ret_;								\
 })
-
-#endif
 
 /** @} */

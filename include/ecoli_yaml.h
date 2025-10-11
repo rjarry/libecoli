@@ -9,8 +9,7 @@
  * Interface to import/export ecoli data structures in YAML.
  */
 
-#ifndef ECOLI_NODE_YAML_
-#define ECOLI_NODE_YAML_
+#pragma once
 
 struct ec_node;
 
@@ -24,7 +23,5 @@ struct ec_node;
  *   The returned node must be freed by the caller with ec_node_free().
  */
 struct ec_node *ec_yaml_import(const char *filename);
-
-#endif
 
 /** @} */

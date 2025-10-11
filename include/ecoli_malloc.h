@@ -12,8 +12,7 @@
  * By default, the standard allocation functions from libc are used.
  */
 
-#ifndef ECOLI_MALLOC_
-#define ECOLI_MALLOC_
+#pragma once
 
 #include <sys/types.h>
 #include <stdlib.h>
@@ -255,8 +254,5 @@ void *__ec_realloc(void *ptr, size_t size, const char *file, unsigned int line);
 char *__ec_strdup(const char *s, const char *file, unsigned int line);
 char *__ec_strndup(const char *s, size_t n, const char *file,
 	unsigned int line);
-
-
-#endif
 
 /** @} */

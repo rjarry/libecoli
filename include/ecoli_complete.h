@@ -25,8 +25,7 @@
  * @}
  */
 
-#ifndef ECOLI_COMPLETE_
-#define ECOLI_COMPLETE_
+#pragma once
 
 #include <sys/queue.h>
 #include <sys/types.h>
@@ -518,5 +517,3 @@ ec_comp_iter_next(struct ec_comp_item *item, enum ec_comp_type type);
 	for (item = ec_comp_iter_first(comp, type);	\
 	     item != NULL;				\
 	     item = ec_comp_iter_next(item, type))
-
-#endif

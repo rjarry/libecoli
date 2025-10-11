@@ -7,15 +7,12 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_SHLEX_
-#define ECOLI_NODE_SHLEX_
+#pragma once
 
 #include <ecoli_node.h>
 
 struct ec_node *ec_node_sh_lex(const char *id, struct ec_node *child);
 
 struct ec_node *ec_node_sh_lex_expand(const char *id, struct ec_node *child);
-
-#endif
 
 /** @} */

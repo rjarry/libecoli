@@ -7,15 +7,12 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_CMD_
-#define ECOLI_NODE_CMD_
+#pragma once
 
 #include <ecoli_node.h>
 
 #define EC_NODE_CMD(args...) __ec_node_cmd(args, EC_VA_END)
 
 struct ec_node *__ec_node_cmd(const char *id, const char *cmd_str, ...);
-
-#endif
 
 /** @} */

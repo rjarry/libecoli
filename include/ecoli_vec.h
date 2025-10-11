@@ -12,8 +12,7 @@
  * of any kind.
  */
 
-#ifndef ECOLI_VEC_
-#define ECOLI_VEC_
+#pragma once
 
 #include <sys/types.h>
 #include <stdint.h>
@@ -65,7 +64,5 @@ void ec_vec_free(struct ec_vec *vec);
 /** Get the size of a vector. */
 __attribute__((pure))
 size_t ec_vec_len(const struct ec_vec *vec);
-
-#endif
 
 /** @} */

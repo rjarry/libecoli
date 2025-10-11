@@ -7,8 +7,7 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_DYNAMIC_
-#define ECOLI_NODE_DYNAMIC_
+#pragma once
 
 struct ec_node;
 struct ec_pnode;
@@ -23,7 +22,5 @@ typedef struct ec_node *(*ec_node_dynamic_build_t)(
  */
 struct ec_node *ec_node_dynamic(const char *id, ec_node_dynamic_build_t build,
 				void *opaque);
-
-#endif
 
 /** @} */

@@ -7,8 +7,7 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_EXPR_
-#define ECOLI_NODE_EXPR_
+#pragma once
 
 #include <ecoli_node.h>
 
@@ -94,7 +93,5 @@ struct ec_node_expr_eval_ops {
 int ec_node_expr_eval(void **result, const struct ec_node *node,
 	struct ec_pnode *parse, const struct ec_node_expr_eval_ops *ops,
 	void *userctx);
-
-#endif
 
 /** @} */

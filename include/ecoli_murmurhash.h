@@ -13,8 +13,7 @@
  * source code.
  */
 
-#ifndef ECOLI_MURMURHASH_H_
-#define ECOLI_MURMURHASH_H_
+#pragma once
 
 #include <stdint.h>
 
@@ -67,7 +66,5 @@ static inline uint32_t ec_murmurhash3_fmix32(uint32_t h)
  *   A 32-bit hash.
  */
 uint32_t ec_murmurhash3(const void *key, int len, uint32_t seed);
-
-#endif /* ECOLI_MURMURHASH_H_ */
 
 /** @} */

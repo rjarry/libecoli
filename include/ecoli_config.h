@@ -9,8 +9,7 @@
  * @brief Configure nodes behavior through generic API.
  */
 
-#ifndef ECOLI_CONFIG_
-#define ECOLI_CONFIG_
+#pragma once
 
 #include <sys/queue.h>
 #include <stdbool.h>
@@ -405,7 +404,5 @@ ec_config_dup(const struct ec_config *config);
  *   The configuration to dump.
  */
 void ec_config_dump(FILE *out, const struct ec_config *config);
-
-#endif
 
 /** @} */

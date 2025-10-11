@@ -7,9 +7,6 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_NONE_
-#define ECOLI_NODE_NONE_
-
-#endif
+#pragma once
 
 /** @} */

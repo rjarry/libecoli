@@ -14,8 +14,7 @@
  * @internal
  */
 
-#ifndef ECOLI_ASSERT_
-#define ECOLI_ASSERT_
+#pragma once
 
 #include <stdbool.h>
 
@@ -64,7 +63,5 @@ void __ec_assert_print(bool expr, const char *expr_str,
 			return ret;					\
 		}							\
 	} while(0)
-
-#endif
 
 /** @} */

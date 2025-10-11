@@ -7,8 +7,7 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_INT_
-#define ECOLI_NODE_INT_
+#pragma once
 
 #include <stdint.h>
 
@@ -30,7 +29,5 @@ struct ec_node *ec_node_uint(const char *id, uint64_t min,
 
 int ec_node_uint_getval(const struct ec_node *node, const char *str,
 			uint64_t *result);
-
-#endif
 
 /** @} */

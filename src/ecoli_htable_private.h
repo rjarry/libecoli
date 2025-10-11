@@ -2,8 +2,7 @@
  * Copyright 2019, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#ifndef ECOLI_HTABLE_PRIVATE_
-#define ECOLI_HTABLE_PRIVATE_
+#pragma once
 
 #include <stdint.h>
 #include <sys/queue.h>
@@ -33,5 +32,3 @@ struct ec_htable {
 	struct ec_htable_elt_ref_list list;
 	struct ec_htable_elt_ref_list *table;
 };
-
-#endif

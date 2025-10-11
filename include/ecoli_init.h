@@ -7,8 +7,7 @@
  * @{
  */
 
-#ifndef ECOLI_INIT_
-#define ECOLI_INIT_
+#pragma once
 
 #include <sys/queue.h>
 
@@ -73,7 +72,5 @@ int ec_init(void);
  * Uninitialize ecoli library.
  */
 void ec_exit(void);
-
-#endif
 
 /** @} */

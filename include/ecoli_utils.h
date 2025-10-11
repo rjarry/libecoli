@@ -9,9 +9,7 @@
  * @brief Misc utils
  */
 
-
-#ifndef ECOLI_UTILS_
-#define ECOLI_UTILS_
+#pragma once
 
 /**
  * Cast a variable into a type, ensuring its initial type first
@@ -31,7 +29,5 @@
  */
 #define EC_COUNT_OF(x) ((sizeof(x)/sizeof(0[x])) / \
 		((size_t)(!(sizeof(x) % sizeof(0[x])))))
-
-#endif
 
 /** @} */

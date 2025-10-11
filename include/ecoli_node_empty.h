@@ -7,14 +7,11 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_EMPTY_
-#define ECOLI_NODE_EMPTY_
+#pragma once
 
 /**
  * This node always matches an empty string vector
  */
 struct ec_node *ec_node_empty(const char *id);
-
-#endif
 
 /** @} */

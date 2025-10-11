@@ -13,9 +13,7 @@
  * a reference counter is used.
  */
 
-#ifndef ECOLI_STRVEC_
-#define ECOLI_STRVEC_
-
+#pragma once
 #include <stdio.h>
 
 /** String vector */
@@ -261,7 +259,5 @@ void ec_strvec_sort(struct ec_strvec *strvec,
  *   The pointer to the string vector.
  */
 void ec_strvec_dump(FILE *out, const struct ec_strvec *strvec);
-
-#endif
 
 /** @} */

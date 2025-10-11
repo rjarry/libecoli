@@ -12,8 +12,7 @@
  * using arbitrary data as keys.
  */
 
-#ifndef ECOLI_HTABLE_
-#define ECOLI_HTABLE_
+#pragma once
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -207,7 +206,5 @@ ec_htable_iter_get_key_len(const struct ec_htable_elt_ref *iter);
  */
 void *
 ec_htable_iter_get_val(const struct ec_htable_elt_ref *iter);
-
-#endif
 
 /** @} */

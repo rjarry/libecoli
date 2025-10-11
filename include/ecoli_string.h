@@ -9,8 +9,7 @@
  * @brief Helpers for strings manipulation.
  */
 
-#ifndef ECOLI_STRING_
-#define ECOLI_STRING_
+#pragma once
 
 #include <stdarg.h>
 #include <stddef.h>
@@ -69,6 +68,4 @@ int ec_str_parse_llint(const char *str, unsigned int base, int64_t min,
  */
 int ec_str_parse_ullint(const char *str, unsigned int base, uint64_t min,
 			uint64_t max, uint64_t *val);
-#endif
-
 /** @} */

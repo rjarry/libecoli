@@ -46,8 +46,7 @@
  * talk about grammar graph.
  */
 
-#ifndef ECOLI_NODE_
-#define ECOLI_NODE_
+#pragma once
 
 #include <sys/queue.h>
 #include <sys/types.h>
@@ -430,7 +429,5 @@ const char *ec_node_get_type_name(const struct ec_node *node);
  *   The pointer to the node private area.
  */
 void *ec_node_priv(const struct ec_node *node);
-
-#endif
 
  /** @} */

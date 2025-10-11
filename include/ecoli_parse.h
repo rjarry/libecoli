@@ -18,8 +18,7 @@
  * root node. Use ec_pnode_get_root() to get the root node in that case.
  */
 
-#ifndef ECOLI_PNODE_
-#define ECOLI_PNODE_
+#pragma once
 
 #include <sys/queue.h>
 #include <sys/types.h>
@@ -401,7 +400,5 @@ size_t ec_pnode_len(const struct ec_pnode *pnode);
  * Get the number of matches.
  */
 size_t ec_pnode_matches(const struct ec_pnode *pnode);
-
-#endif
 
 /** @} */

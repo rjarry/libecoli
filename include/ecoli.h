@@ -19,8 +19,7 @@
  * grammar graphs.
  */
 
-#ifndef ECOLI_
-#define ECOLI_
+#pragma once
 
 #include <ecoli_assert.h>
 #include <ecoli_complete.h>
@@ -62,5 +61,3 @@
 #include <ecoli_utils.h>
 #include <ecoli_vec.h>
 #include <ecoli_yaml.h>
-
-#endif

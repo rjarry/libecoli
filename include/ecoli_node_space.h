@@ -10,11 +10,8 @@
  * spaces, as interpreted by isspace().
  */
 
-#ifndef ECOLI_NODE_SPACE_
-#define ECOLI_NODE_SPACE_
+#pragma once
 
 /* no API for now, since there is no specific configuration for this node */
-
-#endif
 
 /** @} */

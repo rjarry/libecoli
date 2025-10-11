@@ -15,8 +15,7 @@
  * - redirection of log to a user functions (default logs nothing)
  */
 
-#ifndef ECOLI_LOG_
-#define ECOLI_LOG_
+#pragma once
 
 #include <stdarg.h>
 #include <syslog.h>
@@ -236,7 +235,5 @@ int ec_log_level_set(enum ec_log_level level);
  *   The current global log level
  */
 enum ec_log_level ec_log_level_get(void);
-
-#endif
 
 /** @} */

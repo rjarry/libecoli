@@ -7,8 +7,7 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_OR_
-#define ECOLI_NODE_OR_
+#pragma once
 
 #include <ecoli_node.h>
 #include <ecoli_utils.h>
@@ -34,7 +33,5 @@ struct ec_node *ec_node_or(const char *id);
  * Add a child to an "or" node. Child is consumed.
  */
 int ec_node_or_add(struct ec_node *node, struct ec_node *child);
-
-#endif
 
 /** @} */

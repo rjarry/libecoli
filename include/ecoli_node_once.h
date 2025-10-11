@@ -7,8 +7,7 @@
  * @{
  */
 
-#ifndef ECOLI_NODE_ONCE_
-#define ECOLI_NODE_ONCE_
+#pragma once
 
 #include <ecoli_node.h>
 
@@ -33,7 +32,5 @@ struct ec_node *ec_node_once(const char *id, struct ec_node *child);
 
 /** on error, child is freed */
 int ec_node_once_set_child(struct ec_node *node, struct ec_node *child);
-
-#endif
 
 /** @} */
