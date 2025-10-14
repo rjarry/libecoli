@@ -5,11 +5,12 @@
 #include <sys/queue.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 #include <inttypes.h>
 
 #include <ecoli_string.h>
-#include <ecoli_malloc.h>
 #include <ecoli_dict.h>
 #include <ecoli_node.h>
 #include <ecoli_log.h>
@@ -227,7 +228,7 @@ ec_config_bool(bool boolean)
 {
 	struct ec_config *value = NULL;
 
-	value = ec_calloc(1, sizeof(*value));
+	value = calloc(1, sizeof(*value));
 	if (value == NULL)
 		return NULL;
 
@@ -242,7 +243,7 @@ ec_config_i64(int64_t i64)
 {
 	struct ec_config *value = NULL;
 
-	value = ec_calloc(1, sizeof(*value));
+	value = calloc(1, sizeof(*value));
 	if (value == NULL)
 		return NULL;
 
@@ -257,7 +258,7 @@ ec_config_u64(uint64_t u64)
 {
 	struct ec_config *value = NULL;
 
-	value = ec_calloc(1, sizeof(*value));
+	value = calloc(1, sizeof(*value));
 	if (value == NULL)
 		return NULL;
 
@@ -277,11 +278,11 @@ ec_config_string(const char *string)
 	if (string == NULL)
 		goto fail;
 
-	s = ec_strdup(string);
+	s = strdup(string);
 	if (s == NULL)
 		goto fail;
 
-	value = ec_calloc(1, sizeof(*value));
+	value = calloc(1, sizeof(*value));
 	if (value == NULL)
 		goto fail;
 
@@ -291,8 +292,8 @@ ec_config_string(const char *string)
 	return value;
 
 fail:
-	ec_free(value);
-	ec_free(s);
+	free(value);
+	free(s);
 	return NULL;
 }
 
@@ -305,7 +306,7 @@ ec_config_node(struct ec_node *node)
 	if (node == NULL)
 		goto fail;
 
-	value = ec_calloc(1, sizeof(*value));
+	value = calloc(1, sizeof(*value));
 	if (value == NULL)
 		goto fail;
 
@@ -316,7 +317,7 @@ ec_config_node(struct ec_node *node)
 
 fail:
 	ec_node_free(node);
-	ec_free(value);
+	free(value);
 	return NULL;
 }
 
@@ -330,7 +331,7 @@ ec_config_dict(void)
 	if (dict == NULL)
 		goto fail;
 
-	value = ec_calloc(1, sizeof(*value));
+	value = calloc(1, sizeof(*value));
 	if (value == NULL)
 		goto fail;
 
@@ -341,7 +342,7 @@ ec_config_dict(void)
 
 fail:
 	ec_dict_free(dict);
-	ec_free(value);
+	free(value);
 	return NULL;
 }
 
@@ -350,7 +351,7 @@ ec_config_list(void)
 {
 	struct ec_config *value = NULL;
 
-	value = ec_calloc(1, sizeof(*value));
+	value = calloc(1, sizeof(*value));
 	if (value == NULL)
 		return NULL;
 
@@ -414,7 +415,7 @@ ec_config_free(struct ec_config *value)
 
 	switch (value->type) {
 	case EC_CONFIG_TYPE_STRING:
-		ec_free(value->string);
+		free(value->string);
 		break;
 	case EC_CONFIG_TYPE_NODE:
 		ec_node_free(value->node);
@@ -434,7 +435,7 @@ ec_config_free(struct ec_config *value)
 		break;
 	}
 
-	ec_free(value);
+	free(value);
 }
 
 static int
@@ -846,37 +847,39 @@ __ec_config_dump(FILE *out, const char *key, const struct ec_config *value,
 		size_t indent)
 {
 	char *val_str = NULL;
+	int ret;
 
 	switch (value->type) {
 	case EC_CONFIG_TYPE_BOOL:
 		if (value->boolean)
-			ec_asprintf(&val_str, "true");
+			ret = asprintf(&val_str, "true");
 		else
-			ec_asprintf(&val_str, "false");
+			ret = asprintf(&val_str, "false");
 		break;
 	case EC_CONFIG_TYPE_INT64:
-		ec_asprintf(&val_str, "%"PRIu64, value->u64);
+		ret = asprintf(&val_str, "%"PRIu64, value->u64);
 		break;
 	case EC_CONFIG_TYPE_UINT64:
-		ec_asprintf(&val_str, "%"PRIi64, value->i64);
+		ret = asprintf(&val_str, "%"PRIi64, value->i64);
 		break;
 	case EC_CONFIG_TYPE_STRING:
-		ec_asprintf(&val_str, "%s", value->string);
+		ret = asprintf(&val_str, "%s", value->string);
 		break;
 	case EC_CONFIG_TYPE_NODE:
-		ec_asprintf(&val_str, "%p", value->node);
+		ret = asprintf(&val_str, "%p", value->node);
 		break;
 	case EC_CONFIG_TYPE_LIST:
 		return ec_config_list_dump(out, key, &value->list, indent);
 	case EC_CONFIG_TYPE_DICT:
 		return ec_config_dict_dump(out, key, value->dict, indent);
 	default:
+		ret = -1;
 		errno = EINVAL;
 		break;
 	}
 
 	/* errno is already set on error */
-	if (val_str == NULL)
+	if (ret < 0 || val_str == NULL)
 		goto fail;
 
 	fprintf(out, "%*s" "%s%s%stype=%s val=%s\n", (int)indent * 4, "",
@@ -885,11 +888,11 @@ __ec_config_dump(FILE *out, const char *key, const struct ec_config *value,
 		key ? " ": "",
 		ec_config_type_str(value->type), val_str);
 
-	ec_free(val_str);
+	free(val_str);
 	return 0;
 
 fail:
-	ec_free(val_str);
+	free(val_str);
 	return -1;
 }
 

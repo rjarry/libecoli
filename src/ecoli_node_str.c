@@ -8,7 +8,6 @@
 #include <errno.h>
 
 #include <ecoli_log.h>
-#include <ecoli_malloc.h>
 #include <ecoli_strvec.h>
 #include <ecoli_node.h>
 #include <ecoli_config.h>
@@ -83,14 +82,14 @@ static char *ec_node_str_desc(const struct ec_node *node)
 {
 	struct ec_node_str *priv = ec_node_priv(node);
 
-	return ec_strdup(priv->string);
+	return strdup(priv->string);
 }
 
 static void ec_node_str_free_priv(struct ec_node *node)
 {
 	struct ec_node_str *priv = ec_node_priv(node);
 
-	ec_free(priv->string);
+	free(priv->string);
 }
 
 static const struct ec_config_schema ec_node_str_schema[] = {
@@ -117,18 +116,18 @@ static int ec_node_str_set_config(struct ec_node *node,
 		goto fail;
 	}
 
-	s = ec_strdup(value->string);
+	s = strdup(value->string);
 	if (s == NULL)
 		goto fail;
 
-	ec_free(priv->string);
+	free(priv->string);
 	priv->string = s;
 	priv->len = strlen(priv->string);
 
 	return 0;
 
 fail:
-	ec_free(s);
+	free(s);
 	return -1;
 }
 

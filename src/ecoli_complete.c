@@ -8,7 +8,6 @@
 #include <assert.h>
 #include <errno.h>
 
-#include <ecoli_malloc.h>
 #include <ecoli_string.h>
 #include <ecoli_strvec.h>
 #include <ecoli_dict.h>
@@ -63,7 +62,7 @@ struct ec_comp *ec_comp(void)
 {
 	struct ec_comp *comp = NULL;
 
-	comp = ec_calloc(1, sizeof(*comp));
+	comp = calloc(1, sizeof(*comp));
 	if (comp == NULL)
 		goto fail;
 
@@ -78,7 +77,7 @@ struct ec_comp *ec_comp(void)
  fail:
 	if (comp != NULL)
 		ec_dict_free(comp->attrs);
-	ec_free(comp);
+	free(comp);
 
 	return NULL;
 }
@@ -248,7 +247,7 @@ ec_comp_group(const struct ec_comp *comp, const struct ec_node *node,
 {
 	struct ec_comp_group *grp = NULL;
 
-	grp = ec_calloc(1, sizeof(*grp));
+	grp = calloc(1, sizeof(*grp));
 	if (grp == NULL)
 		return NULL;
 
@@ -271,7 +270,7 @@ fail:
 		ec_pnode_free(grp->pstate);
 		ec_dict_free(grp->attrs);
 	}
-	ec_free(grp);
+	free(grp);
 	return NULL;
 }
 
@@ -293,7 +292,7 @@ ec_comp_item(enum ec_comp_type type,
 		return NULL;
 	}
 
-	item = ec_calloc(1, sizeof(*item));
+	item = calloc(1, sizeof(*item));
 	if (item == NULL)
 		goto fail;
 
@@ -302,7 +301,7 @@ ec_comp_item(enum ec_comp_type type,
 		goto fail;
 
 	if (start != NULL) {
-		start_cp = ec_strdup(start);
+		start_cp = strdup(start);
 		if (start_cp == NULL)
 			goto fail;
 
@@ -310,16 +309,16 @@ ec_comp_item(enum ec_comp_type type,
 			goto fail;
 
 		if (ec_str_startswith(full, start)) {
-			comp_cp = ec_strdup(&full[strlen(start)]);
+			comp_cp = strdup(&full[strlen(start)]);
 			if (comp_cp == NULL)
 				goto fail;
 		}
 	}
 	if (full != NULL) {
-		full_cp = ec_strdup(full);
+		full_cp = strdup(full);
 		if (full_cp == NULL)
 			goto fail;
-		display_cp = ec_strdup(full);
+		display_cp = strdup(full);
 		if (display_cp == NULL)
 			goto fail;
 	}
@@ -335,11 +334,11 @@ ec_comp_item(enum ec_comp_type type,
 
 fail:
 	ec_dict_free(attrs);
-	ec_free(comp_cp);
-	ec_free(start_cp);
-	ec_free(full_cp);
-	ec_free(display_cp);
-	ec_free(item);
+	free(comp_cp);
+	free(start_cp);
+	free(full_cp);
+	free(display_cp);
+	free(item);
 
 	return NULL;
 }
@@ -355,17 +354,17 @@ int ec_comp_item_set_display(struct ec_comp_item *item,
 		return -1;
 	}
 
-	display_copy = ec_strdup(display);
+	display_copy = strdup(display);
 	if (display_copy == NULL)
 		goto fail;
 
-	ec_free(item->display);
+	free(item->display);
 	item->display = display_copy;
 
 	return 0;
 
 fail:
-	ec_free(display_copy);
+	free(display_copy);
 	return -1;
 }
 
@@ -381,17 +380,17 @@ ec_comp_item_set_completion(struct ec_comp_item *item,
 		return -1;
 	}
 
-	completion_copy = ec_strdup(completion);
+	completion_copy = strdup(completion);
 	if (completion_copy == NULL)
 		goto fail;
 
-	ec_free(item->completion);
+	free(item->completion);
 	item->completion = completion_copy;
 
 	return 0;
 
 fail:
-	ec_free(completion_copy);
+	free(completion_copy);
 	return -1;
 }
 
@@ -407,17 +406,17 @@ ec_comp_item_set_str(struct ec_comp_item *item,
 		return -1;
 	}
 
-	str_copy = ec_strdup(str);
+	str_copy = strdup(str);
 	if (str_copy == NULL)
 		goto fail;
 
-	ec_free(item->full);
+	free(item->full);
 	item->full = str_copy;
 
 	return 0;
 
 fail:
-	ec_free(str_copy);
+	free(str_copy);
 	return -1;
 }
 
@@ -532,12 +531,12 @@ ec_comp_item_free(struct ec_comp_item *item)
 	if (item == NULL)
 		return;
 
-	ec_free(item->full);
-	ec_free(item->start);
-	ec_free(item->completion);
-	ec_free(item->display);
+	free(item->full);
+	free(item->start);
+	free(item->completion);
+	free(item->display);
 	ec_dict_free(item->attrs);
-	ec_free(item);
+	free(item);
 }
 
 struct ec_comp_item *ec_comp_add_item(struct ec_comp *comp,
@@ -594,7 +593,7 @@ static void ec_comp_group_free(struct ec_comp_group *grp)
 	}
 	ec_pnode_free(ec_pnode_get_root(grp->pstate));
 	ec_dict_free(grp->attrs);
-	ec_free(grp);
+	free(grp);
 }
 
 const struct ec_node *
@@ -628,7 +627,7 @@ void ec_comp_free(struct ec_comp *comp)
 		ec_comp_group_free(grp);
 	}
 	ec_dict_free(comp->attrs);
-	ec_free(comp);
+	free(comp);
 }
 
 void ec_comp_dump(FILE *out, const struct ec_comp *comp)

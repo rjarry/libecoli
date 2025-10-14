@@ -6,11 +6,11 @@
 #include <sys/stat.h>
 #include <sys/queue.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
 
 #include <ecoli_init.h>
-#include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_dict.h>
 

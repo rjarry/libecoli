@@ -33,7 +33,6 @@ libecoli_tests = files(
 	'node_space.c',
 	'node_str.c',
 	'node_subset.c',
-	'malloc.c',
 	'parse.c',
 	'strvec.c',
 	'vec.c',

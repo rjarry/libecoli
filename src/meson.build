@@ -33,7 +33,6 @@ libecoli_sources += files(
 	'ecoli_node_space.c',
 	'ecoli_node_str.c',
 	'ecoli_node_subset.c',
-	'ecoli_malloc.c',
 	'ecoli_parse.c',
 	'ecoli_string.c',
 	'ecoli_strvec.c',

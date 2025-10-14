@@ -171,7 +171,7 @@ char *ec_editline_curline(const struct ec_editline *editline,
 /**
  * Get a line.
  *
- * The returned line must be freed by the caller using ec_free().
+ * The returned line must be freed by the caller using free().
  */
 char *ec_editline_gets(struct ec_editline *editline);
 

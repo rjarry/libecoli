@@ -229,7 +229,7 @@ typedef int (*ec_complete_t)(const struct ec_node *node,
  * to return its range (ex: "1..10").
  *
  * The returned value is a pointer that must be freed by
- * the caller with ec_free().
+ * the caller with free().
  *
  * On error, NULL is returned and errno is set.
  */

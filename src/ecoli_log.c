@@ -7,7 +7,6 @@
 #include <string.h>
 #include <syslog.h>
 
-#include <ecoli_malloc.h>
 #include <ecoli_string.h>
 #include <ecoli_log.h>
 
@@ -96,13 +95,13 @@ ec_log_type_register(const char *name)
 		return id;
 
 	// XXX not that good to allocate in constructor
-	new_types = ec_realloc(log_types,
+	new_types = realloc(log_types,
 		sizeof(*new_types) * (log_types_len + 1));
 	if (new_types == NULL)
 		return -1; /* errno is set */
 	log_types = new_types;
 
-	copy = ec_strdup(name);
+	copy = strdup(name);
 	if (copy == NULL)
 		return -1; /* errno is set */
 
@@ -126,9 +125,6 @@ int ec_vlog(int type, enum ec_log_level level, const char *format, va_list ap)
 	char *s;
 	int ret;
 
-	/* don't use ec_vasprintf here, because it will call
-	 * ec_malloc(), then ec_log(), ec_vasprintf()...
-	 * -> stack overflow */
 	ret = vasprintf(&s, format, ap);
 	if (ret < 0)
 		return ret;

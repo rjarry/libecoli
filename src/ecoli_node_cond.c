@@ -10,7 +10,6 @@
 #include <limits.h>
 
 #include <ecoli_init.h>
-#include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_strvec.h>
 #include <ecoli_string.h>
@@ -82,14 +81,14 @@ cond_result_free(struct cond_result *res)
 		ec_htable_free(res->htable);
 		break;
 	case STR:
-		ec_free(res->str);
+		free(res->str);
 		break;
 	case BOOLEAN:
 	case INT:
 		break;
 	}
 
-	ec_free(res);
+	free(res);
 }
 
 static void
@@ -101,7 +100,7 @@ cond_result_table_free(struct cond_result **table, size_t len)
 		cond_result_free(table[i]);
 		table[i] = NULL;
 	}
-	ec_free(table);
+	free(table);
 }
 
 static struct ec_node *
@@ -212,7 +211,7 @@ eval_root(const struct ec_pnode *pstate, struct cond_result **in, size_t in_len)
 		goto fail;
 	}
 
-	out = ec_malloc(sizeof(*out));
+	out = malloc(sizeof(*out));
 	if (out == NULL)
 		goto fail;
 
@@ -248,7 +247,7 @@ eval_current(const struct ec_pnode *pstate, struct cond_result **in,
 		goto fail;
 	}
 
-	out = ec_malloc(sizeof(*out));
+	out = malloc(sizeof(*out));
 	if (out == NULL)
 		goto fail;
 
@@ -299,7 +298,7 @@ eval_bool(const struct ec_pnode *pstate, struct cond_result **in, size_t in_len)
 		goto fail;
 	}
 
-	out = ec_malloc(sizeof(*out));
+	out = malloc(sizeof(*out));
 	if (out == NULL)
 		goto fail;
 
@@ -400,7 +399,7 @@ eval_first_child(const struct ec_pnode *pstate, struct cond_result **in,
 		goto fail;
 	}
 
-	out = ec_malloc(sizeof(*out));
+	out = malloc(sizeof(*out));
 	if (out == NULL)
 		goto fail;
 
@@ -447,7 +446,7 @@ eval_find(const struct ec_pnode *pstate, struct cond_result **in,
 		goto fail;
 	}
 
-	out = ec_malloc(sizeof(*out));
+	out = malloc(sizeof(*out));
 	if (out == NULL)
 		goto fail;
 
@@ -535,7 +534,7 @@ eval_cmp(const struct ec_pnode *pstate, struct cond_result **in,
 		eq = in[1]->boolean == in[2]->boolean;
 	}
 
-	out = ec_malloc(sizeof(*out));
+	out = malloc(sizeof(*out));
 	if (out == NULL)
 		goto fail;
 
@@ -575,7 +574,7 @@ eval_count(const struct ec_pnode *pstate, struct cond_result **in, size_t in_len
 		goto fail;
 	}
 
-	out = ec_malloc(sizeof(*out));
+	out = malloc(sizeof(*out));
 	if (out == NULL)
 		goto fail;
 
@@ -634,7 +633,7 @@ eval_condition(const struct ec_pnode *cond, const struct ec_pnode *pstate)
 
 		iter = ec_pnode_find((void *)arg_list, "id_arg");
 		while (iter != NULL) {
-			args = ec_realloc(args, (n_arg + 1) * sizeof(*args));
+			args = realloc(args, (n_arg + 1) * sizeof(*args));
 			args[n_arg] = eval_condition(iter, pstate);
 			if (args[n_arg] == NULL)
 				goto fail;
@@ -651,11 +650,11 @@ eval_condition(const struct ec_pnode *cond, const struct ec_pnode *pstate)
 
 	value = ec_pnode_find((void *)cond, "id_value_str");
 	if (value != NULL) {
-		res = ec_malloc(sizeof(*res));
+		res = malloc(sizeof(*res));
 		if (res == NULL)
 			goto fail;
 		res->type = STR;
-		res->str = ec_strdup(ec_strvec_val(ec_pnode_get_strvec(value), 0));
+		res->str = strdup(ec_strvec_val(ec_pnode_get_strvec(value), 0));
 		if (res->str == NULL)
 			goto fail;
 		return res;
@@ -663,7 +662,7 @@ eval_condition(const struct ec_pnode *cond, const struct ec_pnode *pstate)
 
 	value = ec_pnode_find((void *)cond, "id_value_int");
 	if (value != NULL) {
-		res = ec_malloc(sizeof(*res));
+		res = malloc(sizeof(*res));
 		if (res == NULL)
 			goto fail;
 		res->type = INT;
@@ -739,7 +738,7 @@ static void ec_node_cond_free_priv(struct ec_node *node)
 {
 	struct ec_node_cond *priv = ec_node_priv(node);
 
-	ec_free(priv->cond_str);
+	free(priv->cond_str);
 	priv->cond_str = NULL;
 	ec_pnode_free(priv->parsed_cond);
 	priv->parsed_cond = NULL;
@@ -777,7 +776,7 @@ static int ec_node_cond_set_config(struct ec_node *node,
 		goto fail;
 	}
 
-	cond_str = ec_strdup(cond->string);
+	cond_str = strdup(cond->string);
 	if (cond_str == NULL)
 		goto fail;
 
@@ -793,7 +792,7 @@ static int ec_node_cond_set_config(struct ec_node *node,
 	/* ok, store the config */
 	ec_pnode_free(priv->parsed_cond);
 	priv->parsed_cond = parsed_cond;
-	ec_free(priv->cond_str);
+	free(priv->cond_str);
 	priv->cond_str = cond_str;
 	ec_node_free(priv->child);
 	priv->child = ec_node_clone(child->node);
@@ -802,7 +801,7 @@ static int ec_node_cond_set_config(struct ec_node *node,
 
 fail:
 	ec_pnode_free(parsed_cond);
-	ec_free(cond_str);
+	free(cond_str);
 	return -1;
 }
 

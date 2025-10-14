@@ -10,7 +10,6 @@
 #include <errno.h>
 #include <stdbool.h>
 
-#include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_strvec.h>
 #include <ecoli_node.h>
@@ -51,7 +50,7 @@ __ec_node_subset_parse(struct parse_result *out, struct ec_node **table,
 
 	memset(&best_result, 0, sizeof(best_result));
 
-	child_table = ec_calloc(table_len - 1, sizeof(*child_table));
+	child_table = calloc(table_len - 1, sizeof(*child_table));
 	if (child_table == NULL)
 		goto fail;
 
@@ -106,7 +105,7 @@ __ec_node_subset_parse(struct parse_result *out, struct ec_node **table,
 	}
 
 	*out = best_result;
-	ec_free(child_table);
+	free(child_table);
 	if (best_parse != NULL)
 		ec_pnode_link_child(pstate, best_parse);
 
@@ -115,7 +114,7 @@ __ec_node_subset_parse(struct parse_result *out, struct ec_node **table,
  fail:
 	ec_pnode_free(best_parse);
 	ec_strvec_free(childvec);
-	ec_free(child_table);
+	free(child_table);
 	return -1;
 }
 
@@ -239,7 +238,7 @@ static void ec_node_subset_free_priv(struct ec_node *node)
 
 	for (i = 0; i < priv->len; i++)
 		ec_node_free(priv->table[i]);
-	ec_free(priv->table);
+	free(priv->table);
 }
 
 static size_t
@@ -290,7 +289,7 @@ int ec_node_subset_add(struct ec_node *node, struct ec_node *child)
 	if (ec_node_check_type(node, &ec_node_subset_type) < 0)
 		goto fail;
 
-	table = ec_realloc(priv->table, (priv->len + 1) * sizeof(*priv->table));
+	table = realloc(priv->table, (priv->len + 1) * sizeof(*priv->table));
 	if (table == NULL) {
 		ec_node_free(child);
 		return -1;

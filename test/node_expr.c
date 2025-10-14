@@ -5,6 +5,8 @@
 #include <errno.h>
 #include <limits.h>
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "test.h"
 
@@ -36,7 +38,7 @@ ec_node_expr_test_eval_var(void **result, void *userctx,
 	if (ec_node_int_getval(node, ec_strvec_val(vec, 0), &val) < 0)
 		return -1;
 
-	eval = ec_malloc(sizeof(*eval));
+	eval = malloc(sizeof(*eval));
 	if (eval == NULL)
 		return -1;
 
@@ -134,7 +136,7 @@ ec_node_expr_test_eval_bin_op(void **result, void *userctx, void *operand1,
 	}
 
 	EC_LOG(EC_LOG_DEBUG, "eval bin_op %d\n", eval1->val);
-	ec_free(eval2);
+	free(eval2);
 	*result = eval1;
 
 	return 0;
@@ -160,7 +162,7 @@ static void
 ec_node_expr_test_eval_free(void *result, void *userctx)
 {
 	(void)userctx;
-	ec_free(result);
+	free(result);
 }
 
 static const struct ec_node_expr_eval_ops test_ops = {
@@ -200,7 +202,7 @@ static int ec_node_expr_test_eval(struct ec_node *lex_node,
 	else
 		ret = -1;
 
-	ec_free(eval);
+	free(eval);
 
 	return ret;
 }

@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_strvec.h>
 #include <ecoli_node.h>

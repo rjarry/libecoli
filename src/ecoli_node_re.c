@@ -9,7 +9,6 @@
 #include <regex.h>
 
 #include <ecoli_log.h>
-#include <ecoli_malloc.h>
 #include <ecoli_strvec.h>
 #include <ecoli_node.h>
 #include <ecoli_parse.h>
@@ -52,7 +51,7 @@ static void ec_node_re_free_priv(struct ec_node *node)
 	struct ec_node_re *priv = ec_node_priv(node);
 
 	if (priv->re_str != NULL) {
-		ec_free(priv->re_str);
+		free(priv->re_str);
 		regfree(&priv->re);
 	}
 }
@@ -83,7 +82,7 @@ static int ec_node_re_set_config(struct ec_node *node,
 		goto fail;
 	}
 
-	s = ec_strdup(value->string);
+	s = strdup(value->string);
 	if (s == NULL)
 		goto fail;
 
@@ -97,7 +96,7 @@ static int ec_node_re_set_config(struct ec_node *node,
 	}
 
 	if (priv->re_str != NULL) {
-		ec_free(priv->re_str);
+		free(priv->re_str);
 		regfree(&priv->re);
 	}
 	priv->re_str = s;
@@ -106,7 +105,7 @@ static int ec_node_re_set_config(struct ec_node *node,
 	return 0;
 
 fail:
-	ec_free(s);
+	free(s);
 	return -1;
 }
 

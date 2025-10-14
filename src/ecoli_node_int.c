@@ -10,7 +10,6 @@
 #include <errno.h>
 
 #include <ecoli_log.h>
-#include <ecoli_malloc.h>
 #include <ecoli_strvec.h>
 #include <ecoli_node.h>
 #include <ecoli_config.h>
@@ -165,7 +164,7 @@ static int ec_node_int_set_config(struct ec_node *node,
 	return 0;
 
 fail:
-	ec_free(s);
+	free(s);
 	return -1;
 }
 
@@ -277,7 +276,7 @@ static int ec_node_uint_set_config(struct ec_node *node,
 	return 0;
 
 fail:
-	ec_free(s);
+	free(s);
 	return -1;
 }
 

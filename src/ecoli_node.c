@@ -8,7 +8,6 @@
 #include <assert.h>
 #include <errno.h>
 
-#include <ecoli_malloc.h>
 #include <ecoli_string.h>
 #include <ecoli_strvec.h>
 #include <ecoli_dict.h>
@@ -97,7 +96,7 @@ struct ec_node *ec_node_from_type(const struct ec_node_type *type, const char *i
 		goto fail;
 	}
 
-	node = ec_calloc(1, sizeof(*node) + type->size);
+	node = calloc(1, sizeof(*node) + type->size);
 	if (node == NULL)
 		goto fail;
 
@@ -105,7 +104,7 @@ struct ec_node *ec_node_from_type(const struct ec_node_type *type, const char *i
 	node->refcnt = 1;
 
 	// XXX check that id matches [_a-zA-Z][:-_0-9a-zA-Z]*
-	node->id = ec_strdup(id);
+	node->id = strdup(id);
 	if (node->id == NULL)
 		goto fail;
 
@@ -123,9 +122,9 @@ struct ec_node *ec_node_from_type(const struct ec_node_type *type, const char *i
  fail:
 	if (node != NULL) {
 		ec_dict_free(node->attrs);
-		ec_free(node->id);
+		free(node->id);
 	}
-	ec_free(node);
+	free(node);
 
 	return NULL;
 }
@@ -261,7 +260,7 @@ void ec_node_free(struct ec_node *node)
 		assert(n == 0 || node->type->free_priv != NULL);
 		if (node->type->free_priv != NULL)
 			node->type->free_priv(node);
-		ec_free(node->id);
+		free(node->id);
 		ec_dict_free(node->attrs);
 	}
 
@@ -272,7 +271,7 @@ void ec_node_free(struct ec_node *node)
 	node->free.state = EC_NODE_FREE_STATE_NONE;
 	node->free.refcnt = 0;
 
-	ec_free(node);
+	free(node);
 }
 
 struct ec_node *ec_node_clone(struct ec_node *node)
@@ -402,7 +401,7 @@ static void __ec_node_dump(FILE *out,
 		__ec_node_dump(out, child, indent + 1, dict);
 	}
 end:
-	ec_free(desc);
+	free(desc);
 }
 
 /* XXX this is too much debug-oriented, we should have a parameter or 2 funcs */
@@ -438,7 +437,7 @@ char *ec_node_desc(const struct ec_node *node)
 	if (node->type->desc != NULL)
 		return node->type->desc(node);
 
-	if (ec_asprintf(&desc, "<%s>", node->type->name) < 0)
+	if (asprintf(&desc, "<%s>", node->type->name) < 0)
 		return NULL;
 
 	return desc;

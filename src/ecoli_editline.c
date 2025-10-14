@@ -6,12 +6,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <histedit.h>
 
 #include <ecoli_utils.h>
-#include <ecoli_malloc.h>
 #include <ecoli_string.h>
 #include <ecoli_editline.h>
 #include <ecoli_dict.h>
@@ -122,10 +123,10 @@ ec_editline_free_helps(struct ec_editline_help *helps, size_t len)
 	if (helps == NULL)
 		return;
 	for (i = 0; i < len; i++) {
-		ec_free(helps[i].desc);
-		ec_free(helps[i].help);
+		free(helps[i].desc);
+		free(helps[i].help);
 	}
-	ec_free(helps);
+	free(helps);
 }
 
 int
@@ -134,12 +135,12 @@ ec_editline_set_prompt(struct ec_editline *editline, const char *prompt)
 	char *copy = NULL;
 
 	if (prompt != NULL) {
-		copy = ec_strdup(prompt);
+		copy = strdup(prompt);
 		if (copy == NULL)
 			return -1;
 	}
 
-	ec_free(editline->prompt);
+	free(editline->prompt);
 	editline->prompt = copy;
 
 	return 0;
@@ -168,7 +169,7 @@ ec_editline_set_prompt_esc(struct ec_editline *editline, const char *prompt,
 	char *copy = NULL;
 
 	if (prompt != NULL) {
-		copy = ec_strdup(prompt);
+		copy = strdup(prompt);
 		if (copy == NULL)
 			return -1;
 	}
@@ -176,7 +177,7 @@ ec_editline_set_prompt_esc(struct ec_editline *editline, const char *prompt,
 	if (el_set(editline->el, EL_PROMPT_ESC, prompt_cb, delim) < 0)
 		goto fail;
 
-	ec_free(editline->prompt);
+	free(editline->prompt);
 	editline->prompt = copy;
 
 	return 0;
@@ -198,7 +199,7 @@ ec_editline(const char *name, FILE *f_in, FILE *f_out, FILE *f_err,
 		goto fail;
 	}
 
-	editline = ec_calloc(1, sizeof(*editline));
+	editline = calloc(1, sizeof(*editline));
 	if (editline == NULL)
 		goto fail;
 
@@ -234,7 +235,7 @@ ec_editline(const char *name, FILE *f_in, FILE *f_out, FILE *f_err,
 	}
 
 	/* set prompt */
-	editline->prompt = ec_strdup("> ");
+	editline->prompt = strdup("> ");
 	if (editline->prompt == NULL)
 		goto fail;
 	if (el_set(el, EL_PROMPT, prompt_cb))
@@ -273,9 +274,9 @@ void ec_editline_free(struct ec_editline *editline)
 		el_end(editline->el);
 	if (editline->history != NULL)
 		history_end(editline->history);
-	ec_free(editline->hist_file);
-	ec_free(editline->prompt);
-	ec_free(editline);
+	free(editline->hist_file);
+	free(editline->prompt);
+	free(editline);
 }
 
 EditLine *ec_editline_get_el(struct ec_editline *editline)
@@ -303,7 +304,7 @@ int ec_editline_set_history(struct ec_editline *editline,
 	if (editline->history != NULL)
 		history_end(editline->history);
 	if (editline->hist_file != NULL) {
-		ec_free(editline->hist_file);
+		free(editline->hist_file);
 		editline->hist_file = NULL;
 	}
 
@@ -319,7 +320,7 @@ int ec_editline_set_history(struct ec_editline *editline,
 	if (history(editline->history, &editline->histev, H_SETUNIQUE, 1))
 		goto fail;
 	if (hist_file != NULL) {
-		editline->hist_file = ec_strdup(hist_file);
+		editline->hist_file = strdup(hist_file);
 		if (editline->hist_file == NULL)
 			goto fail;
 		// ignore errors
@@ -344,7 +345,7 @@ void ec_editline_free_completions(char **matches, size_t len)
 {
 	size_t i;
 
-	// XXX use ec_malloc/ec_free() instead for consistency
+	// XXX use malloc/free() instead for consistency
 	if (matches == NULL)
 		return;
 	for (i = 0; i < len; i++)
@@ -392,7 +393,7 @@ ec_editline_append_chars(const struct ec_comp *cmpl)
 	EC_COMP_FOREACH(item, cmpl, EC_COMP_FULL | EC_COMP_PARTIAL) {
 		append = ec_comp_item_get_completion(item);
 		if (ret == NULL) {
-			ret = ec_strdup(append);
+			ret = strdup(append);
 			if (ret == NULL)
 				goto fail;
 		} else {
@@ -404,7 +405,7 @@ ec_editline_append_chars(const struct ec_comp *cmpl)
 	return ret;
 
 fail:
-	ec_free(ret);
+	free(ret);
 
 	return NULL;
 }
@@ -442,15 +443,15 @@ static int get_node_help(const struct ec_comp_item *item,
 		node_help = "";
 
 	help->desc = node_desc;
-	help->help = ec_strdup(node_help);
+	help->help = strdup(node_help);
 	if (help->help == NULL)
 		goto fail;
 
 	return 0;
 
 fail:
-	ec_free(node_desc);
-	ec_free(help->help);
+	free(node_desc);
+	free(help->help);
 	help->desc = NULL;
 	help->help = NULL;
 	return -1;
@@ -481,14 +482,14 @@ ec_editline_get_helps(const struct ec_editline *editline, const char *line,
 	if (cmpl == NULL) //XXX log error
 		goto fail;
 
-	helps = ec_calloc(1, sizeof(*helps));
+	helps = calloc(1, sizeof(*helps));
 	if (helps == NULL)
 		goto fail;
 	if (count == 1) {
-		helps[0].desc = ec_strdup("<return>");
+		helps[0].desc = strdup("<return>");
 		if (helps[0].desc == NULL)
 			goto fail;
-		helps[0].help = ec_strdup("Validate command.");
+		helps[0].help = strdup("Validate command.");
 		if (helps[0].help == NULL)
 			goto fail;
 	}
@@ -505,7 +506,7 @@ ec_editline_get_helps(const struct ec_editline *editline, const char *line,
 
 		prev_grp = grp;
 
-		tmp = ec_realloc(helps, (count + 1) * sizeof(*helps));
+		tmp = realloc(helps, (count + 1) * sizeof(*helps));
 		if (tmp == NULL)
 			goto fail;
 		helps = tmp;
@@ -524,10 +525,10 @@ fail:
 	ec_comp_free(cmpl);
 	if (helps != NULL) {
 		while (count--) {
-			ec_free(helps[count].desc);
-			ec_free(helps[count].help);
+			free(helps[count].desc);
+			free(helps[count].help);
 		}
-		ec_free(helps);
+		free(helps);
 	}
 
 	return -1;
@@ -550,7 +551,7 @@ ec_editline_curline(const struct ec_editline *editline, bool trim_after_cursor)
 	else
 		pos = line_info->lastchar - line_info->buffer;
 
-	if (ec_asprintf(&line, "%.*s", pos, line_info->buffer) < 0) {
+	if (asprintf(&line, "%.*s", pos, line_info->buffer) < 0) {
 		errno = ENOMEM;
 		goto fail;
 	}
@@ -660,17 +661,17 @@ ec_editline_complete(EditLine *el, int c)
 	}
 
 	ec_comp_free(cmpl);
-	ec_free(line);
-	ec_free(full_line);
-	ec_free(append);
+	free(line);
+	free(full_line);
+	free(append);
 
 	return ret;
 
 fail:
 	ec_comp_free(cmpl);
-	ec_free(line);
-	ec_free(full_line);
-	ec_free(append);
+	free(line);
+	free(full_line);
+	free(append);
 
 	return CC_ERROR;
 }
@@ -696,7 +697,7 @@ ec_editline_get_suggestions(const struct ec_editline *editline,
 		goto out;
 
 	if (full_line != NULL)
-		*full_line = ec_strdup(line);
+		*full_line = strdup(line);
 
 	len = strlen(line);
 	for (i = 0; i <= len + 1; i++) {
@@ -745,7 +746,7 @@ ec_editline_gets(struct ec_editline *editline)
 	if (line == NULL)
 		return NULL;
 
-	line_copy = ec_strdup(line);
+	line_copy = strdup(line);
 	if (line_copy == NULL)
 		goto fail;
 
@@ -762,7 +763,7 @@ ec_editline_gets(struct ec_editline *editline)
 	return line_copy;
 
 fail:
-	ec_free(line_copy);
+	free(line_copy);
 	return NULL;
 }
 
@@ -785,11 +786,11 @@ ec_editline_parse(struct ec_editline *editline, const struct ec_node *node)
 	if (parse == NULL)
 		goto fail;
 
-	ec_free(line);
+	free(line);
 	return parse;
 
 fail:
-	ec_free(line);
+	free(line);
 	ec_pnode_free(parse);
 
 	return NULL;

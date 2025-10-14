@@ -5,13 +5,13 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <limits.h>
 #include <ctype.h>
 
 #include <ecoli_assert.h>
-#include <ecoli_malloc.h>
 #include <ecoli_string.h>
 
 /* count the number of identical chars at the beginning of 2 strings */
@@ -34,50 +34,6 @@ int ec_str_startswith(const char *s, const char *beginning)
 		return 1;
 
 	return 0;
-}
-
-int ec_vasprintf(char **buf, const char *fmt, va_list ap)
-{
-	char dummy;
-	int buflen, ret;
-	va_list aq;
-
-	va_copy(aq, ap);
-	*buf = NULL;
-	ret = vsnprintf(&dummy, 1, fmt, aq);
-	va_end(aq);
-	if (ret < 0)
-		return ret;
-
-	buflen = ret + 1;
-	*buf = ec_malloc(buflen);
-	if (*buf == NULL)
-		return -1;
-
-	va_copy(aq, ap);
-	ret = vsnprintf(*buf, buflen, fmt, aq);
-	va_end(aq);
-
-	ec_assert_print(ret < buflen, "invalid return value for vsnprintf");
-	if (ret < 0) {
-		free(*buf);
-		*buf = NULL;
-		return -1;
-	}
-
-	return ret;
-}
-
-int ec_asprintf(char **buf, const char *fmt, ...)
-{
-	va_list ap;
-	int ret;
-
-	va_start(ap, fmt);
-	ret = ec_vasprintf(buf, fmt, ap);
-	va_end(ap);
-
-	return ret;
 }
 
 bool ec_str_is_space(const char *s)
