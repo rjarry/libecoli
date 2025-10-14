@@ -15,7 +15,7 @@
 #include <ecoli_test.h>
 #include <ecoli_dict.h>
 
-#include "ecoli_htable_private.h"
+#include "htable.h"
 
 EC_LOG_TYPE_REGISTER(dict);
 
