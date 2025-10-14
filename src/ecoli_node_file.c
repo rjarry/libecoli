@@ -149,28 +149,19 @@ ec_node_file_complete(const struct ec_node *node,
 		effective_dir = dname;
 
 	if (priv->lstat(effective_dir, &st) < 0)
-		goto fail;
+		goto out;
 	if (!S_ISDIR(st.st_mode))
 		goto out;
 
 	dir = priv->opendir(effective_dir);
 	if (dir == NULL)
-		goto fail;
+		goto out;
 
 	bname_len = strlen(bname);
 	while (1) {
-		int save_errno = errno;
-
-		errno = 0;
 		de = priv->readdir(dir);
-		if (de == NULL) {
-			if (errno == 0) {
-				errno = save_errno;
-				goto out;
-			} else {
-				goto fail;
-			}
-		}
+		if (de == NULL)
+			goto out;
 
 		if (!ec_str_startswith(de->d_name, bname))
 			continue;
@@ -184,9 +175,9 @@ ec_node_file_complete(const struct ec_node *node,
 			int dir_fd = priv->dirfd(dir);
 
 			if (dir_fd < 0)
-				goto fail;
+				goto out;
 			if (priv->fstatat(dir_fd, de->d_name, &st2, 0) < 0)
-				goto fail;
+				goto out;
 			if (S_ISDIR(st2.st_mode))
 				is_dir = 1;
 			else
@@ -212,12 +203,12 @@ ec_node_file_complete(const struct ec_node *node,
 		}
 		item = ec_comp_add_item(comp, node, type, input, comp_str);
 		if (item == NULL)
-			goto out;
+			goto fail;
 
 		/* fix the display string: we don't want to display the full
 		 * path. */
 		if (ec_comp_item_set_display(item, disp_str) < 0)
-			goto out;
+			goto fail;
 
 		item = NULL;
 		ec_free(comp_str);
