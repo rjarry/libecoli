@@ -14,7 +14,6 @@
 #include <ecoli_parse.h>
 #include <ecoli_complete.h>
 #include <ecoli_dict.h>
-#include <ecoli_malloc.h>
 #include <ecoli_node_str.h>
 #include <ecoli_node_seq.h>
 #include <ecoli_node_space.h>
@@ -57,7 +56,7 @@ static char *my_completion_entry(const char *s, int state)
 		if (c == NULL)
 			return NULL;
 
-		ec_free(item);
+		free(item);
 		item = ec_comp_iter_first(c, EC_COMP_FULL | EC_COMP_PARTIAL);
 		if (item == NULL)
 			return NULL;
@@ -128,7 +127,7 @@ static char *get_node_help(const struct ec_comp_item *item)
 	if (asprintf(&help, "%-20s %s", node_desc, node_help) < 0)
 		return NULL;
 
-	ec_free(node_desc);
+	free(node_desc);
 
 	return help;
 }
@@ -194,7 +193,7 @@ static int show_help(int ignore, int invoking_key)
 		count++;
 	}
 
-	ec_free(item);
+	free(item);
 	ec_comp_free(c);
 	/* ensure not more than 1 entry per line */
 	rl_get_screen_size(NULL, &cols);
@@ -204,7 +203,7 @@ static int show_help(int ignore, int invoking_key)
 	ret = 0;
 
 fail:
-	ec_free(item);
+	free(item);
 	ec_pnode_free(p);
 	free(line);
 	ec_comp_free(c);

@@ -29,7 +29,6 @@
 #include <ecoli_htable.h>
 #include <ecoli_init.h>
 #include <ecoli_log.h>
-#include <ecoli_malloc.h>
 #include <ecoli_murmurhash.h>
 #include <ecoli_node_any.h>
 #include <ecoli_node_bypass.h>

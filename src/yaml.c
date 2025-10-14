@@ -10,7 +10,6 @@
 
 #include <yaml.h>
 
-#include <ecoli_malloc.h>
 #include <ecoli_dict.h>
 #include <ecoli_node.h>
 #include <ecoli_config.h>
@@ -435,7 +434,7 @@ parse_ec_node(struct enode_table *table,
 				fprintf(stderr, "Help must be a scalar\n");
 				goto fail;
 			}
-			help = ec_strdup(value_str);
+			help = strdup(value_str);
 			if (help == NULL) {
 				fprintf(stderr, "Failed to allocate help\n");
 				goto fail;
@@ -477,7 +476,7 @@ parse_ec_node(struct enode_table *table,
 
 	if (help != NULL) {
 		if (ec_dict_set(ec_node_attrs(enode), "help", help,
-					ec_free_func) < 0) {
+					free) < 0) {
 			fprintf(stderr, "Failed to set help\n");
 			help = NULL;
 			goto fail;
@@ -493,11 +492,11 @@ parse_ec_node(struct enode_table *table,
 			value = document->nodes.start + pair->value - 1;
 			key_str = (const char *)key->data.scalar.value;
 			value_str = (const char *)value->data.scalar.value;
-			value_dup = ec_strdup(value_str);
+			value_dup = strdup(value_str);
 			if (value_dup == NULL)
 				goto fail;
 			if (ec_dict_set(ec_node_attrs(enode), key_str,
-						value_dup, ec_free_func) < 0) {
+						value_dup, free) < 0) {
 				value_dup = NULL;
 				goto fail;
 			}
@@ -510,8 +509,8 @@ parse_ec_node(struct enode_table *table,
 fail:
 	ec_node_free(enode);
 	ec_config_free(config);
-	ec_free(help);
-	ec_free(value_dup);
+	free(help);
+	free(value_dup);
 
 	return NULL;
 }

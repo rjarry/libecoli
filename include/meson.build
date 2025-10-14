@@ -11,7 +11,6 @@ libecoli_headers = files(
 	'ecoli_htable.h',
 	'ecoli_init.h',
 	'ecoli_log.h',
-	'ecoli_malloc.h',
 	'ecoli_murmurhash.h',
 	'ecoli_node.h',
 	'ecoli_node_any.h',

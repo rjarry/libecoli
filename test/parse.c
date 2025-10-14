@@ -2,6 +2,9 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <string.h>
+#include <stdlib.h>
+
 #include "test.h"
 
 EC_TEST_MAIN()

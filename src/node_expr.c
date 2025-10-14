@@ -9,7 +9,6 @@
 #include <assert.h>
 #include <errno.h>
 
-#include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_strvec.h>
 #include <ecoli_node.h>
@@ -78,19 +77,19 @@ static void ec_node_expr_free_priv(struct ec_node *node)
 
 	for (i = 0; i < priv->bin_ops_len; i++)
 		ec_node_free(priv->bin_ops[i]);
-	ec_free(priv->bin_ops);
+	free(priv->bin_ops);
 	for (i = 0; i < priv->pre_ops_len; i++)
 		ec_node_free(priv->pre_ops[i]);
-	ec_free(priv->pre_ops);
+	free(priv->pre_ops);
 	for (i = 0; i < priv->post_ops_len; i++)
 		ec_node_free(priv->post_ops[i]);
-	ec_free(priv->post_ops);
+	free(priv->post_ops);
 	for (i = 0; i < priv->paren_len; i++) {
 		ec_node_free(priv->open_ops[i]);
 		ec_node_free(priv->close_ops[i]);
 	}
-	ec_free(priv->open_ops);
-	ec_free(priv->close_ops);
+	free(priv->open_ops);
+	free(priv->close_ops);
 }
 
 static int ec_node_expr_build(struct ec_node_expr *priv)
@@ -295,7 +294,7 @@ int ec_node_expr_add_bin_op(struct ec_node *node, struct ec_node *op)
 		goto fail;
 	}
 
-	bin_ops = ec_realloc(priv->bin_ops,
+	bin_ops = realloc(priv->bin_ops,
 		(priv->bin_ops_len + 1) * sizeof(*priv->bin_ops));
 	if (bin_ops == NULL)
 		goto fail;;
@@ -326,7 +325,7 @@ int ec_node_expr_add_pre_op(struct ec_node *node, struct ec_node *op)
 		goto fail;
 	}
 
-	pre_ops = ec_realloc(priv->pre_ops,
+	pre_ops = realloc(priv->pre_ops,
 		(priv->pre_ops_len + 1) * sizeof(*priv->pre_ops));
 	if (pre_ops == NULL)
 		goto fail;
@@ -357,7 +356,7 @@ int ec_node_expr_add_post_op(struct ec_node *node, struct ec_node *op)
 		goto fail;
 	}
 
-	post_ops = ec_realloc(priv->post_ops,
+	post_ops = realloc(priv->post_ops,
 		(priv->post_ops_len + 1) * sizeof(*priv->post_ops));
 	if (post_ops == NULL)
 		goto fail;
@@ -389,11 +388,11 @@ int ec_node_expr_add_parenthesis(struct ec_node *node,
 		goto fail;
 	}
 
-	open_ops = ec_realloc(priv->open_ops,
+	open_ops = realloc(priv->open_ops,
 		(priv->paren_len + 1) * sizeof(*priv->open_ops));
 	if (open_ops == NULL)
 		goto fail;
-	close_ops = ec_realloc(priv->close_ops,
+	close_ops = realloc(priv->close_ops,
 		(priv->paren_len + 1) * sizeof(*priv->close_ops));
 	if (close_ops == NULL)
 		goto fail;

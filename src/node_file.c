@@ -12,7 +12,6 @@
 #include <dirent.h>
 
 #include <ecoli_log.h>
-#include <ecoli_malloc.h>
 #include <ecoli_strvec.h>
 #include <ecoli_string.h>
 #include <ecoli_node.h>
@@ -56,7 +55,7 @@ ec_node_file_parse(const struct ec_node *node,
  *   be empty.
  * - the behavior is different when the path finishes with a '/'
  * - the path argument is not modified
- * - the outputs are allocated and must be freed with ec_free().
+ * - the outputs are allocated and must be freed with free().
  *
  *   path       dirname   basename       split_path
  *   /usr/lib   /usr      lib          /usr/     lib
@@ -81,14 +80,14 @@ static int split_path(const char *path, char **dname_p, char **bname_p)
 	else
 		dirlen = last_slash - path + 1;
 
-	dname = ec_strdup(path);
+	dname = strdup(path);
 	if (dname == NULL)
 		return -1;
 	dname[dirlen] = '\0';
 
-	bname = ec_strdup(path + dirlen);
+	bname = strdup(path + dirlen);
 	if (bname == NULL) {
-		ec_free(dname);
+		free(dname);
 		return -1;
 	}
 
@@ -212,26 +211,26 @@ ec_node_file_complete(const struct ec_node *node,
 			goto fail;
 
 		item = NULL;
-		ec_free(comp_str);
+		free(comp_str);
 		comp_str = NULL;
-		ec_free(disp_str);
+		free(disp_str);
 		disp_str = NULL;
 	}
 out:
-	ec_free(comp_str);
-	ec_free(disp_str);
-	ec_free(dname);
-	ec_free(bname);
+	free(comp_str);
+	free(disp_str);
+	free(dname);
+	free(bname);
 	if (dir != NULL)
 		file_ops.closedir(dir);
 
 	return 0;
 
 fail:
-	ec_free(comp_str);
-	ec_free(disp_str);
-	ec_free(dname);
-	ec_free(bname);
+	free(comp_str);
+	free(disp_str);
+	free(dname);
+	free(bname);
 	if (dir != NULL)
 		file_ops.closedir(dir);
 

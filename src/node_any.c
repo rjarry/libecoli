@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_strvec.h>
 #include <ecoli_node.h>
@@ -46,7 +45,7 @@ static void ec_node_any_free_priv(struct ec_node *node)
 {
 	struct ec_node_any *priv = ec_node_priv(node);
 
-	ec_free(priv->attr_name);
+	free(priv->attr_name);
 }
 
 static const struct ec_config_schema ec_node_any_schema[] = {
@@ -69,18 +68,18 @@ static int ec_node_any_set_config(struct ec_node *node,
 
 	value = ec_config_dict_get(config, "attr");
 	if (value != NULL) {
-		s = ec_strdup(value->string);
+		s = strdup(value->string);
 		if (s == NULL)
 			goto fail;
 	}
 
-	ec_free(priv->attr_name);
+	free(priv->attr_name);
 	priv->attr_name = s;
 
 	return 0;
 
 fail:
-	ec_free(s);
+	free(s);
 	return -1;
 }
 

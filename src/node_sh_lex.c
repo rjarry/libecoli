@@ -7,7 +7,6 @@
 #include <string.h>
 #include <errno.h>
 
-#include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_string.h>
 #include <ecoli_strvec.h>
@@ -157,7 +156,7 @@ ec_node_sh_lex_complete(const struct ec_node *node,
 			}
 			if (ec_comp_item_set_str(item, new_str) < 0)
 				goto fail;
-			ec_free(new_str);
+			free(new_str);
 			new_str = NULL;
 
 			str = ec_comp_item_get_completion(item);
@@ -168,7 +167,7 @@ ec_node_sh_lex_complete(const struct ec_node *node,
 			}
 			if (ec_comp_item_set_completion(item, new_str) < 0)
 				goto fail;
-			ec_free(new_str);
+			free(new_str);
 			new_str = NULL;
 		}
 	}
@@ -180,7 +179,7 @@ ec_node_sh_lex_complete(const struct ec_node *node,
 
  fail:
 	ec_strvec_free(new_vec);
-	ec_free(new_str);
+	free(new_str);
 	ec_htable_free(htable);
 
 	return -1;

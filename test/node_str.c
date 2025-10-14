@@ -2,6 +2,9 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "test.h"
 
 EC_TEST_MAIN()
@@ -18,7 +21,7 @@ EC_TEST_MAIN()
 	desc = ec_node_desc(node);
 	testres |= EC_TEST_CHECK(!strcmp(desc, "foo"),
 		"Invalid node description.");
-	ec_free(desc);
+	free(desc);
 	desc = NULL;
 	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo");
 	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo", "bar");

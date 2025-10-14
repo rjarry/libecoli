@@ -6,10 +6,10 @@
 #include <sys/queue.h>
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <errno.h>
 
 #include <ecoli_utils.h>
-#include <ecoli_malloc.h>
 #include <ecoli_config.h>
 #include <ecoli_node.h>
 #include <ecoli_node_helper.h>
@@ -38,7 +38,7 @@ ec_node_config_node_list_to_table(const struct ec_config *config,
 	if (n < 0)
 		return NULL;
 
-	table = ec_calloc(n, sizeof(*table));
+	table = calloc(n, sizeof(*table));
 	if (table == NULL)
 		goto fail;
 
@@ -61,7 +61,7 @@ fail:
 		for (i = 0; i < n; i++)
 			ec_node_free(table[i]);
 	}
-	ec_free(table);
+	free(table);
 
 	return NULL;
 }

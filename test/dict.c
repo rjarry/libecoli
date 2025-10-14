@@ -2,8 +2,8 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "test.h"
 
@@ -35,7 +35,7 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK(ec_dict_len(dict) == 0, "bad dict len");
 	ret = ec_dict_set(dict, "key1", "val1", NULL);
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set key");
-	ret = ec_dict_set(dict, "key2", ec_strdup("val2"), ec_free_func);
+	ret = ec_dict_set(dict, "key2", strdup("val2"), free);
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set key");
 	testres |= EC_TEST_CHECK(ec_dict_len(dict) == 2, "bad dict len");
 
@@ -50,8 +50,8 @@ EC_TEST_MAIN()
 
 	ret = ec_dict_set(dict, "key1", "another_val1", NULL);
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set key");
-	ret = ec_dict_set(dict, "key2", ec_strdup("another_val2"),
-			ec_free_func);
+	ret = ec_dict_set(dict, "key2", strdup("another_val2"),
+			free);
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set key");
 	testres |= EC_TEST_CHECK(ec_dict_len(dict) == 2,
 				"bad dict len");

@@ -6,12 +6,12 @@
 #include <sys/stat.h>
 #include <sys/queue.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
 
 #include <ecoli_init.h>
-#include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_murmurhash.h>
 #include <ecoli_htable.h>
@@ -28,7 +28,7 @@ struct ec_htable *ec_htable(void)
 {
 	struct ec_htable *htable;
 
-	htable = ec_calloc(1, sizeof(*htable));
+	htable = calloc(1, sizeof(*htable));
 	if (htable == NULL)
 		return NULL;
 	TAILQ_INIT(&htable->list);
@@ -73,12 +73,12 @@ static void ec_htable_elt_ref_free(struct ec_htable_elt_ref *ref)
 
 	elt = ref->elt;
 	if (elt != NULL && --elt->refcount == 0) {
-		ec_free(elt->key);
+		free(elt->key);
 		if (elt->free != NULL)
 			elt->free(elt->val);
-		ec_free(elt);
+		free(elt);
 	}
-	ec_free(ref);
+	free(ref);
 }
 
 bool ec_htable_has_key(const struct ec_htable *htable, const void *key,
@@ -130,7 +130,7 @@ static int ec_htable_table_resize(struct ec_htable *htable, size_t new_size)
 		return -1;
 	}
 
-	new_table = ec_calloc(new_size, sizeof(*htable->table));
+	new_table = calloc(new_size, sizeof(*htable->table));
 	if (new_table == NULL)
 		return -1;
 	for (i = 0; i < new_size; i++)
@@ -143,7 +143,7 @@ static int ec_htable_table_resize(struct ec_htable *htable, size_t new_size)
 		TAILQ_INSERT_TAIL(&new_table[i], ref, hnext);
 	}
 
-	ec_free(htable->table);
+	free(htable->table);
 	htable->table = new_table;
 	htable->table_size = new_size;
 
@@ -190,11 +190,11 @@ int ec_htable_set(struct ec_htable *htable, const void *key, size_t key_len,
 		return -1;
 	}
 
-	ref = ec_calloc(1, sizeof(*ref));
+	ref = calloc(1, sizeof(*ref));
 	if (ref == NULL)
 		goto fail;
 
-	elt = ec_calloc(1, sizeof(*elt));
+	elt = calloc(1, sizeof(*elt));
 	if (elt == NULL)
 		goto fail;
 
@@ -204,7 +204,7 @@ int ec_htable_set(struct ec_htable *htable, const void *key, size_t key_len,
 	val = NULL;
 	elt->free = free_cb;
 	elt->key_len = key_len;
-	elt->key = ec_malloc(key_len);
+	elt->key = malloc(key_len);
 	if (elt->key == NULL)
 		goto fail;
 	memcpy(elt->key, key, key_len);
@@ -238,8 +238,8 @@ void ec_htable_free(struct ec_htable *htable)
 		TAILQ_REMOVE(&htable->table[idx], ref, hnext);
 		ec_htable_elt_ref_free(ref);
 	}
-	ec_free(htable->table);
-	ec_free(htable);
+	free(htable->table);
+	free(htable);
 }
 
 size_t ec_htable_len(const struct ec_htable *htable)
@@ -312,7 +312,7 @@ struct ec_htable *ec_htable_dup(const struct ec_htable *htable)
 		return NULL;
 
 	TAILQ_FOREACH(ref, &htable->list, next) {
-		dup_ref = ec_calloc(1, sizeof(*ref));
+		dup_ref = calloc(1, sizeof(*ref));
 		if (dup_ref == NULL)
 			goto fail;
 		dup_ref->elt = ref->elt;

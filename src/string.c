@@ -5,13 +5,13 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <limits.h>
 #include <ctype.h>
 
 #include <ecoli_assert.h>
-#include <ecoli_malloc.h>
 #include <ecoli_string.h>
 
 /* count the number of identical chars at the beginning of 2 strings */
@@ -50,7 +50,7 @@ int ec_vasprintf(char **buf, const char *fmt, va_list ap)
 		return ret;
 
 	buflen = ret + 1;
-	*buf = ec_malloc(buflen);
+	*buf = malloc(buflen);
 	if (*buf == NULL)
 		return -1;
 

@@ -10,7 +10,6 @@
 #include <errno.h>
 
 #include <ecoli_init.h>
-#include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_strvec.h>
 #include <ecoli_node.h>
@@ -266,7 +265,7 @@ static void
 ec_node_cmd_eval_free(void *result, void *userctx)
 {
 	(void)userctx;
-	ec_free(result);
+	free(result);
 }
 
 static const struct ec_node_expr_eval_ops expr_ops = {
@@ -414,13 +413,13 @@ static void ec_node_cmd_free_priv(struct ec_node *node)
 	struct ec_node_cmd *priv = ec_node_priv(node);
 	size_t i;
 
-	ec_free(priv->cmd_str);
+	free(priv->cmd_str);
 	priv->cmd_str = NULL;
 	ec_node_free(priv->cmd);
 	priv->cmd = NULL;
 	for (i = 0; i < priv->len; i++)
 		ec_node_free(priv->table[i]);
-	ec_free(priv->table);
+	free(priv->table);
 	priv->table = NULL;
 	priv->len = 0;
 }
@@ -479,7 +478,7 @@ static int ec_node_cmd_set_config(struct ec_node *node,
 	if (table == NULL)
 		goto fail;
 
-	cmd_str = ec_strdup(expr->string);
+	cmd_str = strdup(expr->string);
 	if (cmd_str == NULL)
 		goto fail;
 
@@ -491,11 +490,11 @@ static int ec_node_cmd_set_config(struct ec_node *node,
 	/* ok, store the config */
 	ec_node_free(priv->cmd);
 	priv->cmd = cmd;
-	ec_free(priv->cmd_str);
+	free(priv->cmd_str);
 	priv->cmd_str = cmd_str;
 	for (i = 0; i < priv->len; i++)
 		ec_node_free(priv->table[i]);
-	ec_free(priv->table);
+	free(priv->table);
 	priv->table = table;
 	priv->len = len;
 
@@ -506,8 +505,8 @@ fail:
 		for (i = 0; i < len; i++)
 			ec_node_free(table[i]);
 	}
-	ec_free(table);
-	ec_free(cmd_str);
+	free(table);
+	free(cmd_str);
 	ec_node_free(cmd);
 	return -1;
 }

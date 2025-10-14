@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "test.h"
 
@@ -57,7 +58,7 @@ EC_TEST_MAIN()
 		!strcmp(ec_node_id(node), EC_NO_ID) &&
 		!strcmp(desc, "<seq>"),
 		"bad child 0");
-	ec_free(desc);
+	free(desc);
 	desc = NULL;
 
 	testres |= EC_TEST_CHECK(
@@ -88,7 +89,7 @@ EC_TEST_MAIN()
 		!strcmp(ec_node_id(child), "id_x") &&
 		!strcmp(desc, "x"),
 		"bad child id_x");
-	ec_free(desc);
+	free(desc);
 	desc = NULL;
 	child = ec_node_find(node, "id_dezdex");
 	testres |= EC_TEST_CHECK(child == NULL,

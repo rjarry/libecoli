@@ -9,7 +9,6 @@
 #include <regex.h>
 #include <errno.h>
 
-#include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_strvec.h>
 #include <ecoli_dict.h>
@@ -50,7 +49,7 @@ tokenize(struct regexp_pattern *table, size_t table_len, const char *str)
 	int ret = 0;
 	regmatch_t pos = {0};
 
-	dup = ec_strdup(str);
+	dup = strdup(str);
 	if (dup == NULL)
 		goto fail;
 
@@ -104,11 +103,11 @@ tokenize(struct regexp_pattern *table, size_t table_len, const char *str)
 		off += pos.rm_eo;
 	}
 
-	ec_free(dup);
+	free(dup);
 	return strvec;
 
 fail:
-	ec_free(dup);
+	free(dup);
 	ec_strvec_free(strvec);
 	return NULL;
 }
@@ -168,12 +167,12 @@ static void ec_node_re_lex_free_priv(struct ec_node *node)
 
 	ec_node_free(priv->child);
 	for (i = 0; i < priv->len; i++) {
-		ec_free(priv->table[i].pattern);
-		ec_free(priv->table[i].attr_name);
+		free(priv->table[i].pattern);
+		free(priv->table[i].attr_name);
 		regfree(&priv->table[i].r);
 	}
 
-	ec_free(priv->table);
+	free(priv->table);
 }
 
 static size_t
@@ -274,7 +273,7 @@ static int ec_node_re_lex_set_config(struct ec_node *node,
 		if (n < 0)
 			goto fail;
 
-		table = ec_calloc(n, sizeof(*table));
+		table = calloc(n, sizeof(*table));
 		if (table == NULL)
 			goto fail;
 
@@ -308,11 +307,11 @@ static int ec_node_re_lex_set_config(struct ec_node *node,
 				errno = EINVAL;
 				goto fail;
 			}
-			pattern_str = ec_strdup(pattern->string);
+			pattern_str = strdup(pattern->string);
 			if (pattern_str == NULL)
 				goto fail;
 			if (attr != NULL && attr->string != NULL) {
-				attr_name = ec_strdup(attr->string);
+				attr_name = strdup(attr->string);
 				if (attr_name == NULL)
 					goto fail;
 			}
@@ -342,11 +341,11 @@ static int ec_node_re_lex_set_config(struct ec_node *node,
 		ec_node_free(priv->child);
 	priv->child = ec_node_clone(child->node);
 	for (i = 0; i < (ssize_t)priv->len; i++) {
-		ec_free(priv->table[i].pattern);
-		ec_free(priv->table[i].attr_name);
+		free(priv->table[i].pattern);
+		free(priv->table[i].attr_name);
 		regfree(&priv->table[i].r);
 	}
-	ec_free(priv->table);
+	free(priv->table);
 	priv->table = table;
 	priv->len = n;
 
@@ -356,15 +355,15 @@ fail:
 	if (table != NULL) {
 		for (i = 0; i < n; i++) {
 			if (table[i].pattern != NULL) {
-				ec_free(table[i].pattern);
-				ec_free(table[i].attr_name);
+				free(table[i].pattern);
+				free(table[i].attr_name);
 				regfree(&table[i].r);
 			}
 		}
 	}
-	ec_free(table);
-	ec_free(pattern_str);
-	ec_free(attr_name);
+	free(table);
+	free(pattern_str);
+	free(attr_name);
 	return -1;
 }
 

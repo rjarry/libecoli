@@ -5,11 +5,11 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <errno.h>
 
-#include <ecoli_malloc.h>
 #include <ecoli_node.h>
 #include <ecoli_log.h>
 #include <ecoli_dict.h>
@@ -32,7 +32,7 @@ struct ec_strvec *ec_strvec(void)
 {
 	struct ec_strvec *strvec;
 
-	strvec = ec_calloc(1, sizeof(*strvec));
+	strvec = calloc(1, sizeof(*strvec));
 	if (strvec == NULL)
 		return NULL;
 
@@ -44,13 +44,13 @@ __ec_strvec_elt(const char *s)
 {
 	struct ec_strvec_elt *elt;
 
-	elt = ec_calloc(1, sizeof(*elt));
+	elt = calloc(1, sizeof(*elt));
 	if (elt == NULL)
 		return NULL;
 
-	elt->str = ec_strdup(s);
+	elt->str = strdup(s);
 	if (elt->str == NULL) {
-		ec_free(elt);
+		free(elt);
 		return NULL;
 	}
 	elt->refcnt = 1;
@@ -63,9 +63,9 @@ __ec_strvec_elt_free(struct ec_strvec_elt *elt)
 {
 	elt->refcnt--;
 	if (elt->refcnt == 0) {
-		ec_free(elt->str);
+		free(elt->str);
 		ec_dict_free(elt->attrs);
-		ec_free(elt);
+		free(elt);
 	}
 }
 
@@ -97,7 +97,7 @@ int ec_strvec_add(struct ec_strvec *strvec, const char *s)
 		return -1;
 	}
 
-	new_vec = ec_realloc(strvec->vec,
+	new_vec = realloc(strvec->vec,
 		sizeof(*strvec->vec) * (strvec->len + 1));
 	if (new_vec == NULL)
 		return -1;
@@ -166,7 +166,7 @@ struct ec_strvec *ec_strvec_ndup(const struct ec_strvec *strvec, size_t off,
 	if (len == 0)
 		return copy;
 
-	copy->vec = ec_calloc(len, sizeof(*copy->vec));
+	copy->vec = calloc(len, sizeof(*copy->vec));
 	if (copy->vec == NULL)
 		goto fail;
 
@@ -201,8 +201,8 @@ void ec_strvec_free(struct ec_strvec *strvec)
 		__ec_strvec_elt_free(elt);
 	}
 
-	ec_free(strvec->vec);
-	ec_free(strvec);
+	free(strvec->vec);
+	free(strvec);
 }
 
 size_t ec_strvec_len(const struct ec_strvec *strvec)

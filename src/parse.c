@@ -9,7 +9,6 @@
 #include <errno.h>
 
 #include <ecoli_assert.h>
-#include <ecoli_malloc.h>
 #include <ecoli_strvec.h>
 #include <ecoli_dict.h>
 #include <ecoli_log.h>
@@ -139,7 +138,7 @@ struct ec_pnode *ec_pnode(const struct ec_node *node)
 {
 	struct ec_pnode *pnode = NULL;
 
-	pnode = ec_calloc(1, sizeof(*pnode));
+	pnode = calloc(1, sizeof(*pnode));
 	if (pnode == NULL)
 		goto fail;
 
@@ -155,7 +154,7 @@ struct ec_pnode *ec_pnode(const struct ec_node *node)
  fail:
 	if (pnode != NULL)
 		ec_dict_free(pnode->attrs);
-	ec_free(pnode);
+	free(pnode);
 
 	return NULL;
 }
@@ -244,7 +243,7 @@ void ec_pnode_free(struct ec_pnode *pnode)
 	ec_pnode_free_children(pnode);
 	ec_strvec_free(pnode->strvec);
 	ec_dict_free(pnode->attrs);
-	ec_free(pnode);
+	free(pnode);
 }
 
 static void __ec_pnode_dump(FILE *out,
@@ -270,7 +269,7 @@ static void __ec_pnode_dump(FILE *out,
 	TAILQ_FOREACH(child, &pnode->children, next)
 		__ec_pnode_dump(out, child, indent + 1);
 
-	ec_free(desc);
+	free(desc);
 }
 
 // XXX dump in other formats? yaml? json?

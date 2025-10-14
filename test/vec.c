@@ -2,6 +2,9 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "test.h"
 
 EC_LOG_TYPE_REGISTER(vec);
@@ -10,7 +13,7 @@ static void str_free(void *elt)
 {
 	char **s = elt;
 
-	ec_free(*s);
+	free(*s);
 }
 
 #define GOTO_FAIL do {					     \
@@ -238,11 +241,11 @@ EC_TEST_MAIN()
 	if (vec == NULL)
 		GOTO_FAIL;
 
-	if (ec_vec_add_ptr(vec, ec_strdup("0")) < 0)
+	if (ec_vec_add_ptr(vec, strdup("0")) < 0)
 		GOTO_FAIL;
-	if (ec_vec_add_ptr(vec, ec_strdup("1")) < 0)
+	if (ec_vec_add_ptr(vec, strdup("1")) < 0)
 		GOTO_FAIL;
-	if (ec_vec_add_ptr(vec, ec_strdup("2")) < 0)
+	if (ec_vec_add_ptr(vec, strdup("2")) < 0)
 		GOTO_FAIL;
 
 	if (ec_vec_get(&vals, vec, 0) < 0)

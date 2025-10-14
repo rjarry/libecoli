@@ -9,7 +9,6 @@
 #include <stdarg.h>
 #include <errno.h>
 
-#include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_strvec.h>
 #include <ecoli_node.h>
@@ -160,7 +159,7 @@ static void ec_node_seq_free_priv(struct ec_node *node)
 
 	for (i = 0; i < priv->len; i++)
 		ec_node_free(priv->table[i]);
-	ec_free(priv->table);
+	free(priv->table);
 	priv->table = NULL;
 	priv->len = 0;
 }
@@ -201,7 +200,7 @@ static int ec_node_seq_set_config(struct ec_node *node,
 
 	for (i = 0; i < priv->len; i++)
 		ec_node_free(priv->table[i]);
-	ec_free(priv->table);
+	free(priv->table);
 	priv->table = table;
 	priv->len = len;
 

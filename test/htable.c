@@ -2,8 +2,8 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "test.h"
 
@@ -37,7 +37,7 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK(ec_htable_len(htable) == 0, "bad htable len");
 	ret = ec_htable_set(htable, "key1", 4, "val1", NULL);
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set key");
-	ret = ec_htable_set(htable, "key2", 4, ec_strdup("val2"), ec_free_func);
+	ret = ec_htable_set(htable, "key2", 4, strdup("val2"), free);
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set key");
 	testres |= EC_TEST_CHECK(ec_htable_len(htable) == 2, "bad htable len");
 

@@ -5,11 +5,11 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 #include <assert.h>
 
 #include <ecoli_assert.h>
-#include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_vec.h>
 
@@ -41,7 +41,7 @@ ec_vec(size_t elt_size, size_t size, ec_vec_elt_copy_t elt_copy,
 		return NULL;
 	}
 
-	vec = ec_calloc(1, sizeof(*vec));
+	vec = calloc(1, sizeof(*vec));
 	if (vec == NULL)
 		return NULL;
 
@@ -52,9 +52,9 @@ ec_vec(size_t elt_size, size_t size, ec_vec_elt_copy_t elt_copy,
 	if (size == 0)
 		return vec;
 
-	vec->vec = ec_calloc(size, vec->elt_size);
+	vec->vec = calloc(size, vec->elt_size);
 	if (vec->vec == NULL) {
-		ec_free(vec);
+		free(vec);
 		return NULL;
 	}
 
@@ -66,7 +66,7 @@ int ec_vec_add_by_ref(struct ec_vec *vec, void *ptr)
 	void *new_vec;
 
 	if (vec->len + 1 > vec->size) {
-		new_vec = ec_realloc(vec->vec, vec->elt_size * (vec->len + 1));
+		new_vec = realloc(vec->vec, vec->elt_size * (vec->len + 1));
 		if (new_vec == NULL)
 			return -1;
 		vec->size = vec->len + 1;
@@ -172,8 +172,8 @@ void ec_vec_free(struct ec_vec *vec)
 			vec->free(get_obj(vec, i));
 	}
 
-	ec_free(vec->vec);
-	ec_free(vec);
+	free(vec->vec);
+	free(vec);
 }
 
 int ec_vec_get(void *ptr, const struct ec_vec *vec, size_t idx)
