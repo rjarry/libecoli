@@ -4,6 +4,7 @@
 BUILDDIR ?= build
 BUILDTYPE ?= debugoptimized
 SANITIZE ?= none
+COVERAGE ?= false
 V ?= 0
 ifeq ($V,1)
 ninja_opts = --verbose
@@ -11,6 +12,7 @@ Q =
 else
 Q = @
 endif
+CC ?= gcc
 
 .PHONY: all
 all: $(BUILDDIR)/build.ninja
@@ -19,7 +21,23 @@ all: $(BUILDDIR)/build.ninja
 .PHONY: debug
 debug: BUILDTYPE = debug
 debug: SANITIZE = address
+debug: COVERAGE = true
 debug: all
+
+.PHONY: tests
+tests: $(BUILDDIR)/build.ninja
+	$Q meson test -C $(BUILDDIR) --print-errorlogs $(if $(filter 1,$V),--verbose)
+
+.PHONY: coverage
+coverage: tests
+	$Q mkdir -p $(BUILDDIR)/coverage
+	gcovr --html-details $(BUILDDIR)/coverage/index.html --txt \
+		-e 'test/*' -e 'examples/*' --gcov-ignore-parse-errors \
+		--gcov-executable `$(CC) -print-prog-name=gcov` \
+		--object-directory $(BUILDDIR) \
+		--sort uncovered-percent \
+		-r . $(BUILDDIR)
+	@echo Coverage data is present in $(BUILDDIR)/coverage/index.html
 
 .PHONY: all
 clean:
@@ -29,7 +47,8 @@ clean:
 install: $(BUILDDIR)/build.ninja
 	$Q meson install -C $(BUILDDIR)
 
-meson_opts = --buildtype=$(BUILDTYPE) --werror --warnlevel=2 -Db_sanitize=$(SANITIZE)
+meson_opts = --buildtype=$(BUILDTYPE) --werror --warnlevel=2
+meson_opts += -Db_sanitize=$(SANITIZE) -Db_coverage=$(COVERAGE)
 meson_opts += $(MESON_EXTRA_OPTS)
 
 $(BUILDDIR)/build.ninja:
