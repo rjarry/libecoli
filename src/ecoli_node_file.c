@@ -2,6 +2,7 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -23,16 +24,19 @@
 
 EC_LOG_TYPE_REGISTER(node_file);
 
-struct ec_node_file {
-	/* below functions pointers are only useful for test */
-	int (*lstat)(const char *pathname, struct stat *buf);
-	DIR *(*opendir)(const char *name);
-	struct dirent *(*readdir)(DIR *dirp);
-	int (*closedir)(DIR *dirp);
-	int (*dirfd)(DIR *dirp);
-	int (*fstatat)(int dirfd, const char *pathname, struct stat *buf,
-		int flags);
+static struct ec_node_file_ops file_ops = {
+	.lstat = lstat,
+	.opendir = opendir,
+	.readdir = readdir,
+	.closedir = closedir,
+	.dirfd = dirfd,
+	.fstatat = fstatat,
 };
+
+void ec_node_file_set_ops(const struct ec_node_file_ops *ops)
+{
+	file_ops = *ops;
+}
 
 static int
 ec_node_file_parse(const struct ec_node *node,
@@ -101,7 +105,6 @@ ec_node_file_complete(const struct ec_node *node,
 		struct ec_comp *comp,
 		const struct ec_strvec *strvec)
 {
-	struct ec_node_file *priv = ec_node_priv(node);
 	char *dname = NULL, *bname = NULL, *effective_dir;
 	struct ec_comp_item *item = NULL;
 	enum ec_comp_type type;
@@ -148,18 +151,18 @@ ec_node_file_complete(const struct ec_node *node,
 	else
 		effective_dir = dname;
 
-	if (priv->lstat(effective_dir, &st) < 0)
+	if (file_ops.lstat(effective_dir, &st) < 0)
 		goto out;
 	if (!S_ISDIR(st.st_mode))
 		goto out;
 
-	dir = priv->opendir(effective_dir);
+	dir = file_ops.opendir(effective_dir);
 	if (dir == NULL)
 		goto out;
 
 	bname_len = strlen(bname);
 	while (1) {
-		de = priv->readdir(dir);
+		de = file_ops.readdir(dir);
 		if (de == NULL)
 			goto out;
 
@@ -172,11 +175,11 @@ ec_node_file_complete(const struct ec_node *node,
 		if (de->d_type == DT_DIR) {
 			is_dir = 1;
 		} else if (de->d_type == DT_UNKNOWN) {
-			int dir_fd = priv->dirfd(dir);
+			int dir_fd = file_ops.dirfd(dir);
 
 			if (dir_fd < 0)
 				goto out;
-			if (priv->fstatat(dir_fd, de->d_name, &st2, 0) < 0)
+			if (file_ops.fstatat(dir_fd, de->d_name, &st2, 0) < 0)
 				goto out;
 			if (S_ISDIR(st2.st_mode))
 				is_dir = 1;
@@ -222,7 +225,7 @@ out:
 	ec_free(dname);
 	ec_free(bname);
 	if (dir != NULL)
-		priv->closedir(dir);
+		file_ops.closedir(dir);
 
 	return 0;
 
@@ -232,32 +235,15 @@ fail:
 	ec_free(dname);
 	ec_free(bname);
 	if (dir != NULL)
-		priv->closedir(dir);
+		file_ops.closedir(dir);
 
 	return -1;
-}
-
-static int
-ec_node_file_init_priv(struct ec_node *node)
-{
-	struct ec_node_file *priv = ec_node_priv(node);
-
-	priv->lstat = lstat;
-	priv->opendir = opendir;
-	priv->closedir = closedir;
-	priv->readdir = readdir;
-	priv->dirfd = dirfd;
-	priv->fstatat = fstatat;
-
-	return 0;
 }
 
 static struct ec_node_type ec_node_file_type = {
 	.name = "file",
 	.parse = ec_node_file_parse,
 	.complete = ec_node_file_complete,
-	.size = sizeof(struct ec_node_file),
-	.init_priv = ec_node_file_init_priv,
 };
 
 EC_NODE_TYPE_REGISTER(ec_node_file_type);
@@ -352,32 +338,27 @@ test_fstatat(int dirfd, const char *pathname, struct stat *buf,
 	return -1;
 }
 
-static int
-ec_node_file_override_functions(struct ec_node *node)
-{
-	struct ec_node_file *priv = ec_node_priv(node);
-
-	priv->lstat = test_lstat;
-	priv->opendir = test_opendir;
-	priv->readdir = test_readdir;
-	priv->closedir = test_closedir;
-	priv->dirfd = test_dirfd;
-	priv->fstatat = test_fstatat;
-
-	return 0;
-}
+static struct ec_node_file_ops test_ops = {
+	.lstat = test_lstat,
+	.opendir = test_opendir,
+	.readdir = test_readdir,
+	.closedir = test_closedir,
+	.dirfd = test_dirfd,
+	.fstatat = test_fstatat,
+};
 
 static int ec_node_file_testcase(void)
 {
 	struct ec_node *node;
 	int testres = 0;
 
+	ec_node_file_set_ops(&test_ops);
+
 	node = ec_node("file", EC_NO_ID);
 	if (node == NULL) {
 		EC_LOG(EC_LOG_ERR, "cannot create node\n");
 		return -1;
 	}
-	ec_node_file_override_functions(node);
 
 	/* any string matches */
 	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo");
