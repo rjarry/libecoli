@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright (c) 2024 Robin Jarry
 ---
-name: CI
+name: Check
 permissions:
   contents: read
-  pull-requests: write
+  pull-requests: read
 
 on:
   push:
@@ -18,7 +18,9 @@ jobs:
     env:
       DEBIAN_FRONTEND: noninteractive
       NEEDRESTART_MODE: l
-      CC: gcc-14
+      COVERAGE: true
+      SANITIZE: address
+      MESON_EXTRA_OPTS: --auto-features=enabled
     steps:
       - name: install system dependencies
         run: |
@@ -27,6 +29,8 @@ jobs:
           sudo apt-get install -qy --no-install-recommends \
             doxygen \
             gcc \
+            gcovr \
+            graphviz \
             libasan8 \
             libc-dev \
             libedit-dev \
@@ -36,9 +40,5 @@ jobs:
             ninja-build \
             pkg-config
       - uses: actions/checkout@v4
-      - run: |
-          meson setup build \
-            --auto-features=enabled \
-            -Db_sanitize=address
-      - run: ninja -C build
-      - run: build/test/ecoli-test
+      - run: make
+      - run: make coverage
