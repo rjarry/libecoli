@@ -39,7 +39,6 @@ libecoli_headers = files(
 	'ecoli_parse.h',
 	'ecoli_string.h',
 	'ecoli_strvec.h',
-	'ecoli_test.h',
 	'ecoli_utils.h',
 	'ecoli_vec.h',
 	'ecoli_yaml.h',

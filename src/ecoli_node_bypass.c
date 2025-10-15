@@ -14,7 +14,6 @@
 #include <ecoli_parse.h>
 #include <ecoli_complete.h>
 #include <ecoli_node_str.h>
-#include <ecoli_test.h>
 #include <ecoli_config.h>
 #include <ecoli_node_bypass.h>
 
@@ -181,48 +180,3 @@ fail:
 	ec_node_free(child);
 	return NULL;
 }
-
-/* LCOV_EXCL_START */
-static int ec_node_bypass_testcase(void)
-{
-	struct ec_node *node;
-	int testres = 0;
-
-	node = ec_node_bypass(EC_NO_ID, ec_node_str(EC_NO_ID, "foo"));
-	if (node == NULL) {
-		EC_LOG(EC_LOG_ERR, "cannot create node\n");
-		return -1;
-	}
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo");
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo", "bar");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, "bar");
-	testres |= EC_TEST_CHECK_PARSE(node, -1);
-	ec_node_free(node);
-
-	/* test completion */
-	node = ec_node_bypass(EC_NO_ID, ec_node_str(EC_NO_ID, "foo"));
-	if (node == NULL) {
-		EC_LOG(EC_LOG_ERR, "cannot create node\n");
-		return -1;
-	}
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"f", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"b", EC_VA_END,
-		EC_VA_END);
-	ec_node_free(node);
-
-	return testres;
-}
-
-static struct ec_test ec_node_bypass_test = {
-	.name = "node_bypass",
-	.test = ec_node_bypass_testcase,
-};
-
-EC_TEST_REGISTER(ec_node_bypass_test);
-/* LCOV_EXCL_STOP */

@@ -19,7 +19,6 @@
 #include <ecoli_node_subset.h>
 #include <ecoli_node_str.h>
 #include <ecoli_node_or.h>
-#include <ecoli_test.h>
 
 EC_LOG_TYPE_REGISTER(node_subset);
 
@@ -344,87 +343,3 @@ fail:
 	va_end(ap);
 	return NULL;
 }
-
-/* LCOV_EXCL_START */
-static int ec_node_subset_testcase(void)
-{
-	struct ec_node *node;
-	int testres = 0;
-
-	node = EC_NODE_SUBSET(EC_NO_ID,
-		EC_NODE_OR(EC_NO_ID,
-			ec_node_str(EC_NO_ID, "foo"),
-			ec_node_str(EC_NO_ID, "bar")),
-		ec_node_str(EC_NO_ID, "bar"),
-		ec_node_str(EC_NO_ID, "toto")
-	);
-	if (node == NULL) {
-		EC_LOG(EC_LOG_ERR, "cannot create node\n");
-		return -1;
-	}
-	testres |= EC_TEST_CHECK_PARSE(node, -1);
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo");
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "bar");
-	testres |= EC_TEST_CHECK_PARSE(node, 2, "foo", "bar", "titi");
-	testres |= EC_TEST_CHECK_PARSE(node, 3, "bar", "foo", "toto");
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo", "foo");
-	testres |= EC_TEST_CHECK_PARSE(node, 2, "bar", "bar");
-	testres |= EC_TEST_CHECK_PARSE(node, 2, "bar", "foo");
-	testres |= EC_TEST_CHECK_PARSE(node, 0, " ");
-	testres |= EC_TEST_CHECK_PARSE(node, 0, "foox");
-	ec_node_free(node);
-
-	/* test completion */
-	node = EC_NODE_SUBSET(EC_NO_ID,
-		ec_node_str(EC_NO_ID, "foo"),
-		ec_node_str(EC_NO_ID, "bar"),
-		ec_node_str(EC_NO_ID, "bar2"),
-		ec_node_str(EC_NO_ID, "toto"),
-		ec_node_str(EC_NO_ID, "titi")
-	);
-	if (node == NULL) {
-		EC_LOG(EC_LOG_ERR, "cannot create node\n");
-		return -1;
-	}
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"", EC_VA_END,
-		"foo", "bar", "bar2", "toto", "titi", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"", EC_VA_END,
-		"bar2", "bar", "foo", "toto", "titi", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"bar", "bar2", "", EC_VA_END,
-		"foo", "toto", "titi", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"f", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"b", EC_VA_END,
-		"bar", "bar2", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"bar", EC_VA_END,
-		"bar", "bar2", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"bar", "b", EC_VA_END,
-		"bar2", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"t", EC_VA_END,
-		"toto", "titi", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"to", EC_VA_END,
-		"toto", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"x", EC_VA_END,
-		EC_VA_END);
-	ec_node_free(node);
-
-	return testres;
-}
-
-static struct ec_test ec_node_subset_test = {
-	.name = "node_subset",
-	.test = ec_node_subset_testcase,
-};
-
-EC_TEST_REGISTER(ec_node_subset_test);
-/* LCOV_EXCL_STOP */

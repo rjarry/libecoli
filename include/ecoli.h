@@ -57,7 +57,6 @@
 #include <ecoli_parse.h>
 #include <ecoli_string.h>
 #include <ecoli_strvec.h>
-#include <ecoli_test.h>
 #include <ecoli_utils.h>
 #include <ecoli_vec.h>
 #include <ecoli_yaml.h>

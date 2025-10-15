@@ -16,8 +16,6 @@
 #pragma once
 #include <stdio.h>
 
-#include <ecoli_utils.h>
-
 /** String vector */
 struct ec_strvec;
 

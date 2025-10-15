@@ -10,7 +10,6 @@
 
 #include <ecoli_log.h>
 #include <ecoli_malloc.h>
-#include <ecoli_test.h>
 #include <ecoli_strvec.h>
 #include <ecoli_node.h>
 #include <ecoli_parse.h>
@@ -169,33 +168,3 @@ fail:
 	ec_node_free(node);
 	return NULL;
 }
-
-/* LCOV_EXCL_START */
-static int ec_node_re_testcase(void)
-{
-	struct ec_node *node;
-	int testres = 0;
-
-	node = ec_node_re(EC_NO_ID, "fo+|bar");
-	if (node == NULL) {
-		EC_LOG(EC_LOG_ERR, "cannot create node\n");
-		return -1;
-	}
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo");
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo", "bar");
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "bar");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, "foobar");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, " foo");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, "");
-	ec_node_free(node);
-
-	return testres;
-}
-
-static struct ec_test ec_node_re_test = {
-	.name = "node_re",
-	.test = ec_node_re_testcase,
-};
-
-EC_TEST_REGISTER(ec_node_re_test);
-/* LCOV_EXCL_STOP */

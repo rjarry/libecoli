@@ -9,7 +9,6 @@
 
 #include <ecoli_assert.h>
 
-/* LCOV_EXCL_START */
 void __ec_assert_print(bool expr, const char *expr_str, const char *format, ...)
 {
 	va_list ap;
@@ -23,4 +22,3 @@ void __ec_assert_print(bool expr, const char *expr_str, const char *format, ...)
 	va_end(ap);
 	abort();
 }
-/* LCOV_EXCL_STOP */

@@ -12,7 +12,6 @@
 #include <ecoli_init.h>
 #include <ecoli_malloc.h>
 #include <ecoli_log.h>
-#include <ecoli_test.h>
 #include <ecoli_strvec.h>
 #include <ecoli_string.h>
 #include <ecoli_node.h>
@@ -944,63 +943,3 @@ static struct ec_init ec_node_cond_init = {
 };
 
 EC_INIT_REGISTER(ec_node_cond_init);
-
-/* LCOV_EXCL_START */
-static int ec_node_cond_testcase(void)
-{
-	struct ec_node *node;
-	int testres = 0;
-
-	if (0) {
-	node =  EC_NODE_SEQ(EC_NO_ID,
-			EC_NODE_SUBSET(EC_NO_ID,
-				ec_node_str("id_node1", "node1"),
-				ec_node_str("id_node2", "node2"),
-				ec_node_str("id_node3", "node3"),
-				ec_node_str("id_node4", "node4")),
-			ec_node_cond(EC_NO_ID,
-				"or(find(root(), id_node1), "
-				"  and(find(root(), id_node2),"
-				"    find(root(), id_node3)))",
-				ec_node_str(EC_NO_ID, "ok")));
-	if (node == NULL) {
-		EC_LOG(EC_LOG_ERR, "cannot create node\n");
-		return -1;
-	}
-	testres |= EC_TEST_CHECK_PARSE(node, 2, "node1", "ok");
-	testres |= EC_TEST_CHECK_PARSE(node, 3, "node2", "node3", "ok");
-	testres |= EC_TEST_CHECK_PARSE(node, 4, "node1", "node2", "node3", "ok");
-	testres |= EC_TEST_CHECK_PARSE(node, 3, "node2", "node1", "ok");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, "node2", "node4", "ok");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, "node2", "ok");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, "node3", "ok");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, "node4", "ok");
-	ec_node_free(node);
-	}
-	node =  ec_node_cond(EC_NO_ID,
-			"cmp(le, count(find(root(), id_node)), 3)",
-			ec_node_many(EC_NO_ID,
-				ec_node_str("id_node", "foo"), 0, 0));
-	if (node == NULL) {
-		EC_LOG(EC_LOG_ERR, "cannot create node\n");
-		return -1;
-	}
-	testres |= EC_TEST_CHECK_PARSE(node, 0);
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo");
-	testres |= EC_TEST_CHECK_PARSE(node, 2, "foo", "foo");
-	testres |= EC_TEST_CHECK_PARSE(node, 3, "foo", "foo", "foo");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, "foo", "foo", "foo", "foo");
-	ec_node_free(node);
-
-	// XXX test completion
-
-	return testres;
-}
-
-static struct ec_test ec_node_cond_test = {
-	.name = "node_cond",
-	.test = ec_node_cond_testcase,
-};
-
-EC_TEST_REGISTER(ec_node_cond_test);
-/* LCOV_EXCL_STOP */

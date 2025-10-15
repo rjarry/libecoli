@@ -11,7 +11,6 @@
 
 #include <ecoli_malloc.h>
 #include <ecoli_log.h>
-#include <ecoli_test.h>
 #include <ecoli_strvec.h>
 #include <ecoli_node.h>
 #include <ecoli_parse.h>
