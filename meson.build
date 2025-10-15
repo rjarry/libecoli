@@ -16,10 +16,6 @@ yaml_dep = dependency('yaml-0.1', required: get_option('yaml'))
 
 add_project_arguments('-Wmissing-prototypes', language : 'c')
 add_project_arguments('-D_GNU_SOURCE', language : 'c')
-if get_option('tests').allowed()
-	add_project_arguments('--coverage', language : 'c')
-	add_project_link_arguments('--coverage' , language: 'c')
-endif
 
 inc = include_directories('include')
 libecoli_sources = []

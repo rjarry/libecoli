@@ -10,7 +10,6 @@
 #include <ecoli_malloc.h>
 #include <ecoli_log.h>
 #include <ecoli_string.h>
-#include <ecoli_test.h>
 #include <ecoli_strvec.h>
 #include <ecoli_htable.h>
 #include <ecoli_node.h>
@@ -264,96 +263,3 @@ struct ec_node *ec_node_sh_lex_expand(const char *id, struct ec_node *child)
 
 	return node;
 }
-
-/* LCOV_EXCL_START */
-static int ec_node_sh_lex_testcase(void)
-{
-	struct ec_node *node;
-	int testres = 0;
-
-	node = ec_node_sh_lex(EC_NO_ID,
-		EC_NODE_SEQ(EC_NO_ID,
-			ec_node_str(EC_NO_ID, "foo"),
-			ec_node_option(EC_NO_ID,
-				ec_node_str(EC_NO_ID, "toto")
-			),
-			ec_node_str(EC_NO_ID, "bar")
-		)
-	);
-	if (node == NULL) {
-		EC_LOG(EC_LOG_ERR, "cannot create node\n");
-		return -1;
-	}
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo bar");
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "  foo   bar");
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "  'foo' \"bar\"");
-	testres |= EC_TEST_CHECK_PARSE(node, 1, "  'f'oo 'toto' bar");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, "  foo toto bar'");
-	ec_node_free(node);
-
-	/* test completion */
-	node = ec_node_sh_lex(EC_NO_ID,
-		EC_NODE_SEQ(EC_NO_ID,
-			ec_node_str(EC_NO_ID, "foo"),
-			ec_node_option(EC_NO_ID,
-				ec_node_str(EC_NO_ID, "toto")
-			),
-			ec_node_str(EC_NO_ID, "bar"),
-			ec_node_str(EC_NO_ID, "titi")
-		)
-	);
-	if (node == NULL) {
-		EC_LOG(EC_LOG_ERR, "cannot create node\n");
-		return -1;
-	}
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		" ", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"f", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo ", EC_VA_END,
-		"bar", "toto", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo t", EC_VA_END,
-		"toto", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo b", EC_VA_END,
-		"bar", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo bar", EC_VA_END,
-		"bar", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo bar ", EC_VA_END,
-		"titi", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo toto bar ", EC_VA_END,
-		"titi", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"x", EC_VA_END,
-		EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo barx", EC_VA_END,
-		EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo 'b", EC_VA_END,
-		"'bar'", EC_VA_END);
-
-	ec_node_free(node);
-	return testres;
-}
-
-static struct ec_test ec_node_sh_lex_test = {
-	.name = "node_sh_lex",
-	.test = ec_node_sh_lex_testcase,
-};
-
-EC_TEST_REGISTER(ec_node_sh_lex_test);
-/* LCOV_EXCL_STOP */

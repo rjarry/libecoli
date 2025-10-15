@@ -6,15 +6,7 @@
 #include <limits.h>
 #include <assert.h>
 
-#include <ecoli_malloc.h>
-#include <ecoli_strvec.h>
-#include <ecoli_test.h>
-#include <ecoli_node.h>
-#include <ecoli_parse.h>
-#include <ecoli_node_int.h>
-#include <ecoli_node_str.h>
-#include <ecoli_node_re_lex.h>
-#include <ecoli_node_expr.h>
+#include "test.h"
 
 EC_LOG_TYPE_REGISTER(node_expr);
 
@@ -213,9 +205,7 @@ static int ec_node_expr_test_eval(struct ec_node *lex_node,
 	return ret;
 }
 
-/* LCOV_EXCL_START */
-static int ec_node_expr_testcase(void)
-{
+EC_TEST_MAIN() {
 	struct ec_node *node = NULL, *lex_node = NULL;
 	int testres = 0;
 
@@ -297,11 +287,3 @@ fail:
 	ec_node_free(node);
 	return -1;
 }
-/* LCOV_EXCL_STOP */
-
-static struct ec_test ec_node_expr_test = {
-	.name = "node_expr",
-	.test = ec_node_expr_testcase,
-};
-
-EC_TEST_REGISTER(ec_node_expr_test);

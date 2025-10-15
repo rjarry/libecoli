@@ -8,7 +8,6 @@
 #include <ctype.h>
 
 #include <ecoli_log.h>
-#include <ecoli_test.h>
 #include <ecoli_malloc.h>
 #include <ecoli_strvec.h>
 #include <ecoli_node.h>
@@ -51,50 +50,3 @@ static struct ec_node_type ec_node_space_type = {
 };
 
 EC_NODE_TYPE_REGISTER(ec_node_space_type);
-
-/* LCOV_EXCL_START */
-static int ec_node_space_testcase(void)
-{
-	struct ec_node *node;
-	int testres = 0;
-
-	node = ec_node("space", EC_NO_ID);
-	if (node == NULL) {
-		EC_LOG(EC_LOG_ERR, "cannot create node\n");
-		return -1;
-	}
-	testres |= EC_TEST_CHECK_PARSE(node, 1, " ");
-	testres |= EC_TEST_CHECK_PARSE(node, 1, " ", "foo");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, "");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, " foo");
-	testres |= EC_TEST_CHECK_PARSE(node, -1, "foo ");
-	ec_node_free(node);
-
-	/* test completion */
-	node = ec_node("space", EC_NO_ID);
-	if (node == NULL) {
-		EC_LOG(EC_LOG_ERR, "cannot create node\n");
-		return -1;
-	}
-	/* never completes whatever the input */
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"", EC_VA_END,
-		EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		" ", EC_VA_END,
-		EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo", EC_VA_END,
-		EC_VA_END);
-	ec_node_free(node);
-
-	return testres;
-}
-
-static struct ec_test ec_node_space_test = {
-	.name = "space",
-	.test = ec_node_space_testcase,
-};
-
-EC_TEST_REGISTER(ec_node_space_test);
-/* LCOV_EXCL_STOP */

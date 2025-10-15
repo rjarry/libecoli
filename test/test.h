@@ -11,84 +11,18 @@
 
 #pragma once
 
-#include <sys/queue.h>
+#include <ecoli.h>
 
-#include <ecoli_log.h>
-#include <ecoli_utils.h>
-
-struct ec_node;
-enum ec_comp_type;
-
-/**
- * Register a test case.
- *
- * @param t
- *   A pointer to a ec_test structure describing the test
- *   to be registered.
- *
- * @internal
- */
-#define EC_TEST_REGISTER(t)						\
-	static void ec_test_init_##t(void);				\
-	static void __attribute__((constructor, used))			\
-	ec_test_init_##t(void)						\
-	{								\
-		if (ec_test_register(&t) < 0)				\
-			fprintf(stderr, "cannot register test %s\n",	\
-				t.name);				\
-	}
-
-/**
- * Type of test function. Return 0 on success, -1 on error.
- *
- * @internal
- */
-typedef int (ec_test_t)(void);
-
-/**
- * Test linked list.
- *
- * @internal
- */
-TAILQ_HEAD(ec_test_list, ec_test);
-
-/**
- * A structure describing a test case.
- *
- * @internal
- */
-struct ec_test {
-	TAILQ_ENTRY(ec_test) next;  /**< Next in list. */
-	const char *name;           /**< Test name. */
-	ec_test_t *test;            /**< Test function. */
-};
-
-/**
- * Register a test case.
- *
- * @internal
- *
- * @param test
- *   A pointer to a ec_test structure describing the test
- *   to be registered.
- * @return
- *   0 on success, -1 on error (errno is set).
- */
-int ec_test_register(struct ec_test *test);
-
-/**
- * Run all tests.
- *
- * @internal
- */
-int ec_test_all(void);
-
-/**
- * Run one test.
- *
- * @internal
- */
-int ec_test_one(const char *name);
+/** @internal */
+#define EC_TEST_MAIN()							\
+	EC_LOG_TYPE_REGISTER(__file__);					\
+	static void __attribute__((constructor, used)) __init(void) {	\
+		ec_init();						\
+	}								\
+	static void __attribute__((destructor, used)) __exit(void) {	\
+		ec_exit();						\
+	}								\
+	int main(void)
 
 /**
  * expected == -1 means no match
@@ -126,7 +60,7 @@ int ec_test_check_parse(struct ec_node *node, int expected, ...);
  * @internal
  */
 #define EC_TEST_CHECK_PARSE(node, args...) ({				\
-	int ret_ = ec_test_check_parse(node, args, EC_VA_END);	\
+	int ret_ = ec_test_check_parse(node, args, EC_VA_END);		\
 	if (ret_)							\
 		EC_TEST_ERR("parse test failed");			\
 	ret_;								\
@@ -134,7 +68,7 @@ int ec_test_check_parse(struct ec_node *node, int expected, ...);
 
 /** @internal */
 int ec_test_check_complete(struct ec_node *node,
-			enum ec_comp_type type, ...);
+	enum ec_comp_type type, ...);
 
 /** @internal */
 #define EC_TEST_CHECK_COMPLETE(node, args...) ({			\

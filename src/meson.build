@@ -9,7 +9,6 @@ libecoli_sources += files(
 	'htable.c',
 	'init.c',
 	'log.c',
-	'malloc.c',
 	'murmurhash.c',
 	'node.c',
 	'node_any.c',
@@ -19,7 +18,6 @@ libecoli_sources += files(
 	'node_dynamic.c',
 	'node_empty.c',
 	'node_expr.c',
-	'node_expr_test.c',
 	'node_file.c',
 	'node_helper.c',
 	'node_int.c',
@@ -35,10 +33,10 @@ libecoli_sources += files(
 	'node_space.c',
 	'node_str.c',
 	'node_subset.c',
+	'malloc.c',
 	'parse.c',
 	'string.c',
 	'strvec.c',
-	'test.c',
 	'vec.c',
 )
 deps = []
