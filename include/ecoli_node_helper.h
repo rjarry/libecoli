@@ -35,7 +35,7 @@ struct ec_node;
  * @return
  *   The allocated node table, that must be freed by the caller:
  *   each entry must be freed with ec_node_free() and the table
- *   with ec_free(). On error, NULL is returned and errno is set.
+ *   with free(). On error, NULL is returned and errno is set.
  */
 struct ec_node **
 ec_node_config_node_list_to_table(const struct ec_config *config,

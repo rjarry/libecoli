@@ -69,7 +69,7 @@ void ec_init_register(struct ec_init *test);
  * Initialize ecoli library.
  *
  * Must be called before any other function from libecoli, except
- * ec_malloc_register().
+ * malloc_register().
  *
  * @return
  *   0 on success, -1 on error (errno is set).

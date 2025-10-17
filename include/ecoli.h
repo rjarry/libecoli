@@ -29,7 +29,6 @@
 #include <ecoli_htable.h>
 #include <ecoli_init.h>
 #include <ecoli_log.h>
-#include <ecoli_malloc.h>
 #include <ecoli_murmurhash.h>
 #include <ecoli_node_any.h>
 #include <ecoli_node_bypass.h>
@@ -57,7 +56,6 @@
 #include <ecoli_parse.h>
 #include <ecoli_string.h>
 #include <ecoli_strvec.h>
-#include <ecoli_test.h>
 #include <ecoli_utils.h>
 #include <ecoli_vec.h>
 #include <ecoli_yaml.h>
