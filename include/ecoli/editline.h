@@ -285,7 +285,7 @@ void ec_editline_free_helps(struct ec_editline_help *helps, size_t n);
  */
 ssize_t ec_editline_get_error_helps(const struct ec_editline *editline,
 				    struct ec_editline_help **helps_out,
-				    int *char_idx);
+				    size_t *char_idx);
 
 /**
  * Set editline prompt.

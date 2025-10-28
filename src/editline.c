@@ -18,6 +18,7 @@
 #include <ecoli/node.h>
 #include <ecoli/parse.h>
 #include <ecoli/string.h>
+#include <ecoli/strvec.h>
 #include <ecoli/utils.h>
 
 struct ec_editline {
@@ -698,12 +699,23 @@ fail:
 ssize_t
 ec_editline_get_error_helps(const struct ec_editline *editline,
 			    struct ec_editline_help **helps_out,
-			    int *char_idx) {
-	struct ec_pnode *p = NULL;
-	struct ec_comp *c = NULL;
-	ssize_t count = -1;
+			    size_t *char_idx)
+{
+	struct ec_strvec *line_vec_partial = NULL;
+	const struct ec_strvec *parsed_vec = NULL;
+	struct ec_strvec *line_vec = NULL;
+	struct ec_pnode *parse = NULL;
+	struct ec_comp *comp = NULL;
+	const struct ec_dict *attrs;
+	const struct ec_node *node;
+	struct ec_node *cmdlist;
+	char *line_copy = NULL;
+	size_t parsed_vec_len;
+	unsigned int refs;
 	char *line = NULL;
-	size_t len, i;
+	int ret = 0;
+	size_t len;
+	int i;
 
 	if (editline == NULL || helps_out == NULL) {
 		errno = EINVAL;
@@ -712,42 +724,100 @@ ec_editline_get_error_helps(const struct ec_editline *editline,
 
 	*helps_out = NULL;
 
+	node = ec_editline_get_node(editline);
+	if (node == NULL)
+		goto fail;
+
 	if ((line = ec_editline_curline(editline, false)) == NULL)
 		goto out;
 
-	len = strlen(line);
-	for (i = 0; i <= len + 1; i++) {
-		/* XXX: we could do better here be tokenizing properly.
-		 * for this, we would need to update the ecoli sh_lex node to
-		 * return the token offsets in the parsed struct */
-		if (i != (len + 1) && !isspace(line[len - i]))
-			continue;
-		line[len - i + 1] = '\0';
+	/* one additional char to add a space at the end */
+	line_copy = malloc(strlen(line) + 2);
+	if (line_copy == NULL)
+		goto fail;
+	strcpy(line_copy, line);
+	line_copy[strlen(line)] = ' ';
+	line_copy[strlen(line) + 1] = '\0';
 
-		if ((p = ec_parse(editline->node, line)) == NULL)
-			goto out;
-		if ((c = ec_complete(editline->node, line)) == NULL)
-			goto out;
-		if (ec_pnode_matches(p) || ec_comp_count(c, EC_COMP_ALL) > 0) {
-			if (char_idx != NULL)
-				*char_idx = strlen(line);
-			count = ec_editline_get_helps(
-				editline, line, helps_out);
+	if (ec_node_get_child(node, 0, &cmdlist, &refs) < 0)
+		goto fail;
+
+	line_vec = ec_strvec_sh_lex_str(line, EC_STRVEC_STRICT, NULL);
+	if (line_vec == NULL && errno == EBADMSG)
+		goto fail;
+	if (line_vec == NULL)
+		goto fail;
+
+	len = ec_strvec_len(line_vec);
+	for (i = len; i >= 0; i--) {
+		/* build an strvec from the first i tokens + an empty token */
+		line_vec_partial = ec_strvec_ndup(line_vec, 0, i);
+		if (line_vec_partial == NULL)
+			goto fail;
+		if (ec_strvec_add(line_vec_partial, "") < 0)
+			goto fail;
+
+		/* try to parse and complete this strvec */
+		parse = ec_parse_strvec(cmdlist, line_vec_partial);
+		if (parse == NULL)
+			goto fail;
+		comp = ec_complete_strvec(cmdlist, line_vec_partial);
+		if (comp == NULL)
+			goto fail;
+
+		/* get the length of the parsed vec, if any */
+		parsed_vec = ec_pnode_get_strvec(parse);
+		if (parsed_vec != NULL)
+			parsed_vec_len = ec_strvec_len(parsed_vec);
+		else
+			parsed_vec_len = 0;
+
+		/* if it matches or if it completes, return the helps */
+		if ((ec_pnode_matches(parse) && (int)parsed_vec_len == i) ||
+		    ec_comp_count(comp, EC_COMP_ALL) > 0) {
+
+			/* get the position of the error and store it in char_idx */
+			if (i == (int)len) {
+				attrs = ec_strvec_get_attrs(line_vec, i - 1);
+				if (attrs == NULL)
+					goto fail;
+				*char_idx = (uintptr_t)ec_dict_get(attrs, EC_STRVEC_ATTR_END) + 1;
+			} else {
+				attrs = ec_strvec_get_attrs(line_vec, i);
+				if (attrs == NULL)
+					goto fail;
+				*char_idx = (uintptr_t)ec_dict_get(attrs, EC_STRVEC_ATTR_START);
+			}
+
+			/* build the partial line string */
+			line_copy[*char_idx] = '\0';
+
+			ret = ec_editline_get_helps(editline, line_copy, helps_out);
 			goto out;
 		}
-		ec_pnode_free(p);
-		p = NULL;
-		ec_comp_free(c);
-		c = NULL;
+
+		ec_pnode_free(parse);
+		parse = NULL;
+		ec_comp_free(comp);
+		comp = NULL;
+		ec_strvec_free(line_vec_partial);
+		line_vec_partial = NULL;
 	}
 
-	count = 0;
+	ret = 0;
 
 out:
+	ec_strvec_free(line_vec_partial);
+	ec_strvec_free(line_vec);
 	free(line);
-	ec_pnode_free(p);
-	ec_comp_free(c);
-	return count;
+	free(line_copy);
+	ec_pnode_free(parse);
+	ec_comp_free(comp);
+	return ret;
+
+fail:
+	ret = -1;
+	goto out;
 }
 
 char *
