@@ -443,7 +443,8 @@ static int get_node_help(const struct ec_comp_item *item,
 	     pstate = ec_pnode_get_parent(pstate)) {
 		node = ec_pnode_get_node(pstate);
 		if (node_help == NULL)
-			node_help = ec_dict_get(ec_node_attrs(node), "help");
+			node_help = ec_dict_get(ec_node_attrs(node),
+						EC_EDITLINE_HELP_ATTR);
 		if (node_desc == NULL) {
 			node_desc = ec_node_desc(node);
 			if (node_desc == NULL)
@@ -1014,4 +1015,21 @@ fail:
 	ec_strvec_free(line_vec);
 
 	return -1;
+}
+
+int ec_editline_set_help(struct ec_node *node, const char *help)
+{
+	char *copy = strdup(help);
+
+	if (copy == NULL)
+		return -1;
+
+	return ec_dict_set(ec_node_attrs(node), EC_EDITLINE_HELP_ATTR,
+			   copy, free);
+}
+
+int ec_editline_set_callback(struct ec_node *node, ec_editline_command_cb_t cb)
+{
+	return ec_dict_set(ec_node_attrs(node), EC_EDITLINE_CB_ATTR,
+			   cb, NULL);
 }

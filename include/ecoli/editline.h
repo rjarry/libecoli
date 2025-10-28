@@ -36,6 +36,16 @@ struct ec_editline_help {
 #define EC_EDITLINE_HISTORY_SIZE 128
 
 /**
+ * The key of the node attribute storing the contextual help.
+ */
+#define EC_EDITLINE_HELP_ATTR "help"
+
+/**
+ * The key of the node attribute storing the command callback.
+ */
+#define EC_EDITLINE_CB_ATTR "cb"
+
+/**
  * Flags passed at ec_editline initialization.
  */
 enum ec_editline_init_flags {
@@ -434,3 +444,34 @@ int ec_editline_interact(struct ec_editline *el,
  *   An editline error code: CC_REFRESH, CC_ERROR, or CC_REDISPLAY.
  */
 int ec_editline_complete(EditLine *el, int c);
+
+/**
+ * Set help on a grammar node.
+ *
+ * Set the node attribute EC_EDITLINE_HELP_ATTR on the node, containing the
+ * given string. It is used by the ec_editline functions to display contextual
+ * helps on completion or parsing error.
+ *
+ * @param node
+ *   The ec_node on which to add the help attribute.
+ * @param help
+ *   The help string.
+ * @return
+ *   0 on success, or -1 on error.
+ */
+int ec_editline_set_help(struct ec_node *node, const char *help);
+
+/**
+ * Set callback function on a grammar node.
+ *
+ * Set the node attribute EC_EDITLINE_CB_ATTR on the node, containing the
+ * pointer to a function invoked on successful parsing.
+ *
+ * @param node
+ *   The ec_node on which to add the callback attribute.
+ * @param cb
+ *   The callback function pointer.
+ * @return
+ *   0 on success, or -1 on error.
+ */
+int ec_editline_set_callback(struct ec_node *node, ec_editline_command_cb_t cb);
