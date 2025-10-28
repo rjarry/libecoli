@@ -231,9 +231,8 @@ char *ec_editline_append_chars(const struct ec_comp *cmpl);
  * @param editline
  *   The pointer to the ec_editline structure.
  * @param line
- *   The line, up to the cursor.
- * @param full_line
- *   The full line.
+ *   The line from which to get help. If NULL, use the line currently being
+ *   edited.
  * @param helps_out
  *   The pointer where the helps array will be returned.
  * @return
@@ -241,7 +240,7 @@ char *ec_editline_append_chars(const struct ec_comp *cmpl);
  */
 ssize_t
 ec_editline_get_helps(const struct ec_editline *editline, const char *line,
-	const char *full_line, struct ec_editline_help **helps_out);
+		      struct ec_editline_help **helps_out);
 
 /**
  * Print helps generated with ec_editline_get_helps().

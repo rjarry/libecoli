@@ -472,7 +472,7 @@ fail:
 
 ssize_t
 ec_editline_get_helps(const struct ec_editline *editline, const char *line,
-	const char *full_line, struct ec_editline_help **helps_out)
+		      struct ec_editline_help **helps_out)
 {
 	const struct ec_comp_group *grp, *prev_grp = NULL;
 	struct ec_comp_item *item;
@@ -480,11 +480,19 @@ ec_editline_get_helps(const struct ec_editline *editline, const char *line,
 	struct ec_pnode *parse = NULL;
 	unsigned int count = 0;
 	struct ec_editline_help *helps = NULL;
+	char *curline = NULL;
 
 	*helps_out = NULL;
 
+	if (line == NULL) {
+		curline = ec_editline_curline(editline, true);
+		if (curline == NULL)
+			goto fail;
+		line = curline;
+	}
+
 	/* check if the current line matches */
-	parse = ec_parse(editline->node, full_line);
+	parse = ec_parse(editline->node, line);
 	if (ec_pnode_matches(parse))
 		count = 1;
 	ec_pnode_free(parse);
@@ -528,12 +536,14 @@ ec_editline_get_helps(const struct ec_editline *editline, const char *line,
 		count++;
 	}
 
+	free(curline);
 	ec_comp_free(cmpl);
 	*helps_out = helps;
 
 	return count;
 
 fail:
+	free(curline);
 	ec_pnode_free(parse);
 	ec_comp_free(cmpl);
 	if (helps != NULL) {
@@ -626,8 +636,7 @@ ec_editline_complete(EditLine *el, int c)
 		struct ec_editline_help *helps = NULL;
 		ssize_t count = 0;
 
-		count = ec_editline_get_helps(editline, line, full_line,
-				&helps);
+		count = ec_editline_get_helps(editline, line, &helps);
 
 		fprintf(out, "\n");
 		if (ec_editline_print_helps(editline, helps, count) < 0) {
@@ -729,7 +738,7 @@ ec_editline_get_suggestions(const struct ec_editline *editline,
 			if (char_idx != NULL)
 				*char_idx = strlen(line);
 			count = ec_editline_get_helps(
-				editline, line, line, helps_out);
+				editline, line, helps_out);
 			goto out;
 		}
 		ec_pnode_free(p);
