@@ -277,9 +277,6 @@ void ec_editline_free_helps(struct ec_editline_help *helps, size_t n);
  *   The pointer to the ec_editline structure.
  * @param helps_out
  *   The pointer where the helps array will be returned.
- * @param full_line
- *   A pointer where the full line string will be stored. It must be freed by
- *   the user.
  * @param char_idx
  *   A pointer to an integer where the index of the error in the line string
  *   is returned.
@@ -288,7 +285,7 @@ void ec_editline_free_helps(struct ec_editline_help *helps, size_t n);
  */
 ssize_t ec_editline_get_suggestions(const struct ec_editline *editline,
 				    struct ec_editline_help **helps_out,
-				    char **full_line, int *char_idx);
+				    int *char_idx);
 
 /**
  * Set editline prompt.

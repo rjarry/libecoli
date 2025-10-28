@@ -698,7 +698,7 @@ fail:
 ssize_t
 ec_editline_get_suggestions(const struct ec_editline *editline,
 			    struct ec_editline_help **helps_out,
-			    char **full_line, int *char_idx) {
+			    int *char_idx) {
 	struct ec_pnode *p = NULL;
 	struct ec_comp *c = NULL;
 	ssize_t count = -1;
@@ -714,9 +714,6 @@ ec_editline_get_suggestions(const struct ec_editline *editline,
 
 	if ((line = ec_editline_curline(editline, false)) == NULL)
 		goto out;
-
-	if (full_line != NULL)
-		*full_line = strdup(line);
 
 	len = strlen(line);
 	for (i = 0; i <= len + 1; i++) {
