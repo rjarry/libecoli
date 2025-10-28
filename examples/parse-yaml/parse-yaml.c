@@ -171,9 +171,8 @@ interact(struct ec_node *node)
 	struct ec_editline *editline = NULL;
 	struct ec_pnode *parse = NULL;
 	struct ec_node *shlex = NULL;
-	char *line = NULL;
 
-	shlex = ec_node_sh_lex(EC_NO_ID, ec_node_clone(node)); //XXX
+	shlex = ec_node_sh_lex(EC_NO_ID, ec_node_clone(node));
 	if (shlex == NULL) {
 		fprintf(stderr, "Failed to add lexer node\n");
 		goto fail;
@@ -197,8 +196,6 @@ interact(struct ec_node *node)
 	if (!ec_pnode_matches(parse))
 		goto fail;
 
-	//ec_pnode_dump(stdout, parse);
-
 	if (dump_as_shell(parse) < 0) {
 		fprintf(stderr, "Failed to dump the parsed result\n");
 		goto fail;
@@ -212,7 +209,6 @@ interact(struct ec_node *node)
 fail:
 	ec_pnode_free(parse);
 	ec_editline_free(editline);
-	free(line);
 	ec_node_free(shlex);
 	return -1;
 }
@@ -284,7 +280,6 @@ main(int argc, char *argv[])
 		fprintf(stderr, "Failed to parse file\n");
 		goto fail;
 	}
-	//ec_node_dump(stdout, node);
 
 	if (complete) {
 		if (complete_words(node, argc, argv) < 0)
