@@ -108,3 +108,57 @@ int ec_str_parse_ullint(const char *str, unsigned int base, uint64_t min,
 	errno = save_errno;
 	return 0;
 }
+
+char *ec_str_quote(const char *str, char quote)
+{
+	size_t len = 3; /* start/end quotes + \0 */
+	const char *s;
+	char *out, *o;
+	char c;
+
+	if (quote == 0) {
+		if (strchr(str, '"') == NULL)
+			quote = '"';
+		else
+			quote = '\'';
+	}
+
+	for (s = str, c = *s; c != '\0'; s++, c = *s) {
+		if (c == quote || c == '\\')
+			len += 2;
+		else if (!isprint(c) && c != '\n')
+			len += 4;
+		else
+			len += 1;
+	}
+
+	out = malloc(len);
+	if (out == NULL)
+		return NULL;
+
+	o = out;
+	*o++ = quote;
+
+	for (s = str, c = *s; c != '\0'; s++, c = *s) {
+		if (c == quote) {
+			*o++ = '\\';
+			*o++ = quote;
+		} else if (c == '\\') {
+			*o++ = '\\';
+			*o++ = '\\';
+		} else if (!isprint(c) && c != '\n') {
+			char buf[5];
+
+			snprintf(buf, sizeof(buf), "\\x%2.2x", c);
+			memcpy(o, buf, 4);
+			o += 4;
+		} else {
+			*o++ = c;
+		}
+	}
+
+	*o++ = quote;
+	*o = '\0';
+
+	return out;
+}

@@ -62,4 +62,18 @@ int ec_str_parse_llint(const char *str, unsigned int base, int64_t min,
  */
 int ec_str_parse_ullint(const char *str, unsigned int base, uint64_t min,
 			uint64_t max, uint64_t *val);
+
+/**
+ * Quote a string, escaping nested quotes.
+ *
+ * @param str
+ *   The string to quote.
+ * @param quote
+ *   The quote character to use: usually " or ' but can be anything. If 0,
+ *   select between " or ' automatically.
+ * @return
+ *   An allocated string, that must be freed by the caller using free().
+ */
+char *ec_str_quote(const char *str, char quote);
+
 /** @} */
