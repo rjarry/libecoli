@@ -139,7 +139,7 @@ EC_TEST_MAIN()
 	fclose(f);
 	f = NULL;
 	testres |= EC_TEST_CHECK(
-		strstr(buf, "strvec (len=2) [0, 1]"), "bad dump\n");
+		strstr(buf, "strvec (len=2) [\"0\", \"1\"]"), "bad dump\n");
 	free(buf);
 	buf = NULL;
 

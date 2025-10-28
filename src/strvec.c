@@ -13,6 +13,7 @@
 #include <ecoli/dict.h>
 #include <ecoli/log.h>
 #include <ecoli/node.h>
+#include <ecoli/string.h>
 #include <ecoli/strvec.h>
 
 EC_LOG_TYPE_REGISTER(strvec);
@@ -538,10 +539,20 @@ void ec_strvec_dump(FILE *out, const struct ec_strvec *strvec)
 
 	fprintf(out, "strvec (len=%zu) [", strvec->len);
 	for (i = 0; i < ec_strvec_len(strvec); i++) {
+		char *elt = ec_str_quote(strvec->vec[i]->str, 0);
+		const char *comma;
+
 		if (i == 0)
-			fprintf(out, "%s", strvec->vec[i]->str);
+			comma = "";
 		else
-			fprintf(out, ", %s", strvec->vec[i]->str);
+			comma = ", ";
+
+		if (elt != NULL)
+			fprintf(out, "%s%s", comma, elt);
+		else
+			fprintf(out, "%s\"%s\"", comma, strvec->vec[i]->str);
+
+		free(elt);
 	}
 	fprintf(out, "]\n");
 
