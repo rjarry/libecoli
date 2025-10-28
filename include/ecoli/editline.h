@@ -9,9 +9,6 @@
  *
  * Helpers that can be used to associate an editline instance with
  * an ecoli node tree.
- *
- * XXX support multiline edition
- * XXX set prompt
  */
 
 #pragma once
@@ -26,11 +23,11 @@ struct ec_pnode;
 struct ec_comp;
 
 /**
- * 
+ * A structure describing a contextual help.
  */
 struct ec_editline_help {
-	char *desc;
-	char *help;
+	char *desc;   /**< The short description of the item. */
+	char *help;   /**< The associated help. */
 };
 
 /**
@@ -85,35 +82,72 @@ struct ec_editline_help {
  */
 #define EC_EDITLINE_DEFAULT_SIGHANDLER 0x08
 
-typedef int (*ec_editline_cmpl_t)(struct ec_editline *editline, int c);
-
 /**
  * Create an editline instance with default behavior.
  *
- * XXX Wrapper to editline's el_init() 
+ * It allocates and initializes an ec_editline structure, calls editline's
+ * el_init(), and does the editline configuration according to given flags.
  *
- * It 
+ * After that, the user must call ec_editline_set_node() to attach the grammar
+ * to the editline.
+ *
+ * @param name
+ *   The name of the invoking program, used when reading the editrc(5) file
+ *   to determine which settings to use.
+ * @param f_in
+ *   The input stream to use.
+ * @param f_out
+ *   The output stream to use.
+ * @param f_err
+ *   The error stream to use.
+ * @param flags
+ *   Flags to customize initialization.
+ * @return
+ *   The allocated ec_editline structure, or NULL on error.
  */
-struct ec_editline *
-ec_editline(const char *name, FILE *f_in, FILE *f_out, FILE *f_err,
-	unsigned int flags);
+struct ec_editline *ec_editline(const char *name, FILE *f_in, FILE *f_out,
+				FILE *f_err, unsigned int flags);
 
 /**
- * Free an editline instance allocated with ec_editline().
+ * Free an editline structure allocated with ec_editline().
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure to free.
  */
 void ec_editline_free(struct ec_editline *editline);
 
 /**
- * Return the editline instance attached to the ec_editline object.
+ * Return the wrapped editline instance attached to the ec_editline structure.
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
  */
 EditLine *ec_editline_get_el(struct ec_editline *editline);
 
-// XXX public?
-const struct ec_node *ec_editline_get_node(struct ec_editline *editline);
+/**
+ * Attach an ecoli node to the editline structure.
+ *
+ * This node must be an sh_lex node, with its grammar subtree. It will be used
+ * for completion and contextual help. The contextual help description is
+ * attached as a string to nodes using a node attribute "help".
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @param node
+ *   The pointer to the sh_lex ec_node to use as grammar.
+ */
 void ec_editline_set_node(struct ec_editline *editline,
-			const struct ec_node *node);
+			  const struct ec_node *node);
 
-//XXX get history, get_...
+/**
+ * Return the ecoli node attached to the editline structure.
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @return
+ *   The pointer to the ec_node.
+ */
+const struct ec_node *ec_editline_get_node(struct ec_editline *editline);
 
 /**
  * Change the history size.
@@ -132,55 +166,216 @@ void ec_editline_set_node(struct ec_editline *editline,
  *   0 on success, or -1 on error (errno is set).
  */
 int ec_editline_set_history(struct ec_editline *editline,
-	size_t hist_size, const char *hist_file);
+			    size_t hist_size, const char *hist_file);
 
-int
-ec_editline_print_cols(struct ec_editline *editline,
-		char const * const *matches, size_t n);
+/**
+ * Get completion matches as an array of strings.
+ *
+ * @param cmpl
+ *   The completions, as returned by ec_complete().
+ * @param matches_out
+ *   The pointer where the matches array will be returned.
+ * @return
+ *   The size of the array on success (>= 0), or -1 on error.
+ */
+ssize_t ec_editline_get_completions(const struct ec_comp *cmpl,
+				    char ***matches_out);
 
-void ec_editline_free_completions(char **matches, size_t len);
-ssize_t
-ec_editline_get_completions(const struct ec_comp *cmpl, char ***matches_out);
-char *
-ec_editline_append_chars(const struct ec_comp *cmpl);
+/**
+ * Free the array of completion matches.
+ *
+ * @param matches
+ *   The array of matches.
+ * @param n
+ *   The size of the array.
+ */
+void ec_editline_free_completions(char **matches, size_t n);
 
+/**
+ * Print completion matches as columns.
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @param matches
+ *   The string array of matches to display.
+ * @param n
+ *   The size of the array.
+ * @return
+ *   0 on success, or -1 on error.
+ */
+int ec_editline_print_cols(struct ec_editline *editline,
+			   char const * const *matches, size_t n);
+
+/**
+ * Get characters to append to the line for a completion.
+ *
+ * @param cmpl
+ *   The completion object containing all the completion items.
+ * @return
+ *   An allocated string to be appended to the current line (must be freed by
+ *   the caller using free()). Return NULL on error.
+ */
+char *ec_editline_append_chars(const struct ec_comp *cmpl);
+
+/**
+ * Get contextual helps from the current line.
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @param line
+ *   The line, up to the cursor.
+ * @param full_line
+ *   The full line.
+ * @param helps_out
+ *   The pointer where the helps array will be returned.
+ * @return
+ *   The size of the array on success (>= 0), or -1 on error.
+ */
 ssize_t
 ec_editline_get_helps(const struct ec_editline *editline, const char *line,
 	const char *full_line, struct ec_editline_help **helps_out);
-int
-ec_editline_print_helps(struct ec_editline *editline,
-			const struct ec_editline_help *helps, size_t n);
-void
-ec_editline_free_helps(struct ec_editline_help *helps, size_t len);
 
-ssize_t
-ec_editline_get_suggestions(const struct ec_editline *editline,
-			    struct ec_editline_help **suggestions,
-			    char **full_line, int *pos);
+/**
+ * Print helps generated with ec_editline_get_helps().
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @param helps
+ *   The helps array returned by ec_editline_get_helps().
+ * @param n
+ *   The array size returned by ec_editline_get_helps().
+ * @return
+ *   0 on success, or -1 on error.
+ */
+int ec_editline_print_helps(struct ec_editline *editline,
+			    const struct ec_editline_help *helps, size_t n);
 
-int
-ec_editline_set_prompt(struct ec_editline *editline, const char *prompt);
+/**
+ * Free contextual helps.
+ *
+ * Free helps generated with ec_editline_get_helps() or
+ * ec_editline_get_error_helps().
+ *
+ * @param helps
+ *   The helps array.
+ * @param len
+ *   The array size.
+ */
+void ec_editline_free_helps(struct ec_editline_help *helps, size_t len);
 
-int
-ec_editline_set_prompt_esc(struct ec_editline *editline, const char *prompt,
-			   char delim);
+/**
+ * Get suggestions after a parsing error for the current line.
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @param suggestions
+ *   The pointer where the helps array will be returned.
+ * @param full_line
+ *   A pointer where the full line string will be stored. It must be freed by
+ *   the user.
+ * @param pos
+ *   A pointer to an integer where the index of the error in the line string
+ *   is returned.
+ * @return
+ *   The size of the array on success (>= 0), or -1 on error.
+ */
+ssize_t ec_editline_get_suggestions(const struct ec_editline *editline,
+				    struct ec_editline_help **suggestions,
+				    char **full_line, int *pos);
 
+/**
+ * Set editline prompt.
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @param prompt
+ *   The prompt string to use.
+ * @return
+ *   0 on success, or -1 on error.
+ */
+int ec_editline_set_prompt(struct ec_editline *editline, const char *prompt);
+
+/**
+ * Set editline escaped prompt.
+ *
+ * From el_set(3):
+ * If the start/stop delim character is found in the prompt, the character
+ * itself is not printed, but characters after it are printed directly to the
+ * terminal without affecting the state of the current line. A subsequent second
+ * start/stop literal character ends this behavior. This is typically used to
+ * embed literal escape sequences that change the color/style of the terminal in
+ * the prompt.  Note that the literal escape character cannot be the last
+ * character in the prompt, as the escape sequence is attached to the next
+ * character in the prompt.
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @param prompt
+ *   The prompt string to use.
+ * @param delim
+ *   The start/stop literal prompt character.
+ * @return
+ *   0 on success, or -1 on error.
+ */
+int ec_editline_set_prompt_esc(struct ec_editline *editline, const char *prompt,
+			       char delim);
+
+/**
+ * Get the current edited line.
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @param trim_after_cursor
+ *   If true, remove all characters starting from cursor (included).
+ * @return
+ *   An allocated string containing the current line. It must be freed by the
+ *   user. Return NULL on error.
+ */
 char *ec_editline_curline(const struct ec_editline *editline,
 			  bool trim_after_cursor);
 
 /**
- * Get a line.
+ * Get a line interactively (with completion).
  *
- * The returned line must be freed by the caller using free().
+ * Wrapper to libedit el_gets(). It returns the edited line without its "\n",
+ * and adds it to the history.
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @return
+ *   An allocated string containing the edited line, that must be freed by the
+ *   caller using free().
  */
 char *ec_editline_gets(struct ec_editline *editline);
 
 /**
- * Get a line (managing completion) and parse it with passed node
- * XXX find a better name?
+ * Get a line interactively (with completion), and parse it.
+ *
+ * Similar to ec_editline_gets(), except that the string result is parsed using
+ * the grammar node on success.
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @param node
+ *   The grammar node to use.
+ * @return
+ *   An allocated ec_pnode containing the parse result. It must be freed by the
+ *   using using ec_pnode_free(). Return NULL on error.
  */
-struct ec_pnode *
-ec_editline_parse(struct ec_editline *editline, const struct ec_node *node);
+struct ec_pnode *ec_editline_parse(struct ec_editline *editline,
+				   const struct ec_node *node);
 
-int
-ec_editline_complete(EditLine *el, int c);
+/**
+ * Default completion callback used by editline.
+ *
+ * It displays the list of completions with <tab>, and a contextual help
+ * with <?>.
+ *
+ * @param el
+ *   The pointer to libedit Editline structure.
+ * @param c
+ *   The character used to complete.
+ * @return
+ *   An editline error code: CC_REFRESH, CC_ERROR, or CC_REDISPLAY.
+ */
+int ec_editline_complete(EditLine *el, int c);
