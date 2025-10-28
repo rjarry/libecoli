@@ -589,13 +589,13 @@ fail:
 int
 ec_editline_complete(EditLine *el, int c)
 {
-	char *line = NULL, *full_line = NULL;
 	struct ec_editline *editline;
 	int ret = CC_REFRESH;
 	struct ec_comp *cmpl = NULL;
 	char *append = NULL;
 	size_t comp_count;
 	void *clientdata;
+	char *line = NULL;
 	FILE *out, *err;
 
 	if (el_get(el, EL_GETFP, 1, &out))
@@ -613,8 +613,7 @@ ec_editline_complete(EditLine *el, int c)
 	(void)editline;
 
 	line = ec_editline_curline(editline, true);
-	full_line = ec_editline_curline(editline, false);
-	if (line == NULL || full_line == NULL) {
+	if (line == NULL) {
 		fprintf(err, "completion failure: %s\n", strerror(errno));
 		goto fail;
 	}
@@ -684,7 +683,6 @@ ec_editline_complete(EditLine *el, int c)
 
 	ec_comp_free(cmpl);
 	free(line);
-	free(full_line);
 	free(append);
 
 	return ret;
@@ -692,7 +690,6 @@ ec_editline_complete(EditLine *el, int c)
 fail:
 	ec_comp_free(cmpl);
 	free(line);
-	free(full_line);
 	free(append);
 
 	return CC_ERROR;
