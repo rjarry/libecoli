@@ -288,6 +288,24 @@ ssize_t ec_editline_get_error_helps(const struct ec_editline *editline,
 				    size_t *char_idx);
 
 /**
+ * Print suggestions generated with ec_editline_get_error_helps().
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @param helps
+ *   The helps array returned by ec_editline_get_helps().
+ * @param n
+ *   The array size returned by ec_editline_get_helps().
+ * @param char_idx
+ *   The index of the error in the line string.
+ * @return
+ *   0 on success, or -1 on error.
+ */
+int ec_editline_print_error_helps(const struct ec_editline *editline,
+				  const struct ec_editline_help *helps,
+				  size_t n, size_t char_idx);
+
+/**
  * Set editline prompt.
  *
  * @param editline

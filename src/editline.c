@@ -820,6 +820,34 @@ fail:
 	goto out;
 }
 
+int
+ec_editline_print_error_helps(const struct ec_editline *editline,
+			      const struct ec_editline_help *helps,
+			      size_t n, size_t char_idx)
+{
+	char *line = NULL;
+	FILE *out;
+
+	if (el_get(editline->el, EL_GETFP, 1, &out))
+		return -1;
+
+	if ((line = ec_editline_curline(editline, false)) == NULL)
+		goto fail;
+
+	fprintf(out, "  %s", line);
+	fprintf(out, "  %*s^\n", (int)char_idx, "");
+	fprintf(out, "Expected:\n");
+	if (ec_editline_print_helps(editline, helps, n) < 0)
+		goto fail;
+
+	free(line);
+	return 0;
+
+fail:
+	free(line);
+	return -1;
+}
+
 char *
 ec_editline_gets(struct ec_editline *editline)
 {
