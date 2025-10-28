@@ -140,9 +140,12 @@ EditLine *ec_editline_get_el(struct ec_editline *editline);
  *   The pointer to the ec_editline structure.
  * @param node
  *   The pointer to the sh_lex ec_node to use as grammar.
+ * @return
+ *   0 on success, or -1 on error. errno is set to EINVAL if the node is not
+ *   of type sh_lex.
  */
-void ec_editline_set_node(struct ec_editline *editline,
-			  const struct ec_node *node);
+int ec_editline_set_node(struct ec_editline *editline,
+			 const struct ec_node *node);
 
 /**
  * Return the ecoli node attached to the editline structure.

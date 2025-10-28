@@ -290,10 +290,16 @@ ec_editline_get_node(const struct ec_editline *editline)
 	return editline->node;
 }
 
-void
+int
 ec_editline_set_node(struct ec_editline *editline, const struct ec_node *node)
 {
+	if (strcmp(ec_node_get_type_name(node), "sh_lex")) {
+		errno = EINVAL;
+		return -1;
+	}
+
 	editline->node = node;
+	return 0;
 }
 
 int ec_editline_set_history(struct ec_editline *editline,
