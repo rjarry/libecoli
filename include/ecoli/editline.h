@@ -283,7 +283,7 @@ void ec_editline_free_helps(struct ec_editline_help *helps, size_t n);
  * @return
  *   The size of the array on success (>= 0), or -1 on error.
  */
-ssize_t ec_editline_get_suggestions(const struct ec_editline *editline,
+ssize_t ec_editline_get_error_helps(const struct ec_editline *editline,
 				    struct ec_editline_help **helps_out,
 				    int *char_idx);
 

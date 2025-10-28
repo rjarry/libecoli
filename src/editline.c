@@ -696,7 +696,7 @@ fail:
 }
 
 ssize_t
-ec_editline_get_suggestions(const struct ec_editline *editline,
+ec_editline_get_error_helps(const struct ec_editline *editline,
 			    struct ec_editline_help **helps_out,
 			    int *char_idx) {
 	struct ec_pnode *p = NULL;
