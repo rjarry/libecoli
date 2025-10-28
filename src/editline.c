@@ -97,7 +97,7 @@ ec_editline_print_cols(struct ec_editline *editline,
 
 /* Show the helps on editline output */
 int
-ec_editline_print_helps(struct ec_editline *editline,
+ec_editline_print_helps(const struct ec_editline *editline,
 			const struct ec_editline_help *helps, size_t len)
 {
 	size_t i;
@@ -285,7 +285,7 @@ EditLine *ec_editline_get_el(struct ec_editline *editline)
 }
 
 const struct ec_node *
-ec_editline_get_node(struct ec_editline *editline)
+ec_editline_get_node(const struct ec_editline *editline)
 {
 	return editline->node;
 }

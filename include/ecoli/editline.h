@@ -152,7 +152,7 @@ void ec_editline_set_node(struct ec_editline *editline,
  * @return
  *   The pointer to the ec_node.
  */
-const struct ec_node *ec_editline_get_node(struct ec_editline *editline);
+const struct ec_node *ec_editline_get_node(const struct ec_editline *editline);
 
 /**
  * Change the history size.
@@ -252,7 +252,7 @@ ec_editline_get_helps(const struct ec_editline *editline, const char *line,
  * @return
  *   0 on success, or -1 on error.
  */
-int ec_editline_print_helps(struct ec_editline *editline,
+int ec_editline_print_helps(const struct ec_editline *editline,
 			    const struct ec_editline_help *helps, size_t n);
 
 /**
