@@ -129,23 +129,6 @@ ec_editline_free_helps(struct ec_editline_help *helps, size_t n)
 	free(helps);
 }
 
-int
-ec_editline_set_prompt(struct ec_editline *editline, const char *prompt)
-{
-	char *copy = NULL;
-
-	if (prompt != NULL) {
-		copy = strdup(prompt);
-		if (copy == NULL)
-			return -1;
-	}
-
-	free(editline->prompt);
-	editline->prompt = copy;
-
-	return 0;
-}
-
 static char *
 prompt_cb(EditLine *el)
 {
@@ -160,6 +143,30 @@ prompt_cb(EditLine *el)
 		return "> ";
 
 	return editline->prompt;
+}
+
+int
+ec_editline_set_prompt(struct ec_editline *editline, const char *prompt)
+{
+	char *copy = NULL;
+
+	if (prompt != NULL) {
+		copy = strdup(prompt);
+		if (copy == NULL)
+			return -1;
+	}
+
+	if (el_set(editline->el, EL_PROMPT, prompt_cb))
+		goto fail;
+
+	free(editline->prompt);
+	editline->prompt = copy;
+
+	return 0;
+
+fail:
+	free(copy);
+	return -1;
 }
 
 int
