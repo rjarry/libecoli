@@ -347,7 +347,6 @@ int ec_editline_set_history(struct ec_editline *editline,
 	return 0;
 
 fail:
-	//XXX errno
 	if (editline->history != NULL) {
 		history_end(editline->history);
 		editline->history = NULL;
@@ -359,7 +358,6 @@ void ec_editline_free_completions(char **matches, size_t len)
 {
 	size_t i;
 
-	// XXX use malloc/free() instead for consistency
 	if (matches == NULL)
 		return;
 	for (i = 0; i < len; i++)
@@ -502,7 +500,7 @@ ec_editline_get_helps(const struct ec_editline *editline, const char *line,
 
 	/* complete at current cursor position */
 	cmpl = ec_complete(editline->node, line);
-	if (cmpl == NULL) //XXX log error
+	if (cmpl == NULL)
 		goto fail;
 
 	helps = calloc(1, sizeof(*helps));
@@ -865,7 +863,7 @@ ec_editline_gets(struct ec_editline *editline)
 	if (line_copy == NULL)
 		goto fail;
 
-	line_copy[strlen(line_copy) - 1] = '\0'; //XXX needed because of sh_lex bug?
+	line_copy[strlen(line_copy) - 1] = '\0'; /* remove \n */
 
 	if (editline->history != NULL && !ec_str_is_space(line_copy)) {
 		history(editline->history, &editline->histev,
