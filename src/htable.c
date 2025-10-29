@@ -16,7 +16,7 @@
 #include <ecoli_murmurhash.h>
 #include <ecoli_htable.h>
 
-#include "ecoli_htable_private.h"
+#include "htable_private.h"
 
 #define FACTOR 3
 
