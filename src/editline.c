@@ -602,7 +602,7 @@ ec_editline_complete(EditLine *el, int c)
 
 	if (el_get(el, EL_GETFP, 1, &out))
 		return -1;
-	if (el_get(el, EL_GETFP, 1, &err))
+	if (el_get(el, EL_GETFP, 2, &err))
 		return -1;
 
 	(void)c;
