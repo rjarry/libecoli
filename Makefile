@@ -89,6 +89,12 @@ REVISION_RANGE ?= @{u}..
 check-commits:
 	$Q devtools/check-commits $(REVISION_RANGE)
 
+.PHONY: git-config
+git-config:
+	@mkdir -p .git/hooks
+	@rm -f .git/hooks/commit-msg*
+	ln -s ../../devtools/commit-msg .git/hooks/commit-msg
+
 .PHONY: tag-release
 tag-release:
 	@cur_version=`sed -En "s/^[[:space:]]+version[[:space:]]*:[[:space:]]*'([0-9\.]+)'\\$$/\\1/p" meson.build` && \
