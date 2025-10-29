@@ -1,0 +1,8 @@
+# ex: ft=dosini
+
+[codespell]
+quiet-level = 35
+skip =
+	build/*,
+ignore-words-list =
+	fo,

@@ -73,6 +73,8 @@ lint:
 	}
 	@echo '[white-space]'
 	$Q $(all_files) | xargs devtools/check-whitespace
+	@echo '[codespell]'
+	$Q codespell *
 
 .PHONY: format
 format:
