@@ -83,6 +83,12 @@ format:
 	@echo '[clang-format]'
 	$Q $(c_src) | $(CLANG_FORMAT) --files=/proc/self/fd/0 -i --verbose
 
+REVISION_RANGE ?= @{u}..
+
+.PHONY: check-commits
+check-commits:
+	$Q devtools/check-commits $(REVISION_RANGE)
+
 .PHONY: tag-release
 tag-release:
 	@cur_version=`sed -En "s/^[[:space:]]+version[[:space:]]*:[[:space:]]*'([0-9\.]+)'\\$$/\\1/p" meson.build` && \
