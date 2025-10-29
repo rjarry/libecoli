@@ -52,6 +52,7 @@ $(BUILDDIR)/build.ninja:
 
 CLANG_FORMAT ?= clang-format
 c_src = git ls-files '*.[ch]'
+all_files = git ls-files ':!:subprojects'
 licensed_files = git ls-files ':!:*.svg' ':!:LICENSE' ':!:*.md' ':!:todo.txt' ':!:.*'
 
 .PHONY: lint
@@ -70,6 +71,8 @@ lint:
 		echo 'error: files are missing license and/or copyright notice'; \
 		exit 1; \
 	}
+	@echo '[white-space]'
+	$Q $(all_files) | xargs devtools/check-whitespace
 
 .PHONY: format
 format:
