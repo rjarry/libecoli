@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <ecoli_node.h>
+#include <ecoli/node.h>
 
 struct ec_node *ec_node_str(const char *id, const char *str);
 

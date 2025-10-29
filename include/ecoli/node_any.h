@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <ecoli/node.h>
+
 /**
  * Create a "any" node.
  *

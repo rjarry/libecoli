@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include <ecoli_assert.h>
+#include <ecoli/assert.h>
 
 void __ec_assert_print(bool expr, const char *expr_str, const char *format, ...)
 {

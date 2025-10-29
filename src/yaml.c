@@ -10,10 +10,10 @@
 
 #include <yaml.h>
 
-#include <ecoli_dict.h>
-#include <ecoli_node.h>
-#include <ecoli_config.h>
-#include <ecoli_yaml.h>
+#include <ecoli/config.h>
+#include <ecoli/dict.h>
+#include <ecoli/node.h>
+#include <ecoli/yaml.h>
 
 /* associate a yaml node to a ecoli node */
 struct pair {

@@ -12,13 +12,13 @@
 
 #include <histedit.h>
 
-#include <ecoli_utils.h>
-#include <ecoli_string.h>
-#include <ecoli_editline.h>
-#include <ecoli_dict.h>
-#include <ecoli_node.h>
-#include <ecoli_parse.h>
-#include <ecoli_complete.h>
+#include <ecoli/complete.h>
+#include <ecoli/dict.h>
+#include <ecoli/editline.h>
+#include <ecoli/node.h>
+#include <ecoli/parse.h>
+#include <ecoli/string.h>
+#include <ecoli/utils.h>
 
 struct ec_editline {
 	EditLine *el;

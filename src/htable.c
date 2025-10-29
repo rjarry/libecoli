@@ -11,10 +11,10 @@
 #include <errno.h>
 #include <fcntl.h>
 
-#include <ecoli_init.h>
-#include <ecoli_log.h>
-#include <ecoli_murmurhash.h>
-#include <ecoli_htable.h>
+#include <ecoli/htable.h>
+#include <ecoli/init.h>
+#include <ecoli/log.h>
+#include <ecoli/murmurhash.h>
 
 #include "htable_private.h"
 

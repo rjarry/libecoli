@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <ecoli_init.h>
+#include <ecoli/init.h>
 
 static struct ec_init_list init_list = TAILQ_HEAD_INITIALIZER(init_list);
 

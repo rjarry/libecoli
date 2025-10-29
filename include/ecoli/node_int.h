@@ -11,7 +11,7 @@
 
 #include <stdint.h>
 
-#include <ecoli_node.h>
+#include <ecoli/node.h>
 
 /* ec_node("int", ...) can be used too
  * default is no limit, base 10 */

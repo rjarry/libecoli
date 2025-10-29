@@ -10,10 +10,10 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#include <ecoli_node.h>
-#include <ecoli_log.h>
-#include <ecoli_dict.h>
-#include <ecoli_strvec.h>
+#include <ecoli/dict.h>
+#include <ecoli/log.h>
+#include <ecoli/node.h>
+#include <ecoli/strvec.h>
 
 EC_LOG_TYPE_REGISTER(strvec);
 

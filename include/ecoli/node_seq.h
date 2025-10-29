@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <ecoli_node.h>
+#include <ecoli/node.h>
 
 #define EC_NODE_SEQ(args...) __ec_node_seq(args, EC_VA_END)
 

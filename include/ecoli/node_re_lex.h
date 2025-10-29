@@ -8,7 +8,8 @@
  */
 
 #pragma once
-#include <ecoli_node.h>
+
+#include <ecoli/node.h>
 
 struct ec_node *ec_node_re_lex(const char *id, struct ec_node *child);
 

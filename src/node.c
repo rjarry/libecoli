@@ -8,17 +8,16 @@
 #include <assert.h>
 #include <errno.h>
 
-#include <ecoli_string.h>
-#include <ecoli_strvec.h>
-#include <ecoli_dict.h>
-#include <ecoli_log.h>
-#include <ecoli_config.h>
-#include <ecoli_node.h>
-
-#include <ecoli_node_str.h>
-#include <ecoli_node_seq.h>
-#include <ecoli_node_or.h>
-#include <ecoli_node_int.h>
+#include <ecoli/config.h>
+#include <ecoli/dict.h>
+#include <ecoli/log.h>
+#include <ecoli/node.h>
+#include <ecoli/node_int.h>
+#include <ecoli/node_or.h>
+#include <ecoli/node_seq.h>
+#include <ecoli/node_str.h>
+#include <ecoli/string.h>
+#include <ecoli/strvec.h>
 
 EC_LOG_TYPE_REGISTER(node);
 

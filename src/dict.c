@@ -10,9 +10,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include <ecoli_init.h>
-#include <ecoli_log.h>
-#include <ecoli_dict.h>
+#include <ecoli/dict.h>
+#include <ecoli/init.h>
+#include <ecoli/log.h>
 
 #include "htable_private.h"
 

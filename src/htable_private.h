@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <sys/queue.h>
 
-#include <ecoli_htable.h>
+#include <ecoli/htable.h>
 
 struct ec_htable_elt {
 	void *key;

@@ -11,8 +11,8 @@
 #include <limits.h>
 #include <ctype.h>
 
-#include <ecoli_assert.h>
-#include <ecoli_string.h>
+#include <ecoli/assert.h>
+#include <ecoli/string.h>
 
 /* count the number of identical chars at the beginning of 2 strings */
 size_t ec_strcmp_count(const char *s1, const char *s2)

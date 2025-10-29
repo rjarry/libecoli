@@ -8,14 +8,7 @@
 #include <getopt.h>
 #include <errno.h>
 
-#include <ecoli_init.h>
-#include <ecoli_strvec.h>
-#include <ecoli_node.h>
-#include <ecoli_parse.h>
-#include <ecoli_complete.h>
-#include <ecoli_yaml.h>
-#include <ecoli_editline.h>
-#include <ecoli_node_sh_lex.h>
+#include <ecoli.h>
 
 static char *input_file;
 static char *output_file;

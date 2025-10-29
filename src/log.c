@@ -7,8 +7,8 @@
 #include <string.h>
 #include <syslog.h>
 
-#include <ecoli_string.h>
-#include <ecoli_log.h>
+#include <ecoli/log.h>
+#include <ecoli/string.h>
 
 /* Test exports */
 int ec_log_lookup(const char *name);

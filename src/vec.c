@@ -9,9 +9,9 @@
 #include <errno.h>
 #include <assert.h>
 
-#include <ecoli_assert.h>
-#include <ecoli_log.h>
-#include <ecoli_vec.h>
+#include <ecoli/assert.h>
+#include <ecoli/log.h>
+#include <ecoli/vec.h>
 
 EC_LOG_TYPE_REGISTER(vec);
 

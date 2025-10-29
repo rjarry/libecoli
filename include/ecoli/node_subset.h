@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <ecoli_node.h>
+#include <ecoli/node.h>
 
 #define EC_NODE_SUBSET(args...) __ec_node_subset(args, EC_VA_END)
 

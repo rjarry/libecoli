@@ -20,7 +20,7 @@
 #include <stdarg.h>
 #include <syslog.h>
 
-#include <ecoli_assert.h>
+#include <ecoli/assert.h>
 
 enum ec_log_level {
 	EC_LOG_EMERG   = 0,  /* system is unusable               */

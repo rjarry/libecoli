@@ -11,9 +11,6 @@
 
 #include <sys/queue.h>
 
-#include <ecoli_log.h>
-#include <ecoli_node.h>
-
 /**
  * Register initialization and exit callbacks. These callbacks are
  * ordered by priority: for initialization, the lowest priority is called

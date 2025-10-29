@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <ecoli_node.h>
+#include <ecoli/node.h>
 
 /**
  * A node that does nothing else than calling the child node.

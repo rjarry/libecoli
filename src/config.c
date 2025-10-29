@@ -10,12 +10,12 @@
 #include <errno.h>
 #include <inttypes.h>
 
-#include <ecoli_string.h>
-#include <ecoli_dict.h>
-#include <ecoli_node.h>
-#include <ecoli_log.h>
-#include <ecoli_config.h>
-#include <ecoli_utils.h>
+#include <ecoli/config.h>
+#include <ecoli/dict.h>
+#include <ecoli/log.h>
+#include <ecoli/node.h>
+#include <ecoli/string.h>
+#include <ecoli/utils.h>
 
 EC_LOG_TYPE_REGISTER(config);
 

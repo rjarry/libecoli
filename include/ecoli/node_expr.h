@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <ecoli_node.h>
+#include <ecoli/node.h>
 
 /**
  * Callback function type for evaluating a variable

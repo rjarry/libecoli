@@ -14,7 +14,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-#include <ecoli_config.h>
+#include <ecoli/config.h>
 
 struct ec_node;
 

@@ -6,14 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ecoli_log.h>
-#include <ecoli_strvec.h>
-#include <ecoli_node.h>
-#include <ecoli_parse.h>
-#include <ecoli_complete.h>
-#include <ecoli_dict.h>
-#include <ecoli_config.h>
-#include <ecoli_node_any.h>
+#include <ecoli/complete.h>
+#include <ecoli/config.h>
+#include <ecoli/dict.h>
+#include <ecoli/log.h>
+#include <ecoli/node.h>
+#include <ecoli/node_any.h>
+#include <ecoli/parse.h>
+#include <ecoli/strvec.h>
 
 EC_LOG_TYPE_REGISTER(node_any);
 

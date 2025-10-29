@@ -9,10 +9,10 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#include <ecoli_utils.h>
-#include <ecoli_config.h>
-#include <ecoli_node.h>
-#include <ecoli_node_helper.h>
+#include <ecoli/config.h>
+#include <ecoli/node.h>
+#include <ecoli/node_helper.h>
+#include <ecoli/utils.h>
 
 struct ec_node **
 ec_node_config_node_list_to_table(const struct ec_config *config,

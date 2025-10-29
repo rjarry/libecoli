@@ -9,15 +9,15 @@
 #include <assert.h>
 #include <errno.h>
 
-#include <ecoli_log.h>
-#include <ecoli_strvec.h>
-#include <ecoli_node.h>
-#include <ecoli_parse.h>
-#include <ecoli_complete.h>
-#include <ecoli_node_seq.h>
-#include <ecoli_node_many.h>
-#include <ecoli_node_or.h>
-#include <ecoli_node_expr.h>
+#include <ecoli/complete.h>
+#include <ecoli/log.h>
+#include <ecoli/node.h>
+#include <ecoli/node_expr.h>
+#include <ecoli/node_many.h>
+#include <ecoli/node_or.h>
+#include <ecoli/node_seq.h>
+#include <ecoli/parse.h>
+#include <ecoli/strvec.h>
 
 EC_LOG_TYPE_REGISTER(node_expr);
 

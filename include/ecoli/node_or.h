@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <ecoli_node.h>
-#include <ecoli_utils.h>
+#include <ecoli/node.h>
+#include <ecoli/utils.h>
 
 /**
  * Create a new "or" node from an arbitrary list of child nodes.

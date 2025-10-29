@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <ecoli_node.h>
+#include <ecoli/node.h>
 
 /**
  * This node behaves like its child, but prevent from parsing it several times.

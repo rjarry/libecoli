@@ -12,7 +12,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-#include <ecoli_node.h>
+#include <ecoli/node.h>
 
 struct ec_node *ec_node_file(const char *id, const char *file);
 

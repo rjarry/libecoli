@@ -9,22 +9,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#include <ecoli_init.h>
-#include <ecoli_node.h>
-#include <ecoli_parse.h>
-#include <ecoli_complete.h>
-#include <ecoli_dict.h>
-#include <ecoli_node_str.h>
-#include <ecoli_node_seq.h>
-#include <ecoli_node_space.h>
-#include <ecoli_node_or.h>
-#include <ecoli_node_sh_lex.h>
-#include <ecoli_node_int.h>
-#include <ecoli_node_option.h>
-#include <ecoli_node_cmd.h>
-#include <ecoli_node_many.h>
-#include <ecoli_node_once.h>
-#include <ecoli_node_file.h>
+#include <ecoli.h>
 
 static struct ec_node *commands;
 
