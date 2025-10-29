@@ -52,11 +52,24 @@ $(BUILDDIR)/build.ninja:
 
 CLANG_FORMAT ?= clang-format
 c_src = git ls-files '*.[ch]'
+licensed_files = git ls-files ':!:*.svg' ':!:LICENSE' ':!:*.md' ':!:todo.txt' ':!:.*'
 
 .PHONY: lint
 lint:
 	@echo '[clang-format]'
 	$Q $(c_src) | $(CLANG_FORMAT) --files=/proc/self/fd/0 --dry-run --Werror
+	@echo '[license-check]'
+	$Q ! $(licensed_files) | while read -r f; do \
+		if ! grep -qF 'SPDX-License-Identifier: BSD-3-Clause' $$f; then \
+			echo $$f; \
+		fi; \
+		if ! grep -q 'Copyright .*\<[0-9]\{4\}\>' $$f; then \
+			echo $$f; \
+		fi; \
+	done | LC_ALL=C sort -u | grep --color . || { \
+		echo 'error: files are missing license and/or copyright notice'; \
+		exit 1; \
+	}
 
 .PHONY: format
 format:
