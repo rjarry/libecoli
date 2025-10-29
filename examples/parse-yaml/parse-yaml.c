@@ -106,23 +106,26 @@ __dump_as_shell(FILE *f, const struct ec_pnode *parse, size_t *seq)
 	const struct ec_node *node = ec_pnode_get_node(parse);
 	struct ec_pnode *child;
 	size_t cur_seq, i, len;
-	const char *s;
+	char *quoted;
 
 	(*seq)++;
 	cur_seq = *seq;
 
-	// XXX protect strings
 
+	quoted = ec_str_quote(ec_node_id(node), '\'');
+	fprintf(f, "ec_node%zu_id=%s\n", cur_seq, quoted);
+	free(quoted);
 
-	fprintf(f, "ec_node%zu_id='%s'\n", cur_seq, ec_node_id(node));
-	fprintf(f, "ec_node%zu_type='%s'\n", cur_seq,
-		ec_node_type_name(ec_node_type(node)));
+	quoted = ec_str_quote(ec_node_type_name(ec_node_type(node)), '\'');
+	fprintf(f, "ec_node%zu_type=%s\n", cur_seq, quoted);
+	free(quoted);
 
 	len = ec_strvec_len(ec_pnode_get_strvec(parse));
 	fprintf(f, "ec_node%zu_strvec_len=%zu\n", cur_seq, len);
 	for (i = 0; i < len; i++) {
-		s = ec_strvec_val(ec_pnode_get_strvec(parse), i);
-		fprintf(f, "ec_node%zu_str%zu='%s'\n", cur_seq, i, s);
+		quoted = ec_str_quote(ec_strvec_val(ec_pnode_get_strvec(parse), i), '\'');
+		fprintf(f, "ec_node%zu_str%zu=%s\n", cur_seq, i, quoted);
+		free(quoted);
 	}
 
 	if (ec_pnode_get_first_child(parse) != NULL) {
