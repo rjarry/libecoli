@@ -2,10 +2,10 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/config.h>
@@ -22,10 +22,11 @@ struct ec_node_str {
 	unsigned len;
 };
 
-static int
-ec_node_str_parse(const struct ec_node *node,
-		struct ec_pnode *pstate,
-		const struct ec_strvec *strvec)
+static int ec_node_str_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_str *priv = ec_node_priv(node);
 	const char *str;
@@ -47,10 +48,11 @@ ec_node_str_parse(const struct ec_node *node,
 	return 1;
 }
 
-static int
-ec_node_str_complete(const struct ec_node *node,
-		struct ec_comp *comp,
-		const struct ec_strvec *strvec)
+static int ec_node_str_complete(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_str *priv = ec_node_priv(node);
 	const struct ec_comp_item *item;
@@ -103,8 +105,7 @@ static const struct ec_config_schema ec_node_str_schema[] = {
 	},
 };
 
-static int ec_node_str_set_config(struct ec_node *node,
-				const struct ec_config *config)
+static int ec_node_str_set_config(struct ec_node *node, const struct ec_config *config)
 {
 	struct ec_node_str *priv = ec_node_priv(node);
 	const struct ec_config *value = NULL;

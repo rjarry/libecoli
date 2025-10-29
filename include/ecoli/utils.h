@@ -14,9 +14,10 @@
 /**
  * Cast a variable into a type, ensuring its initial type first
  */
-#define EC_CAST(x, old_type, new_type) ({	\
-	old_type __x = (x);			\
-	(new_type)__x;				\
+#define EC_CAST(x, old_type, new_type)                                                             \
+	({                                                                                         \
+		old_type __x = (x);                                                                \
+		(new_type) __x;                                                                    \
 	})
 
 /**
@@ -27,7 +28,6 @@
 /**
  * Count number of elements in an array.
  */
-#define EC_COUNT_OF(x) ((sizeof(x)/sizeof(0[x])) / \
-		((size_t)(!(sizeof(x) % sizeof(0[x])))))
+#define EC_COUNT_OF(x) ((sizeof(x) / sizeof(0 [x])) / ((size_t)(!(sizeof(x) % sizeof(0 [x])))))
 
 /** @} */

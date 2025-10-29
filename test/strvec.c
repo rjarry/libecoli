@@ -128,8 +128,9 @@ EC_TEST_MAIN()
 		EC_TEST_ERR("cannot create strvec from array\n");
 		goto fail;
 	}
-	testres |= EC_TEST_CHECK(ec_strvec_cmp(strvec, strvec2) == 0,
-		"strvec and strvec2 should be equal\n");
+	testres |= EC_TEST_CHECK(
+		ec_strvec_cmp(strvec, strvec2) == 0, "strvec and strvec2 should be equal\n"
+	);
 	ec_strvec_free(strvec2);
 
 	f = open_memstream(&buf, &buflen);
@@ -138,8 +139,7 @@ EC_TEST_MAIN()
 	ec_strvec_dump(f, strvec);
 	fclose(f);
 	f = NULL;
-	testres |= EC_TEST_CHECK(
-		strstr(buf, "strvec (len=2) [\"0\", \"1\"]"), "bad dump\n");
+	testres |= EC_TEST_CHECK(strstr(buf, "strvec (len=2) [\"0\", \"1\"]"), "bad dump\n");
 	free(buf);
 	buf = NULL;
 
@@ -149,8 +149,9 @@ EC_TEST_MAIN()
 		EC_TEST_ERR("cannot create strvec from array\n");
 		goto fail;
 	}
-	testres |= EC_TEST_CHECK(ec_strvec_cmp(strvec, strvec2) == 0,
-		"strvec and strvec2 should be equal\n");
+	testres |= EC_TEST_CHECK(
+		ec_strvec_cmp(strvec, strvec2) == 0, "strvec and strvec2 should be equal\n"
+	);
 	ec_strvec_free(strvec2);
 	strvec2 = NULL;
 
@@ -160,8 +161,7 @@ EC_TEST_MAIN()
 	ec_strvec_dump(f, NULL);
 	fclose(f);
 	f = NULL;
-	testres |= EC_TEST_CHECK(
-		strstr(buf, "none"), "bad dump\n");
+	testres |= EC_TEST_CHECK(strstr(buf, "none"), "bad dump\n");
 	free(buf);
 	buf = NULL;
 
@@ -196,24 +196,23 @@ EC_TEST_MAIN()
 		EC_TEST_ERR("cannot get attrs\n");
 		goto fail;
 	}
-	testres |= EC_TEST_CHECK(
-		ec_dict_has_key(const_attrs, "key"), "cannot get attrs key\n");
+	testres |= EC_TEST_CHECK(ec_dict_has_key(const_attrs, "key"), "cannot get attrs key\n");
 
 	strvec2 = EC_STRVEC("a", "b", "c", "d", "e", "f");
 	if (strvec2 == NULL) {
 		EC_TEST_ERR("cannot create strvec from array\n");
 		goto fail;
 	}
-	testres |= EC_TEST_CHECK(ec_strvec_cmp(strvec, strvec2) == 0,
-		"strvec and strvec2 should be equal\n");
+	testres |= EC_TEST_CHECK(
+		ec_strvec_cmp(strvec, strvec2) == 0, "strvec and strvec2 should be equal\n"
+	);
 	ec_strvec_free(strvec);
 	strvec = NULL;
 	ec_strvec_free(strvec2);
 	strvec2 = NULL;
 
 	/* lexing */
-	strvec = ec_strvec_sh_lex_str("  a    b\tc d   # comment",
-		EC_STRVEC_STRICT, NULL);
+	strvec = ec_strvec_sh_lex_str("  a    b\tc d   # comment", EC_STRVEC_STRICT, NULL);
 	if (strvec == NULL) {
 		EC_TEST_ERR("cannot lex strvec from string\n");
 		goto fail;
@@ -223,15 +222,15 @@ EC_TEST_MAIN()
 		EC_TEST_ERR("cannot create strvec from array\n");
 		goto fail;
 	}
-	testres |= EC_TEST_CHECK(ec_strvec_cmp(strvec, strvec2) == 0,
-		"strvec and strvec2 should be equal\n");
+	testres |= EC_TEST_CHECK(
+		ec_strvec_cmp(strvec, strvec2) == 0, "strvec and strvec2 should be equal\n"
+	);
 	ec_strvec_free(strvec);
 	strvec = NULL;
 	ec_strvec_free(strvec2);
 	strvec2 = NULL;
 
-	strvec = ec_strvec_sh_lex_str("  a  b   c  d  ",
-		EC_STRVEC_TRAILSP, NULL);
+	strvec = ec_strvec_sh_lex_str("  a  b   c  d  ", EC_STRVEC_TRAILSP, NULL);
 	if (strvec == NULL) {
 		EC_TEST_ERR("cannot lex strvec from string\n");
 		goto fail;
@@ -241,12 +240,12 @@ EC_TEST_MAIN()
 		EC_TEST_ERR("cannot create strvec from array\n");
 		goto fail;
 	}
-	testres |= EC_TEST_CHECK(ec_strvec_cmp(strvec, strvec2) == 0,
-		"strvec and strvec2 should be equal\n");
+	testres |= EC_TEST_CHECK(
+		ec_strvec_cmp(strvec, strvec2) == 0, "strvec and strvec2 should be equal\n"
+	);
 	for (unsigned i = 0; i < ec_strvec_len(strvec); i++) {
 		const_attrs = ec_strvec_get_attrs(strvec, i);
-		testres |= EC_TEST_CHECK(const_attrs != NULL,
-			"attrs should not be NULL\n");
+		testres |= EC_TEST_CHECK(const_attrs != NULL, "attrs should not be NULL\n");
 		if (const_attrs == NULL)
 			continue;
 		errno = 0;
@@ -286,15 +285,15 @@ EC_TEST_MAIN()
 		EC_TEST_ERR("cannot create strvec from array\n");
 		goto fail;
 	}
-	testres |= EC_TEST_CHECK(ec_strvec_cmp(strvec, strvec2) == 0,
-		"strvec and strvec2 should be equal\n");
+	testres |= EC_TEST_CHECK(
+		ec_strvec_cmp(strvec, strvec2) == 0, "strvec and strvec2 should be equal\n"
+	);
 	ec_strvec_free(strvec);
 	strvec = NULL;
 	ec_strvec_free(strvec2);
 	strvec2 = NULL;
 
-	strvec = ec_strvec_sh_lex_str("a  b\\ e  \"c \\\" d\" ",
-		EC_STRVEC_STRICT, NULL);
+	strvec = ec_strvec_sh_lex_str("a  b\\ e  \"c \\\" d\" ", EC_STRVEC_STRICT, NULL);
 	if (strvec == NULL) {
 		EC_TEST_ERR("cannot lex strvec from string\n");
 		goto fail;
@@ -304,8 +303,9 @@ EC_TEST_MAIN()
 		EC_TEST_ERR("cannot create strvec from array\n");
 		goto fail;
 	}
-	testres |= EC_TEST_CHECK(ec_strvec_cmp(strvec, strvec2) == 0,
-		"strvec and strvec2 should be equal\n");
+	testres |= EC_TEST_CHECK(
+		ec_strvec_cmp(strvec, strvec2) == 0, "strvec and strvec2 should be equal\n"
+	);
 	ec_strvec_free(strvec);
 	strvec = NULL;
 	ec_strvec_free(strvec2);
@@ -313,18 +313,17 @@ EC_TEST_MAIN()
 
 	strvec = ec_strvec_sh_lex_str("a  b  'c  d ", EC_STRVEC_STRICT, NULL);
 	if (strvec != NULL) {
-		testres |= EC_TEST_CHECK(strvec == NULL,
-			"shlex should have failed\n");
+		testres |= EC_TEST_CHECK(strvec == NULL, "shlex should have failed\n");
 		ec_strvec_free(strvec);
 		strvec = NULL;
 	} else {
-		testres |= EC_TEST_CHECK(errno == EBADMSG,
-			"ec_strvec_shlex_str should report EBADMSG\n");
+		testres |= EC_TEST_CHECK(
+			errno == EBADMSG, "ec_strvec_shlex_str should report EBADMSG\n"
+		);
 	}
 
 	quote = '\0';
-	strvec = ec_strvec_sh_lex_str("a  'b'  'c  d ",
-		EC_STRVEC_TRAILSP, &quote);
+	strvec = ec_strvec_sh_lex_str("a  'b'  'c  d ", EC_STRVEC_TRAILSP, &quote);
 	if (strvec == NULL) {
 		EC_TEST_ERR("cannot lex strvec from string\n");
 		goto fail;
@@ -334,18 +333,17 @@ EC_TEST_MAIN()
 		EC_TEST_ERR("cannot create strvec from array\n");
 		goto fail;
 	}
-	testres |= EC_TEST_CHECK(ec_strvec_cmp(strvec, strvec2) == 0,
-		"strvec and strvec2 should be equal\n");
-	testres |= EC_TEST_CHECK(quote == '\'',
-		"missing quote should be '\n");
+	testres |= EC_TEST_CHECK(
+		ec_strvec_cmp(strvec, strvec2) == 0, "strvec and strvec2 should be equal\n"
+	);
+	testres |= EC_TEST_CHECK(quote == '\'', "missing quote should be '\n");
 	ec_strvec_free(strvec);
 	strvec = NULL;
 	ec_strvec_free(strvec2);
 	strvec2 = NULL;
 
 	quote = '\0';
-	strvec = ec_strvec_sh_lex_str("a  'b'\"x\"  'c  d' ",
-		EC_STRVEC_TRAILSP, &quote);
+	strvec = ec_strvec_sh_lex_str("a  'b'\"x\"  'c  d' ", EC_STRVEC_TRAILSP, &quote);
 	if (strvec == NULL) {
 		EC_TEST_ERR("cannot lex strvec from string\n");
 		goto fail;
@@ -355,10 +353,10 @@ EC_TEST_MAIN()
 		EC_TEST_ERR("cannot create strvec from array\n");
 		goto fail;
 	}
-	testres |= EC_TEST_CHECK(ec_strvec_cmp(strvec, strvec2) == 0,
-		"strvec and strvec2 should be equal\n");
-	testres |= EC_TEST_CHECK(quote == '\0',
-		"there should be no missing quote\n");
+	testres |= EC_TEST_CHECK(
+		ec_strvec_cmp(strvec, strvec2) == 0, "strvec and strvec2 should be equal\n"
+	);
+	testres |= EC_TEST_CHECK(quote == '\0', "there should be no missing quote\n");
 	ec_strvec_free(strvec);
 	strvec = NULL;
 	ec_strvec_free(strvec2);

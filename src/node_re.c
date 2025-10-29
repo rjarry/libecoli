@@ -2,11 +2,11 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <errno.h>
+#include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <regex.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/config.h>
@@ -23,10 +23,11 @@ struct ec_node_re {
 	regex_t re;
 };
 
-static int
-ec_node_re_parse(const struct ec_node *node,
-		struct ec_pnode *pstate,
-		const struct ec_strvec *strvec)
+static int ec_node_re_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_re *priv = ec_node_priv(node);
 	const char *str;
@@ -67,8 +68,7 @@ static const struct ec_config_schema ec_node_re_schema[] = {
 	},
 };
 
-static int ec_node_re_set_config(struct ec_node *node,
-				const struct ec_config *config)
+static int ec_node_re_set_config(struct ec_node *node, const struct ec_config *config)
 {
 	struct ec_node_re *priv = ec_node_priv(node);
 	const struct ec_config *value = NULL;

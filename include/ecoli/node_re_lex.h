@@ -13,7 +13,11 @@
 
 struct ec_node *ec_node_re_lex(const char *id, struct ec_node *child);
 
-int ec_node_re_lex_add(struct ec_node *gen_node, const char *pattern, int keep,
-	const char *attr_name);
+int ec_node_re_lex_add(
+	struct ec_node *gen_node,
+	const char *pattern,
+	int keep,
+	const char *attr_name
+);
 
 /** @} */

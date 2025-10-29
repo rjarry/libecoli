@@ -50,27 +50,17 @@ EC_TEST_MAIN()
 		EC_LOG(EC_LOG_ERR, "cannot create node\n");
 		return -1;
 	}
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"f", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo", "", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo", "foo", "", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo", "foo", "foo", "", EC_VA_END,
-		"foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo", "foo", "foo", "foo", "", EC_VA_END,
-		EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, "", EC_VA_END, "foo", EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, "f", EC_VA_END, "foo", EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, "foo", EC_VA_END, "foo", EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, "foo", "", EC_VA_END, "foo", EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, "foo", "foo", "", EC_VA_END, "foo", EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(
+		node, "foo", "foo", "foo", "", EC_VA_END, "foo", EC_VA_END
+	);
+	testres |= EC_TEST_CHECK_COMPLETE(
+		node, "foo", "foo", "foo", "foo", "", EC_VA_END, EC_VA_END
+	);
 	ec_node_free(node);
 
 	return testres;

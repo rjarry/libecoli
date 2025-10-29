@@ -12,11 +12,10 @@
 
 #include "test.h"
 
-static int
-test_lstat(const char *pathname, struct stat *buf)
+static int test_lstat(const char *pathname, struct stat *buf)
 {
 	if (!strcmp(pathname, "/tmp/toto/")) {
-		struct stat st = { .st_mode = S_IFDIR };
+		struct stat st = {.st_mode = S_IFDIR};
 		memcpy(buf, &st, sizeof(*buf));
 		return 0;
 	}
@@ -25,8 +24,7 @@ test_lstat(const char *pathname, struct stat *buf)
 	return -1;
 }
 
-static DIR *
-test_opendir(const char *name)
+static DIR *test_opendir(const char *name)
 {
 	int *p;
 
@@ -42,18 +40,17 @@ test_opendir(const char *name)
 	return (DIR *)p;
 }
 
-static struct dirent *
-test_readdir(DIR *dirp)
+static struct dirent *test_readdir(DIR *dirp)
 {
 	static struct dirent de[] = {
-		{ .d_type = DT_DIR, .d_name = ".." },
-		{ .d_type = DT_DIR, .d_name = "." },
-		{ .d_type = DT_REG, .d_name = "bar" },
-		{ .d_type = DT_UNKNOWN, .d_name = "bar2" },
-		{ .d_type = DT_REG, .d_name = "foo" },
-		{ .d_type = DT_DIR, .d_name = "titi" },
-		{ .d_type = DT_UNKNOWN, .d_name = "tutu" },
-		{ .d_name = "" },
+		{.d_type = DT_DIR, .d_name = ".."},
+		{.d_type = DT_DIR, .d_name = "."},
+		{.d_type = DT_REG, .d_name = "bar"},
+		{.d_type = DT_UNKNOWN, .d_name = "bar2"},
+		{.d_type = DT_REG, .d_name = "foo"},
+		{.d_type = DT_DIR, .d_name = "titi"},
+		{.d_type = DT_UNKNOWN, .d_name = "tutu"},
+		{.d_name = ""},
 	};
 	int *p = (int *)dirp;
 	struct dirent *ret = &de[*p];
@@ -66,33 +63,29 @@ test_readdir(DIR *dirp)
 	return ret;
 }
 
-static int
-test_closedir(DIR *dirp)
+static int test_closedir(DIR *dirp)
 {
 	free(dirp);
 	return 0;
 }
 
-static int
-test_dirfd(DIR *dirp)
+static int test_dirfd(DIR *dirp)
 {
 	int *p = (int *)dirp;
 	return *p;
 }
 
-static int
-test_fstatat(int dirfd, const char *pathname, struct stat *buf,
-	int flags)
+static int test_fstatat(int dirfd, const char *pathname, struct stat *buf, int flags)
 {
 	(void)dirfd;
 	(void)flags;
 
 	if (!strcmp(pathname, "bar2")) {
-		struct stat st = { .st_mode = S_IFREG };
+		struct stat st = {.st_mode = S_IFREG};
 		memcpy(buf, &st, sizeof(*buf));
 		return 0;
 	} else if (!strcmp(pathname, "tutu")) {
-		struct stat st = { .st_mode = S_IFDIR };
+		struct stat st = {.st_mode = S_IFDIR};
 		memcpy(buf, &st, sizeof(*buf));
 		return 0;
 	}
@@ -129,21 +122,17 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK_PARSE(node, -1);
 
 	/* test completion */
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		EC_VA_END,
-		EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"/tmp/toto/t", EC_VA_END,
-		EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE_PARTIAL(node,
-		"/tmp/toto/t", EC_VA_END,
-		"/tmp/toto/titi/", "/tmp/toto/tutu/", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"/tmp/toto/f", EC_VA_END,
-		"/tmp/toto/foo", EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"/tmp/toto/b", EC_VA_END,
-		"/tmp/toto/bar", "/tmp/toto/bar2", EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, EC_VA_END, EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, "/tmp/toto/t", EC_VA_END, EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE_PARTIAL(
+		node, "/tmp/toto/t", EC_VA_END, "/tmp/toto/titi/", "/tmp/toto/tutu/", EC_VA_END
+	);
+	testres |= EC_TEST_CHECK_COMPLETE(
+		node, "/tmp/toto/f", EC_VA_END, "/tmp/toto/foo", EC_VA_END
+	);
+	testres |= EC_TEST_CHECK_COMPLETE(
+		node, "/tmp/toto/b", EC_VA_END, "/tmp/toto/bar", "/tmp/toto/bar2", EC_VA_END
+	);
 
 	ec_node_free(node);
 

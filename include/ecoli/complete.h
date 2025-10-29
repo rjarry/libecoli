@@ -27,9 +27,9 @@
 
 #pragma once
 
+#include <stdio.h>
 #include <sys/queue.h>
 #include <sys/types.h>
-#include <stdio.h>
 
 struct ec_node;
 struct ec_comp_item;
@@ -42,7 +42,7 @@ struct ec_strvec;
  */
 enum ec_comp_type {
 	EC_COMP_UNKNOWN = 0x1,
-	EC_COMP_FULL = 0x2,    /**< The item is fully completed. */
+	EC_COMP_FULL = 0x2, /**< The item is fully completed. */
 	EC_COMP_PARTIAL = 0x4, /**< The item is partially completed. */
 	EC_COMP_ALL = 0x7,
 };
@@ -66,8 +66,7 @@ enum ec_comp_type {
  *   A pointer to the completion list on success, or NULL
  *   on error (errno is set).
  */
-struct ec_comp *ec_complete(const struct ec_node *node,
-	const char *str);
+struct ec_comp *ec_complete(const struct ec_node *node, const char *str);
 
 /**
  * Get the list of completions from a string vector input.
@@ -93,8 +92,7 @@ struct ec_comp *ec_complete(const struct ec_node *node,
  *   A pointer to the completion list on success, or NULL
  *   on error (errno is set).
  */
-struct ec_comp *ec_complete_strvec(const struct ec_node *node,
-	const struct ec_strvec *strvec);
+struct ec_comp *ec_complete_strvec(const struct ec_node *node, const struct ec_strvec *strvec);
 
 /**
  * Return a new string vector based on the provided one using completion to
@@ -110,9 +108,11 @@ struct ec_comp *ec_complete_strvec(const struct ec_node *node,
  *   A new string vector with non-ambiguous tokens expanded, or NULL
  *   on error (errno is set).
  */
-struct ec_strvec *
-ec_complete_strvec_expand(const struct ec_node *node, enum ec_comp_type type,
-	const struct ec_strvec *strvec);
+struct ec_strvec *ec_complete_strvec_expand(
+	const struct ec_node *node,
+	enum ec_comp_type type,
+	const struct ec_strvec *strvec
+);
 
 /**
  * Get the list of completions of a child node.
@@ -130,9 +130,11 @@ ec_complete_strvec_expand(const struct ec_node *node, enum ec_comp_type type,
  * @return
  *   0 on success, or -1 on error (errno is set).
  */
-int ec_complete_child(const struct ec_node *node,
-			struct ec_comp *comp,
-			const struct ec_strvec *strvec);
+int ec_complete_child(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+);
 
 /**
  * Create an empty completion object (list of completion items).
@@ -258,10 +260,13 @@ struct ec_dict *ec_comp_get_attrs(const struct ec_comp *comp);
  *   by the completion list. It is returned in case it needs to be
  *   modified, for instance with ec_comp_item_set_display().
  */
-struct ec_comp_item *ec_comp_add_item(struct ec_comp *comp,
-
-		const struct ec_node *node, enum ec_comp_type type,
-		const char *start, const char *full);
+struct ec_comp_item *ec_comp_add_item(
+	struct ec_comp *comp,
+	const struct ec_node *node,
+	enum ec_comp_type type,
+	const char *start,
+	const char *full
+);
 
 /**
  * Get the string value of a completion item.
@@ -271,8 +276,7 @@ struct ec_comp_item *ec_comp_add_item(struct ec_comp *comp,
  * @return
  *   The completion string of this item.
  */
-const char *
-ec_comp_item_get_str(const struct ec_comp_item *item);
+const char *ec_comp_item_get_str(const struct ec_comp_item *item);
 
 /**
  * Get the display string value of a completion item.
@@ -285,8 +289,7 @@ ec_comp_item_get_str(const struct ec_comp_item *item);
  * @return
  *   The display string of this item.
  */
-const char *
-ec_comp_item_get_display(const struct ec_comp_item *item);
+const char *ec_comp_item_get_display(const struct ec_comp_item *item);
 
 /**
  * Get the completion string value of a completion item.
@@ -299,8 +302,7 @@ ec_comp_item_get_display(const struct ec_comp_item *item);
  * @return
  *   The completion string of this item.
  */
-const char *
-ec_comp_item_get_completion(const struct ec_comp_item *item);
+const char *ec_comp_item_get_completion(const struct ec_comp_item *item);
 
 /**
  * Get the group of a completion item.
@@ -313,8 +315,7 @@ ec_comp_item_get_completion(const struct ec_comp_item *item);
  * @return
  *   The completion group of this item.
  */
-const struct ec_comp_group *
-ec_comp_item_get_grp(const struct ec_comp_item *item);
+const struct ec_comp_group *ec_comp_item_get_grp(const struct ec_comp_item *item);
 
 /**
  * Get the type of a completion item.
@@ -325,8 +326,7 @@ ec_comp_item_get_grp(const struct ec_comp_item *item);
  *   The type of this item (EC_COMP_UNKNOWN, EC_COMP_PARTIAL or
  *   EC_COMP_FULL).
  */
-enum ec_comp_type
-ec_comp_item_get_type(const struct ec_comp_item *item);
+enum ec_comp_type ec_comp_item_get_type(const struct ec_comp_item *item);
 
 /**
  * Get the node associated to a completion item.
@@ -336,8 +336,7 @@ ec_comp_item_get_type(const struct ec_comp_item *item);
  * @return
  *   The node that issued the completion item.
  */
-const struct ec_node *
-ec_comp_item_get_node(const struct ec_comp_item *item);
+const struct ec_node *ec_comp_item_get_node(const struct ec_comp_item *item);
 
 /**
  * Set the completion item string.
@@ -368,8 +367,7 @@ int ec_comp_item_set_str(struct ec_comp_item *item, const char *str);
  * @return
  *   0 on success, or -1 on error (errno is set).
  */
-int ec_comp_item_set_display(struct ec_comp_item *item,
-				const char *display);
+int ec_comp_item_set_display(struct ec_comp_item *item, const char *display);
 
 /**
  * Set the completion value of an item.
@@ -386,8 +384,7 @@ int ec_comp_item_set_display(struct ec_comp_item *item,
  * @return
  *   0 on success, or -1 on error (errno is set).
  */
-int ec_comp_item_set_completion(struct ec_comp_item *item,
-				const char *completion);
+int ec_comp_item_set_completion(struct ec_comp_item *item, const char *completion);
 
 /**
  * Get the completion group node.
@@ -395,8 +392,7 @@ int ec_comp_item_set_completion(struct ec_comp_item *item,
  * @param grp
  *   The completion group.
  */
-const struct ec_node *
-ec_comp_group_get_node(const struct ec_comp_group *grp);
+const struct ec_node *ec_comp_group_get_node(const struct ec_comp_group *grp);
 
 /**
  * Get the completion group parsing state.
@@ -409,8 +405,7 @@ ec_comp_group_get_node(const struct ec_comp_group *grp);
  * @return
  *   The node that issued the completion group.
  */
-const struct ec_pnode *
-ec_comp_group_get_pstate(const struct ec_comp_group *grp);
+const struct ec_pnode *ec_comp_group_get_pstate(const struct ec_comp_group *grp);
 
 /**
  * Get the completion group attributes.
@@ -424,9 +419,7 @@ ec_comp_group_get_pstate(const struct ec_comp_group *grp);
  * @return
  *   The parsing state of the completion group.
  */
-const struct ec_dict *
-ec_comp_group_get_attrs(const struct ec_comp_group *grp);
-
+const struct ec_dict *ec_comp_group_get_attrs(const struct ec_comp_group *grp);
 
 /**
  * Default node completion callback
@@ -449,10 +442,11 @@ ec_comp_group_get_attrs(const struct ec_comp_group *grp);
  * @return
  *   0 on succes, or -1 on error (errno is set).
  */
-int
-ec_complete_unknown(const struct ec_node *node,
-			struct ec_comp *comp,
-			const struct ec_strvec *strvec);
+int ec_complete_unknown(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+);
 
 /**
  * Get the number of completion items.
@@ -483,8 +477,7 @@ size_t ec_comp_count(const struct ec_comp *comp, enum ec_comp_type type);
  * @return
  *   A completion item.
  */
-struct ec_comp_item *
-ec_comp_iter_first(const struct ec_comp *comp, enum ec_comp_type type);
+struct ec_comp_item *ec_comp_iter_first(const struct ec_comp *comp, enum ec_comp_type type);
 
 /**
  * Get the first completion item matching the type.
@@ -499,8 +492,7 @@ ec_comp_iter_first(const struct ec_comp *comp, enum ec_comp_type type);
  * @return
  *   A completion item.
  */
-struct ec_comp_item *
-ec_comp_iter_next(struct ec_comp_item *item, enum ec_comp_type type);
+struct ec_comp_item *ec_comp_iter_next(struct ec_comp_item *item, enum ec_comp_type type);
 
 /**
  * Iterate items matching a given type.
@@ -513,7 +505,6 @@ ec_comp_iter_next(struct ec_comp_item *item, enum ec_comp_type type);
  *   A logical OR of flags among EC_COMP_UNKNOWN, EC_COMP_PARTIAL and
  *   EC_COMP_FULL, to select the type to iterate.
  */
-#define EC_COMP_FOREACH(item, comp, type)		\
-	for (item = ec_comp_iter_first(comp, type);	\
-	     item != NULL;				\
+#define EC_COMP_FOREACH(item, comp, type)                                                          \
+	for (item = ec_comp_iter_first(comp, type); item != NULL;                                  \
 	     item = ec_comp_iter_next(item, type))

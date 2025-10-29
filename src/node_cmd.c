@@ -2,12 +2,12 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <sys/queue.h>
+#include <errno.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdarg.h>
-#include <errno.h>
+#include <sys/queue.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/config.h>
@@ -32,13 +32,13 @@
 EC_LOG_TYPE_REGISTER(node_cmd);
 
 static struct ec_node *ec_node_cmd_parser; /* the expression parser. */
-static struct ec_node *ec_node_cmd_expr;   /* the expr parser without lexer. */
+static struct ec_node *ec_node_cmd_expr; /* the expr parser without lexer. */
 
 struct ec_node_cmd {
-	char *cmd_str;           /* the command string. */
-	struct ec_node *cmd;     /* the command node. */
-	struct ec_node **table;  /* table of node referenced in command. */
-	unsigned int len;        /* len of the table. */
+	char *cmd_str; /* the command string. */
+	struct ec_node *cmd; /* the command node. */
+	struct ec_node **table; /* table of node referenced in command. */
+	unsigned int len; /* len of the table. */
 };
 
 /* passed as user context to expression parser */
@@ -47,9 +47,7 @@ struct ec_node_cmd_ctx {
 	unsigned int len;
 };
 
-static int
-ec_node_cmd_eval_var(void **result, void *userctx,
-	const struct ec_pnode *var)
+static int ec_node_cmd_eval_var(void **result, void *userctx, const struct ec_pnode *var)
 {
 	const struct ec_strvec *vec;
 	struct ec_node_cmd_ctx *ctx = userctx;
@@ -90,9 +88,12 @@ ec_node_cmd_eval_var(void **result, void *userctx,
 	return 0;
 }
 
-static int
-ec_node_cmd_eval_pre_op(void **result, void *userctx, void *operand,
-	const struct ec_pnode *operator)
+static int ec_node_cmd_eval_pre_op(
+	void **result,
+	void *userctx,
+	void *operand,
+	const struct ec_pnode *operator
+)
 {
 	(void)result;
 	(void)userctx;
@@ -103,9 +104,12 @@ ec_node_cmd_eval_pre_op(void **result, void *userctx, void *operand,
 	return -1;
 }
 
-static int
-ec_node_cmd_eval_post_op(void **result, void *userctx, void *operand,
-	const struct ec_pnode *operator)
+static int ec_node_cmd_eval_post_op(
+	void **result,
+	void *userctx,
+	void *operand,
+	const struct ec_pnode *operator
+)
 {
 	const struct ec_strvec *vec;
 	struct ec_node *in = operand;
@@ -121,15 +125,13 @@ ec_node_cmd_eval_post_op(void **result, void *userctx, void *operand,
 	}
 
 	if (!strcmp(ec_strvec_val(vec, 0), "*")) {
-		out = ec_node_many(EC_NO_ID,
-				ec_node_clone(in), 0, 0);
+		out = ec_node_many(EC_NO_ID, ec_node_clone(in), 0, 0);
 		if (out == NULL)
 			return -1;
 		ec_node_free(in);
 		*result = out;
 	} else if (!strcmp(ec_strvec_val(vec, 0), "+")) {
-		out = ec_node_many(EC_NO_ID,
-				ec_node_clone(in), 1, 0);
+		out = ec_node_many(EC_NO_ID, ec_node_clone(in), 1, 0);
 		if (out == NULL)
 			return -1;
 		ec_node_free(in);
@@ -142,10 +144,13 @@ ec_node_cmd_eval_post_op(void **result, void *userctx, void *operand,
 	return 0;
 }
 
-static int
-ec_node_cmd_eval_bin_op(void **result, void *userctx, void *operand1,
-	const struct ec_pnode *operator, void *operand2)
-
+static int ec_node_cmd_eval_bin_op(
+	void **result,
+	void *userctx,
+	void *operand1,
+	const struct ec_pnode *operator,
+	void *operand2
+)
 {
 	const struct ec_strvec *vec;
 	struct ec_node *out = NULL;
@@ -168,8 +173,7 @@ ec_node_cmd_eval_bin_op(void **result, void *userctx, void *operand1,
 			ec_node_free(in2);
 			*result = in1;
 		} else {
-			out = EC_NODE_SEQ(EC_NO_ID, ec_node_clone(in1),
-					ec_node_clone(in2));
+			out = EC_NODE_SEQ(EC_NO_ID, ec_node_clone(in1), ec_node_clone(in2));
 			if (out == NULL)
 				return -1;
 			ec_node_free(in1);
@@ -188,8 +192,7 @@ ec_node_cmd_eval_bin_op(void **result, void *userctx, void *operand1,
 			ec_node_free(in2);
 			*result = in1;
 		} else {
-			out = EC_NODE_OR(EC_NO_ID, ec_node_clone(in1),
-					ec_node_clone(in2));
+			out = EC_NODE_OR(EC_NO_ID, ec_node_clone(in1), ec_node_clone(in2));
 			if (out == NULL)
 				return -1;
 			ec_node_free(in1);
@@ -208,8 +211,7 @@ ec_node_cmd_eval_bin_op(void **result, void *userctx, void *operand1,
 			ec_node_free(in2);
 			*result = in1;
 		} else {
-			out = EC_NODE_SUBSET(EC_NO_ID, ec_node_clone(in1),
-					ec_node_clone(in2));
+			out = EC_NODE_SUBSET(EC_NO_ID, ec_node_clone(in1), ec_node_clone(in2));
 			if (out == NULL)
 				return -1;
 			ec_node_free(in1);
@@ -224,11 +226,13 @@ ec_node_cmd_eval_bin_op(void **result, void *userctx, void *operand1,
 	return 0;
 }
 
-static int
-ec_node_cmd_eval_parenthesis(void **result, void *userctx,
+static int ec_node_cmd_eval_parenthesis(
+	void **result,
+	void *userctx,
 	const struct ec_pnode *open_paren,
 	const struct ec_pnode *close_paren,
-	void *value)
+	void *value
+)
 {
 	const struct ec_strvec *vec;
 	struct ec_node *in = value;
@@ -261,8 +265,7 @@ ec_node_cmd_eval_parenthesis(void **result, void *userctx,
 	return 0;
 }
 
-static void
-ec_node_cmd_eval_free(void *result, void *userctx)
+static void ec_node_cmd_eval_free(void *result, void *userctx)
 {
 	(void)userctx;
 	free(result);
@@ -277,8 +280,7 @@ static const struct ec_node_expr_eval_ops expr_ops = {
 	.eval_free = ec_node_cmd_eval_free,
 };
 
-static struct ec_node *
-ec_node_cmd_build_expr(void)
+static struct ec_node *ec_node_cmd_build_expr(void)
 {
 	struct ec_node *expr = NULL;
 	int ret;
@@ -287,8 +289,7 @@ ec_node_cmd_build_expr(void)
 	expr = ec_node("expr", "expr");
 	if (expr == NULL)
 		goto fail;
-	ret = ec_node_expr_set_val_node(expr, ec_node_re(EC_NO_ID,
-					"[a-zA-Z0-9._-]+"));
+	ret = ec_node_expr_set_val_node(expr, ec_node_re(EC_NO_ID, "[a-zA-Z0-9._-]+"));
 	if (ret < 0)
 		goto fail;
 	ret = ec_node_expr_add_bin_op(expr, ec_node_str(EC_NO_ID, ","));
@@ -306,12 +307,12 @@ ec_node_cmd_build_expr(void)
 	ret = ec_node_expr_add_post_op(expr, ec_node_str(EC_NO_ID, "*"));
 	if (ret < 0)
 		goto fail;
-	ret = ec_node_expr_add_parenthesis(expr, ec_node_str(EC_NO_ID, "["),
-		ec_node_str(EC_NO_ID, "]"));
+	ret = ec_node_expr_add_parenthesis(
+		expr, ec_node_str(EC_NO_ID, "["), ec_node_str(EC_NO_ID, "]")
+	);
 	if (ret < 0)
 		goto fail;
-	ec_node_expr_add_parenthesis(expr, ec_node_str(EC_NO_ID, "("),
-		ec_node_str(EC_NO_ID, ")"));
+	ec_node_expr_add_parenthesis(expr, ec_node_str(EC_NO_ID, "("), ec_node_str(EC_NO_ID, ")"));
 	if (ret < 0)
 		goto fail;
 
@@ -322,8 +323,7 @@ fail:
 	return NULL;
 }
 
-static struct ec_node *
-ec_node_cmd_build_parser(struct ec_node *expr)
+static struct ec_node *ec_node_cmd_build_parser(struct ec_node *expr)
 {
 	struct ec_node *lex = NULL;
 	int ret;
@@ -357,10 +357,9 @@ fail:
 	return NULL;
 }
 
-static struct ec_node *
-ec_node_cmd_build(const char *cmd_str, struct ec_node **table, size_t len)
+static struct ec_node *ec_node_cmd_build(const char *cmd_str, struct ec_node **table, size_t len)
 {
-	struct ec_node_cmd_ctx ctx = { table, len };
+	struct ec_node_cmd_ctx ctx = {table, len};
 	struct ec_pnode *p = NULL;
 	void *result;
 	int ret;
@@ -375,9 +374,9 @@ ec_node_cmd_build(const char *cmd_str, struct ec_node **table, size_t len)
 		goto fail;
 	}
 
-	ret = ec_node_expr_eval(&result, ec_node_cmd_expr,
-				ec_pnode_get_first_child(p),
-				&expr_ops, &ctx);
+	ret = ec_node_expr_eval(
+		&result, ec_node_cmd_expr, ec_pnode_get_first_child(p), &expr_ops, &ctx
+	);
 	if (ret < 0)
 		goto fail;
 
@@ -389,19 +388,22 @@ fail:
 	return NULL;
 }
 
-static int
-ec_node_cmd_parse(const struct ec_node *node, struct ec_pnode *pstate,
-		const struct ec_strvec *strvec)
+static int ec_node_cmd_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_cmd *priv = ec_node_priv(node);
 
 	return ec_parse_child(priv->cmd, pstate, strvec);
 }
 
-static int
-ec_node_cmd_complete(const struct ec_node *node,
-		struct ec_comp *comp,
-		const struct ec_strvec *strvec)
+static int ec_node_cmd_complete(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_cmd *priv = ec_node_priv(node);
 
@@ -438,11 +440,11 @@ static const struct ec_config_schema ec_node_cmd_schema[] = {
 	{
 		.key = "expr",
 		.desc = "The expression to match. Supported operators "
-		"are or '|', list ',', many '+', many-or-zero '*', "
-		"option '[]', group '()'. An identifier (alphanumeric) can "
-		"reference a node whose node_id matches. Else it is "
-		"interpreted as ec_node_str() matching this string. "
-		"Example: command [option] (subset1, subset2) x|y",
+			"are or '|', list ',', many '+', many-or-zero '*', "
+			"option '[]', group '()'. An identifier (alphanumeric) can "
+			"reference a node whose node_id matches. Else it is "
+			"interpreted as ec_node_str() matching this string. "
+			"Example: command [option] (subset1, subset2) x|y",
 		.type = EC_CONFIG_TYPE_STRING,
 	},
 	{
@@ -456,8 +458,7 @@ static const struct ec_config_schema ec_node_cmd_schema[] = {
 	},
 };
 
-static int ec_node_cmd_set_config(struct ec_node *node,
-				const struct ec_config *config)
+static int ec_node_cmd_set_config(struct ec_node *node, const struct ec_config *config)
 {
 	struct ec_node_cmd *priv = ec_node_priv(node);
 	const struct ec_config *expr = NULL;
@@ -473,8 +474,7 @@ static int ec_node_cmd_set_config(struct ec_node *node,
 		goto fail;
 	}
 
-	table = ec_node_config_node_list_to_table(
-		ec_config_dict_get(config, "children"), &len);
+	table = ec_node_config_node_list_to_table(ec_config_dict_get(config, "children"), &len);
 	if (table == NULL)
 		goto fail;
 
@@ -511,8 +511,7 @@ fail:
 	return -1;
 }
 
-static size_t
-ec_node_cmd_get_children_count(const struct ec_node *node)
+static size_t ec_node_cmd_get_children_count(const struct ec_node *node)
 {
 	struct ec_node_cmd *priv = ec_node_priv(node);
 
@@ -521,9 +520,12 @@ ec_node_cmd_get_children_count(const struct ec_node *node)
 	return 1;
 }
 
-static int
-ec_node_cmd_get_child(const struct ec_node *node, size_t i,
-		struct ec_node **child, unsigned int *refs)
+static int ec_node_cmd_get_child(
+	const struct ec_node *node,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+)
 {
 	struct ec_node_cmd *priv = ec_node_priv(node);
 

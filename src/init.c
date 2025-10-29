@@ -2,8 +2,8 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <ecoli/init.h>
@@ -20,8 +20,7 @@ void ec_init_register(struct ec_init *init)
 		return;
 	}
 
-
-	TAILQ_FOREACH(cur, &init_list, next) {
+	TAILQ_FOREACH (cur, &init_list, next) {
 		if (init->priority > cur->priority)
 			continue;
 
@@ -36,7 +35,7 @@ int ec_init(void)
 {
 	struct ec_init *init;
 
-	TAILQ_FOREACH(init, &init_list, next) {
+	TAILQ_FOREACH (init, &init_list, next) {
 		if (init->init != NULL && init->init() < 0)
 			return -1;
 	}
@@ -48,7 +47,8 @@ void ec_exit(void)
 {
 	struct ec_init *init;
 
-	TAILQ_FOREACH_REVERSE(init, &init_list, ec_init_list, next) {
+	TAILQ_FOREACH_REVERSE(init, &init_list, ec_init_list, next)
+	{
 		if (init->exit != NULL)
 			init->exit();
 	}

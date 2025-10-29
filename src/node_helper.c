@@ -2,21 +2,19 @@
  * Copyright 2018, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <sys/types.h>
-#include <sys/queue.h>
+#include <errno.h>
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <errno.h>
+#include <sys/queue.h>
+#include <sys/types.h>
 
 #include <ecoli/config.h>
 #include <ecoli/node.h>
 #include <ecoli/node_helper.h>
 #include <ecoli/utils.h>
 
-struct ec_node **
-ec_node_config_node_list_to_table(const struct ec_config *config,
-				size_t *len)
+struct ec_node **ec_node_config_node_list_to_table(const struct ec_config *config, size_t *len)
 {
 	struct ec_node **table = NULL;
 	struct ec_config *child;
@@ -43,7 +41,7 @@ ec_node_config_node_list_to_table(const struct ec_config *config,
 		goto fail;
 
 	n = 0;
-	TAILQ_FOREACH(child, &config->list, next) {
+	TAILQ_FOREACH (child, &config->list, next) {
 		if (ec_config_get_type(child) != EC_CONFIG_TYPE_NODE) {
 			errno = EINVAL;
 			goto fail;
@@ -66,8 +64,7 @@ fail:
 	return NULL;
 }
 
-struct ec_config *
-ec_node_config_node_list_from_vargs(va_list ap)
+struct ec_config *ec_node_config_node_list_from_vargs(va_list ap)
 {
 	struct ec_config *list = NULL;
 	struct ec_node *node = va_arg(ap, struct ec_node *);

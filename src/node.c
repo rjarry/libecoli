@@ -2,11 +2,11 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <assert.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
-#include <errno.h>
 
 #include <ecoli/config.h>
 #include <ecoli/dict.h>
@@ -36,26 +36,24 @@ enum ec_node_free_state {
  */
 struct ec_node {
 	const struct ec_node_type *type; /**< The node type. */
-	struct ec_config *config;        /**< Node configuration. */
-	char *id;                  /**< Node identifier (EC_NO_ID if none). */
-	struct ec_dict *attrs;           /**< Attributes of the node. */
-	unsigned int refcnt;             /**< Reference counter. */
+	struct ec_config *config; /**< Node configuration. */
+	char *id; /**< Node identifier (EC_NO_ID if none). */
+	struct ec_dict *attrs; /**< Attributes of the node. */
+	unsigned int refcnt; /**< Reference counter. */
 	struct {
 		enum ec_node_free_state state; /**< State of loop detection. */
-		unsigned int refcnt;    /**< Number of reachable references
+		unsigned int refcnt; /**< Number of reachable references
 					 *   starting from node beeing freed. */
 	} free; /**< Freeing state: used for loop detection */
 };
 
-static struct ec_node_type_list node_type_list =
-	TAILQ_HEAD_INITIALIZER(node_type_list);
+static struct ec_node_type_list node_type_list = TAILQ_HEAD_INITIALIZER(node_type_list);
 
-const struct ec_node_type *
-ec_node_type_lookup(const char *name)
+const struct ec_node_type *ec_node_type_lookup(const char *name)
 {
 	struct ec_node_type *type;
 
-	TAILQ_FOREACH(type, &node_type_list, next) {
+	TAILQ_FOREACH (type, &node_type_list, next) {
 		if (!strcmp(name, type->name))
 			return type;
 	}
@@ -80,7 +78,7 @@ void ec_node_type_dump(FILE *out)
 {
 	struct ec_node_type *type;
 
-	TAILQ_FOREACH(type, &node_type_list, next)
+	TAILQ_FOREACH (type, &node_type_list, next)
 		fprintf(out, "%s\n", type->name);
 }
 
@@ -88,8 +86,7 @@ struct ec_node *ec_node_from_type(const struct ec_node_type *type, const char *i
 {
 	struct ec_node *node = NULL;
 
-	EC_LOG(EC_LOG_DEBUG, "create node type=%s id=%s\n",
-		type->name, id);
+	EC_LOG(EC_LOG_DEBUG, "create node type=%s id=%s\n", type->name, id);
 	if (id == NULL) {
 		errno = EINVAL;
 		goto fail;
@@ -118,7 +115,7 @@ struct ec_node *ec_node_from_type(const struct ec_node_type *type, const char *i
 
 	return node;
 
- fail:
+fail:
 	if (node != NULL) {
 		ec_dict_free(node->attrs);
 		free(node->id);
@@ -128,14 +125,12 @@ struct ec_node *ec_node_from_type(const struct ec_node_type *type, const char *i
 	return NULL;
 }
 
-const struct ec_config_schema *
-ec_node_type_schema(const struct ec_node_type *type)
+const struct ec_config_schema *ec_node_type_schema(const struct ec_node_type *type)
 {
 	return type->schema;
 }
 
-const char *
-ec_node_type_name(const struct ec_node_type *type)
+const char *ec_node_type_name(const struct ec_node_type *type)
 {
 	return type->name;
 }
@@ -146,8 +141,7 @@ struct ec_node *ec_node(const char *typename, const char *id)
 
 	type = ec_node_type_lookup(typename);
 	if (type == NULL) {
-		EC_LOG(EC_LOG_ERR, "type=%s does not exist\n",
-			typename);
+		EC_LOG(EC_LOG_ERR, "type=%s does not exist\n", typename);
 		return NULL;
 	}
 
@@ -228,9 +222,7 @@ void ec_node_free(struct ec_node *node)
 
 	assert(node->refcnt > 0);
 
-	if (node->free.state == EC_NODE_FREE_STATE_NONE &&
-			node->refcnt != 1) {
-
+	if (node->free.state == EC_NODE_FREE_STATE_NONE && node->refcnt != 1) {
 		/* Traverse the node tree starting from this node, and for each
 		 * node, count the number of reachable references. Then, all
 		 * nodes whose reachable references == total reference are
@@ -287,9 +279,12 @@ size_t ec_node_get_children_count(const struct ec_node *node)
 	return node->type->get_children_count(node);
 }
 
-int
-ec_node_get_child(const struct ec_node *node, size_t i,
-	struct ec_node **child, unsigned int *refs)
+int ec_node_get_child(
+	const struct ec_node *node,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+)
 {
 	*child = NULL;
 	*refs = 0;
@@ -298,8 +293,7 @@ ec_node_get_child(const struct ec_node *node, size_t i,
 	return node->type->get_child(node, i, child, refs);
 }
 
-int
-ec_node_set_config(struct ec_node *node, struct ec_config *config)
+int ec_node_set_config(struct ec_node *node, struct ec_config *config)
 {
 	if (node->type->schema == NULL) {
 		errno = EINVAL;
@@ -365,8 +359,8 @@ const char *ec_node_id(const struct ec_node *node)
 	return node->id;
 }
 
-static void __ec_node_dump(FILE *out,
-	const struct ec_node *node, size_t indent, struct ec_dict *dict)
+static void
+__ec_node_dump(FILE *out, const struct ec_node *node, size_t indent, struct ec_dict *dict)
 {
 	const char *id, *typename;
 	struct ec_node *child;
@@ -382,16 +376,32 @@ static void __ec_node_dump(FILE *out,
 
 	snprintf(buf, sizeof(buf), "%p", node);
 	if (ec_dict_has_key(dict, buf)) {
-		fprintf(out, "%*s" "%s type=%s id=%s %p... (loop)\n",
-			(int)indent * 4, "", desc, typename, id, node);
+		fprintf(out,
+			"%*s"
+			"%s type=%s id=%s %p... (loop)\n",
+			(int)indent * 4,
+			"",
+			desc,
+			typename,
+			id,
+			node);
 
 		goto end;
 	}
 
 	ec_dict_set(dict, buf, NULL, NULL);
-	fprintf(out, "%*s" "%s type=%s id=%s %p refs=%u free_state=%d free_refs=%d\n",
-		(int)indent * 4, "", desc, typename, id, node, node->refcnt,
-		node->free.state, node->free.refcnt);
+	fprintf(out,
+		"%*s"
+		"%s type=%s id=%s %p refs=%u free_state=%d free_refs=%d\n",
+		(int)indent * 4,
+		"",
+		desc,
+		typename,
+		id,
+		node,
+		node->refcnt,
+		node->free.state,
+		node->free.refcnt);
 
 	n = ec_node_get_children_count(node);
 	for (i = 0; i < n; i++) {
@@ -442,8 +452,7 @@ char *ec_node_desc(const struct ec_node *node)
 	return desc;
 }
 
-int ec_node_check_type(const struct ec_node *node,
-		const struct ec_node_type *type)
+int ec_node_check_type(const struct ec_node *node, const struct ec_node_type *type)
 {
 	if (strcmp(node->type->name, type->name)) {
 		errno = EINVAL;

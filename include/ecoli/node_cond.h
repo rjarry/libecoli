@@ -27,7 +27,6 @@ struct ec_node;
  * @return
  *   The new ecoli cond node.
  */
-struct ec_node *ec_node_cond(const char *id, const char *cond_str,
-	struct ec_node *child);
+struct ec_node *ec_node_cond(const char *id, const char *cond_str, struct ec_node *child);
 
 /** @} */

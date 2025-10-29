@@ -11,10 +11,10 @@
 
 #pragma once
 
-#include <sys/queue.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <sys/queue.h>
 
 struct ec_config;
 struct ec_dict;
@@ -41,8 +41,8 @@ enum ec_config_type {
  * storage of the configuration dictionary.
  */
 struct ec_config_schema {
-	const char *key;          /**< The key string (NULL for list elts). */
-	const char *desc;         /**< A description of the value. */
+	const char *key; /**< The key string (NULL for list elts). */
+	const char *desc; /**< A description of the value. */
 	enum ec_config_type type; /**< Type of the value */
 	/* XXX flags: mandatory */
 	/* XXX default */
@@ -62,12 +62,12 @@ struct ec_config {
 	enum ec_config_type type;
 
 	union {
-		bool boolean;   /**< Boolean value */
-		int64_t i64;    /**< Signed integer value */
-		uint64_t u64;   /**< Unsigned integer value */
-		char *string;   /**< String value */
-		struct ec_node *node;       /**< Node value */
-		struct ec_dict *dict;     /**< Hash table value */
+		bool boolean; /**< Boolean value */
+		int64_t i64; /**< Signed integer value */
+		uint64_t u64; /**< Unsigned integer value */
+		char *string; /**< String value */
+		struct ec_node *node; /**< Node value */
+		struct ec_dict *dict; /**< Hash table value */
 		struct ec_config_list list; /**< List value */
 	};
 
@@ -115,8 +115,7 @@ void ec_config_schema_dump(FILE *out, const struct ec_config_schema *schema);
  *   The schema entry if it matches a key, or NULL if not found.
  */
 const struct ec_config_schema *
-ec_config_schema_lookup(const struct ec_config_schema *schema,
-			const char *key);
+ec_config_schema_lookup(const struct ec_config_schema *schema, const char *key);
 
 /**
  * Get the type of a schema entry.
@@ -126,8 +125,7 @@ ec_config_schema_lookup(const struct ec_config_schema *schema,
  * @return
  *   The type of the schema entry.
  */
-enum ec_config_type
-ec_config_schema_type(const struct ec_config_schema *schema_elt);
+enum ec_config_type ec_config_schema_type(const struct ec_config_schema *schema_elt);
 
 /**
  * Get the subschema of a schema entry.
@@ -137,8 +135,7 @@ ec_config_schema_type(const struct ec_config_schema *schema_elt);
  * @return
  *   The subschema if any, or NULL.
  */
-const struct ec_config_schema *
-ec_config_schema_sub(const struct ec_config_schema *schema_elt);
+const struct ec_config_schema *ec_config_schema_sub(const struct ec_config_schema *schema_elt);
 
 /**
  * Check if a key name is reserved in a config dict.
@@ -156,7 +153,6 @@ bool ec_config_key_is_reserved(const char *name);
  * Array of reserved key names.
  */
 extern const char *ec_config_reserved_keys[];
-
 
 /* config */
 
@@ -291,8 +287,7 @@ ssize_t ec_config_count(const struct ec_config *config);
  * @return
  *   0 on success, -1 on error (errno is set).
  */
-int ec_config_validate(const struct ec_config *dict,
-		const struct ec_config_schema *schema);
+int ec_config_validate(const struct ec_config *dict, const struct ec_config_schema *schema);
 
 /**
  * Set a value in a hash table configuration
@@ -307,8 +302,7 @@ int ec_config_validate(const struct ec_config *dict,
  * @return
  *   0 on success, -1 on error (errno is set).
  */
-int ec_config_dict_set(struct ec_config *dict, const char *key,
-		struct ec_config *value);
+int ec_config_dict_set(struct ec_config *dict, const char *key, struct ec_config *value);
 
 /**
  * Remove an element from a hash table configuration.
@@ -327,14 +321,12 @@ int ec_config_dict_del(struct ec_config *dict, const char *key);
 /**
  * Compare two configurations.
  */
-int ec_config_cmp(const struct ec_config *config1,
-		const struct ec_config *config2);
+int ec_config_cmp(const struct ec_config *config1, const struct ec_config *config2);
 
 /**
  * Get configuration value.
  */
-struct ec_config *ec_config_dict_get(const struct ec_config *config,
-				const char *key);
+struct ec_config *ec_config_dict_get(const struct ec_config *config, const char *key);
 
 /**
  * Get the first element of a list.
@@ -364,8 +356,7 @@ struct ec_config *ec_config_list_first(struct ec_config *list);
  * @return
  *   The next configuration element, or NULL if there is no more element.
  */
-struct ec_config *
-ec_config_list_next(struct ec_config *list, struct ec_config *config);
+struct ec_config *ec_config_list_next(struct ec_config *list, struct ec_config *config);
 
 /**
  * Free a configuration.
@@ -381,8 +372,7 @@ void ec_config_free(struct ec_config *config);
  * @return
  *   0 if the configurations are equal, else -1.
  */
-int ec_config_cmp(const struct ec_config *value1,
-		const struct ec_config *value2);
+int ec_config_cmp(const struct ec_config *value1, const struct ec_config *value2);
 
 /**
  * Duplicate a configuration.
@@ -392,8 +382,7 @@ int ec_config_cmp(const struct ec_config *value1,
  * @return
  *   The duplicated configuration, or NULL on error (errno is set).
  */
-struct ec_config *
-ec_config_dup(const struct ec_config *config);
+struct ec_config *ec_config_dup(const struct ec_config *config);
 
 /**
  * Dump a configuration.

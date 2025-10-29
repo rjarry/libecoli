@@ -2,10 +2,10 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/config.h>
@@ -25,9 +25,11 @@ struct ec_node_many {
 	struct ec_node *child;
 };
 
-static int ec_node_many_parse(const struct ec_node *node,
-			struct ec_pnode *pstate,
-			const struct ec_strvec *strvec)
+static int ec_node_many_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_many *priv = ec_node_priv(node);
 	struct ec_pnode *child_parse;
@@ -36,8 +38,7 @@ static int ec_node_many_parse(const struct ec_node *node,
 	int ret;
 
 	for (count = 0; priv->max == 0 || count < priv->max; count++) {
-		childvec = ec_strvec_ndup(strvec, off,
-			ec_strvec_len(strvec) - off);
+		childvec = ec_strvec_ndup(strvec, off, ec_strvec_len(strvec) - off);
 		if (childvec == NULL)
 			goto fail;
 
@@ -74,10 +75,12 @@ fail:
 	return -1;
 }
 
-static int
-__ec_node_many_complete(struct ec_node_many *priv, unsigned int max,
-			struct ec_comp *comp,
-			const struct ec_strvec *strvec)
+static int __ec_node_many_complete(
+	struct ec_node_many *priv,
+	unsigned int max,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_pnode *parse = ec_comp_get_cur_pstate(comp);
 	struct ec_strvec *childvec = NULL;
@@ -139,15 +142,15 @@ fail:
 	return -1;
 }
 
-static int
-ec_node_many_complete(const struct ec_node *node,
-		struct ec_comp *comp,
-		const struct ec_strvec *strvec)
+static int ec_node_many_complete(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_many *priv = ec_node_priv(node);
 
-	return __ec_node_many_complete(priv, priv->max, comp,
-				strvec);
+	return __ec_node_many_complete(priv, priv->max, comp, strvec);
 }
 
 static void ec_node_many_free_priv(struct ec_node *node)
@@ -157,8 +160,7 @@ static void ec_node_many_free_priv(struct ec_node *node)
 	ec_node_free(priv->child);
 }
 
-static size_t
-ec_node_many_get_children_count(const struct ec_node *node)
+static size_t ec_node_many_get_children_count(const struct ec_node *node)
 {
 	struct ec_node_many *priv = ec_node_priv(node);
 
@@ -167,9 +169,12 @@ ec_node_many_get_children_count(const struct ec_node *node)
 	return 0;
 }
 
-static int
-ec_node_many_get_child(const struct ec_node *node, size_t i,
-		struct ec_node **child, unsigned int *refs)
+static int ec_node_many_get_child(
+	const struct ec_node *node,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+)
 {
 	struct ec_node_many *priv = ec_node_priv(node);
 
@@ -195,7 +200,7 @@ static const struct ec_config_schema ec_node_many_schema[] = {
 	{
 		.key = "max",
 		.desc = "The maximum number of matches. If 0, there is "
-		"no maximum (default = 0).",
+			"no maximum (default = 0).",
 		.type = EC_CONFIG_TYPE_UINT64,
 	},
 	{
@@ -203,8 +208,7 @@ static const struct ec_config_schema ec_node_many_schema[] = {
 	},
 };
 
-static int ec_node_many_set_config(struct ec_node *node,
-				const struct ec_config *config)
+static int ec_node_many_set_config(struct ec_node *node, const struct ec_config *config)
 {
 	struct ec_node_many *priv = ec_node_priv(node);
 	const struct ec_config *child, *min, *max;
@@ -217,14 +221,14 @@ static int ec_node_many_set_config(struct ec_node *node,
 		goto fail;
 	}
 	min = ec_config_dict_get(config, "min");
-	if (min != NULL && (ec_config_get_type(min) != EC_CONFIG_TYPE_UINT64 ||
-				min->u64 >= UINT_MAX)) {
+	if (min != NULL
+	    && (ec_config_get_type(min) != EC_CONFIG_TYPE_UINT64 || min->u64 >= UINT_MAX)) {
 		errno = EINVAL;
 		goto fail;
 	}
 	max = ec_config_dict_get(config, "max");
-	if (max != NULL && (ec_config_get_type(max) != EC_CONFIG_TYPE_UINT64 ||
-				max->u64 >= UINT_MAX)) {
+	if (max != NULL
+	    && (ec_config_get_type(max) != EC_CONFIG_TYPE_UINT64 || max->u64 >= UINT_MAX)) {
 		errno = EINVAL;
 		goto fail;
 	}
@@ -261,9 +265,12 @@ static struct ec_node_type ec_node_many_type = {
 
 EC_NODE_TYPE_REGISTER(ec_node_many_type);
 
-int
-ec_node_many_set_params(struct ec_node *node, struct ec_node *child,
-	unsigned int min, unsigned int max)
+int ec_node_many_set_params(
+	struct ec_node *node,
+	struct ec_node *child,
+	unsigned int min,
+	unsigned int max
+)
 {
 	const struct ec_config *cur_config = NULL;
 	struct ec_config *config = NULL;
@@ -304,8 +311,8 @@ fail:
 	return -1;
 }
 
-struct ec_node *ec_node_many(const char *id, struct ec_node *child,
-	unsigned int min, unsigned int max)
+struct ec_node *
+ec_node_many(const char *id, struct ec_node *child, unsigned int min, unsigned int max)
 {
 	struct ec_node *node = NULL;
 

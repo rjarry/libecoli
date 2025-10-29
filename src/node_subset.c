@@ -2,13 +2,13 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <assert.h>
+#include <errno.h>
+#include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <stdbool.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/log.h>
@@ -27,16 +27,19 @@ struct ec_node_subset {
 };
 
 struct parse_result {
-	size_t parse_len;           /* number of parsed nodes */
-	size_t len;                 /* consumed strings */
+	size_t parse_len; /* number of parsed nodes */
+	size_t len; /* consumed strings */
 };
 
 /* recursively find the longest list of nodes that matches: the state is
  * updated accordingly. */
-static int
-__ec_node_subset_parse(struct parse_result *out, struct ec_node **table,
-		size_t table_len, struct ec_pnode *pstate,
-		const struct ec_strvec *strvec)
+static int __ec_node_subset_parse(
+	struct parse_result *out,
+	struct ec_node **table,
+	size_t table_len,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node **child_table;
 	struct ec_strvec *childvec = NULL;
@@ -73,14 +76,12 @@ __ec_node_subset_parse(struct parse_result *out, struct ec_node **table,
 
 		/* build a new strvec (ret is the len of matched strvec) */
 		len = ret;
-		childvec = ec_strvec_ndup(strvec, len,
-					ec_strvec_len(strvec) - len);
+		childvec = ec_strvec_ndup(strvec, len, ec_strvec_len(strvec) - len);
 		if (childvec == NULL)
 			goto fail;
 
 		memset(&result, 0, sizeof(result));
-		ret = __ec_node_subset_parse(&result, child_table,
-					table_len - 1, pstate, childvec);
+		ret = __ec_node_subset_parse(&result, child_table, table_len - 1, pstate, childvec);
 		ec_strvec_free(childvec);
 		childvec = NULL;
 		if (ret < 0)
@@ -111,17 +112,18 @@ __ec_node_subset_parse(struct parse_result *out, struct ec_node **table,
 
 	return 0;
 
- fail:
+fail:
 	ec_pnode_free(best_parse);
 	ec_strvec_free(childvec);
 	free(child_table);
 	return -1;
 }
 
-static int
-ec_node_subset_parse(const struct ec_node *node,
-		struct ec_pnode *pstate,
-		const struct ec_strvec *strvec)
+static int ec_node_subset_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_subset *priv = ec_node_priv(node);
 	struct ec_pnode *parse = NULL;
@@ -133,8 +135,7 @@ ec_node_subset_parse(const struct ec_node *node,
 
 	memset(&result, 0, sizeof(result));
 
-	ret = __ec_node_subset_parse(&result, priv->table,
-				priv->len, pstate, strvec);
+	ret = __ec_node_subset_parse(&result, priv->table, priv->len, pstate, strvec);
 	if (ret < 0)
 		goto fail;
 
@@ -144,15 +145,17 @@ ec_node_subset_parse(const struct ec_node *node,
 
 	return result.len;
 
- fail:
+fail:
 	ec_pnode_free(parse);
 	return ret;
 }
 
-static int
-__ec_node_subset_complete(struct ec_node **table, size_t table_len,
-			struct ec_comp *comp,
-			const struct ec_strvec *strvec)
+static int __ec_node_subset_complete(
+	struct ec_node **table,
+	size_t table_len,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_pnode *parse = ec_comp_get_cur_pstate(comp);
 	struct ec_strvec *childvec = NULL;
@@ -174,8 +177,7 @@ __ec_node_subset_complete(struct ec_node **table, size_t table_len,
 		if (table[i] == NULL)
 			continue;
 
-		ret = ec_complete_child(table[i],
-					comp, strvec);
+		ret = ec_complete_child(table[i], comp, strvec);
 		if (ret < 0)
 			goto fail;
 	}
@@ -194,8 +196,7 @@ __ec_node_subset_complete(struct ec_node **table, size_t table_len,
 			continue;
 
 		len = ret;
-		childvec = ec_strvec_ndup(strvec, len,
-					ec_strvec_len(strvec) - len);
+		childvec = ec_strvec_ndup(strvec, len, ec_strvec_len(strvec) - len);
 		if (childvec == NULL) {
 			ec_pnode_del_last_child(parse);
 			goto fail;
@@ -203,8 +204,7 @@ __ec_node_subset_complete(struct ec_node **table, size_t table_len,
 
 		save = table[i];
 		table[i] = NULL;
-		ret = __ec_node_subset_complete(table, table_len,
-						comp, childvec);
+		ret = __ec_node_subset_complete(table, table_len, comp, childvec);
 		table[i] = save;
 		ec_strvec_free(childvec);
 		childvec = NULL;
@@ -220,15 +220,15 @@ fail:
 	return -1;
 }
 
-static int
-ec_node_subset_complete(const struct ec_node *node,
-			struct ec_comp *comp,
-			const struct ec_strvec *strvec)
+static int ec_node_subset_complete(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_subset *priv = ec_node_priv(node);
 
-	return __ec_node_subset_complete(priv->table, priv->len, comp,
-					strvec);
+	return __ec_node_subset_complete(priv->table, priv->len, comp, strvec);
 }
 
 static void ec_node_subset_free_priv(struct ec_node *node)
@@ -241,16 +241,18 @@ static void ec_node_subset_free_priv(struct ec_node *node)
 	free(priv->table);
 }
 
-static size_t
-ec_node_subset_get_children_count(const struct ec_node *node)
+static size_t ec_node_subset_get_children_count(const struct ec_node *node)
 {
 	struct ec_node_subset *priv = ec_node_priv(node);
 	return priv->len;
 }
 
-static int
-ec_node_subset_get_child(const struct ec_node *node, size_t i,
-			struct ec_node **child, unsigned int *refs)
+static int ec_node_subset_get_child(
+	const struct ec_node *node,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+)
 {
 	struct ec_node_subset *priv = ec_node_priv(node);
 
@@ -319,13 +321,10 @@ struct ec_node *__ec_node_subset(const char *id, ...)
 	if (node == NULL)
 		fail = 1;
 
-	for (child = va_arg(ap, struct ec_node *);
-	     child != EC_VA_END;
+	for (child = va_arg(ap, struct ec_node *); child != EC_VA_END;
 	     child = va_arg(ap, struct ec_node *)) {
-
 		/* on error, don't quit the loop to avoid leaks */
-		if (fail == 1 || child == NULL ||
-				ec_node_subset_add(node, child) < 0) {
+		if (fail == 1 || child == NULL || ec_node_subset_add(node, child) < 0) {
 			fail = 1;
 			ec_node_free(child);
 		}

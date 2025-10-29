@@ -23,14 +23,14 @@
 #include <ecoli/assert.h>
 
 enum ec_log_level {
-	EC_LOG_EMERG   = 0,  /* system is unusable               */
-	EC_LOG_ALERT   = 1,  /* action must be taken immediately */
-	EC_LOG_CRIT    = 2,  /* critical conditions              */
-	EC_LOG_ERR     = 3,  /* error conditions                 */
-	EC_LOG_WARNING = 4,  /* warning conditions               */
-	EC_LOG_NOTICE  = 5,  /* normal but significant condition */
-	EC_LOG_INFO    = 6,  /* informational                    */
-	EC_LOG_DEBUG   = 7,  /* debug-level messages             */
+	EC_LOG_EMERG = 0, /**< system is unusable */
+	EC_LOG_ALERT = 1, /**< action must be taken immediately */
+	EC_LOG_CRIT = 2, /**< critical conditions */
+	EC_LOG_ERR = 3, /**< error conditions */
+	EC_LOG_WARNING = 4, /**< warning conditions */
+	EC_LOG_NOTICE = 5, /**< normal but significant condition */
+	EC_LOG_INFO = 6, /**< informational */
+	EC_LOG_DEBUG = 7, /**< debug-level messages */
 };
 
 /**
@@ -50,16 +50,14 @@ enum ec_log_level {
  * @param name
  *   The name of the log to be registered.
  */
-#define EC_LOG_TYPE_REGISTER(name)					\
-	static int name##_log_type;					\
-	static int ec_log_local_type;					\
-	__attribute__((constructor, used))				\
-	static void ec_log_register_##name(void)			\
-	{								\
-		ec_log_local_type = ec_log_type_register(#name);	\
-		ec_assert_print(ec_log_local_type >= 0,			\
-				"cannot register log type.\n");		\
-		name##_log_type = ec_log_local_type;			\
+#define EC_LOG_TYPE_REGISTER(name)                                                                 \
+	static int name##_log_type;                                                                \
+	static int ec_log_local_type;                                                              \
+	__attribute__((constructor, used)) static void ec_log_register_##name(void)                \
+	{                                                                                          \
+		ec_log_local_type = ec_log_type_register(#name);                                   \
+		ec_assert_print(ec_log_local_type >= 0, "cannot register log type.\n");            \
+		name##_log_type = ec_log_local_type;                                               \
 	}
 
 /**
@@ -80,8 +78,7 @@ enum ec_log_level {
  * @return
  *   0 on success, -1 on error (errno is set).
  */
-typedef int (*ec_log_t)(int type, enum ec_log_level level, void *opaque,
-			const char *str);
+typedef int (*ec_log_t)(int type, enum ec_log_level level, void *opaque, const char *str);
 
 /**
  * Register a user log function.
@@ -205,8 +202,7 @@ int ec_vlog(int type, enum ec_log_level level, const char *format, va_list ap);
  * @return
  *   0 on success, -1 on error (errno is set).
  */
-int ec_log_default_cb(int type, enum ec_log_level level, void *opaque,
-		const char *str);
+int ec_log_default_cb(int type, enum ec_log_level level, void *opaque, const char *str);
 
 /**
  * Set the global log level.

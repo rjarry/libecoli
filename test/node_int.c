@@ -32,16 +32,18 @@ EC_TEST_MAIN()
 
 	p = ec_parse(node, "1");
 	s = ec_strvec_val(ec_pnode_get_strvec(p), 0);
-	testres |= EC_TEST_CHECK(s != NULL &&
-		ec_node_uint_getval(node, s, &u64) == 0 &&
-		u64 == 1, "bad integer value");
+	testres |= EC_TEST_CHECK(
+		s != NULL && ec_node_uint_getval(node, s, &u64) == 0 && u64 == 1,
+		"bad integer value"
+	);
 	ec_pnode_free(p);
 
 	p = ec_parse(node, "10");
 	s = ec_strvec_val(ec_pnode_get_strvec(p), 0);
-	testres |= EC_TEST_CHECK(s != NULL &&
-		ec_node_uint_getval(node, s, &u64) == 0 &&
-		u64 == 10, "bad integer value");
+	testres |= EC_TEST_CHECK(
+		s != NULL && ec_node_uint_getval(node, s, &u64) == 0 && u64 == 10,
+		"bad integer value"
+	);
 	ec_pnode_free(p);
 	ec_node_free(node);
 
@@ -61,9 +63,10 @@ EC_TEST_MAIN()
 
 	p = ec_parse(node, "10");
 	s = ec_strvec_val(ec_pnode_get_strvec(p), 0);
-	testres |= EC_TEST_CHECK(s != NULL &&
-		ec_node_int_getval(node, s, &i64) == 0 &&
-		i64 == 16, "bad integer value");
+	testres |= EC_TEST_CHECK(
+		s != NULL && ec_node_int_getval(node, s, &i64) == 0 && i64 == 16,
+		"bad integer value"
+	);
 	ec_pnode_free(p);
 	ec_node_free(node);
 
@@ -85,15 +88,9 @@ EC_TEST_MAIN()
 		EC_LOG(EC_LOG_ERR, "cannot create node\n");
 		return -1;
 	}
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"", EC_VA_END,
-		EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"x", EC_VA_END,
-		EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"1", EC_VA_END,
-		EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, "", EC_VA_END, EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, "x", EC_VA_END, EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, "1", EC_VA_END, EC_VA_END);
 	ec_node_free(node);
 
 	return testres;

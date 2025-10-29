@@ -2,10 +2,10 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/log.h>
@@ -16,13 +16,13 @@
 
 EC_LOG_TYPE_REGISTER(node_space);
 
-struct ec_node_space {
-};
+struct ec_node_space { };
 
-static int
-ec_node_space_parse(const struct ec_node *node,
-		struct ec_pnode *pstate,
-		const struct ec_strvec *strvec)
+static int ec_node_space_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	const char *str;
 	size_t len = 0;

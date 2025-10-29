@@ -2,11 +2,11 @@
  * Copyright 2018, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <errno.h>
 #include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <yaml.h>
 
@@ -28,22 +28,24 @@ struct enode_table {
 };
 
 static struct ec_node *
-parse_ec_node(struct enode_table *table, const yaml_document_t *document,
-	const yaml_node_t *ynode);
+parse_ec_node(struct enode_table *table, const yaml_document_t *document, const yaml_node_t *ynode);
 
-static struct ec_config *
-parse_ec_config_list(struct enode_table *table,
-		const struct ec_config_schema *schema,
-		const yaml_document_t *document, const yaml_node_t *ynode);
+static struct ec_config *parse_ec_config_list(
+	struct enode_table *table,
+	const struct ec_config_schema *schema,
+	const yaml_document_t *document,
+	const yaml_node_t *ynode
+);
 
-static struct ec_config *
-parse_ec_config_dict(struct enode_table *table,
-		const struct ec_config_schema *schema,
-		const yaml_document_t *document, const yaml_node_t *ynode);
+static struct ec_config *parse_ec_config_dict(
+	struct enode_table *table,
+	const struct ec_config_schema *schema,
+	const yaml_document_t *document,
+	const yaml_node_t *ynode
+);
 
 /* XXX to utils.c ? */
-static int
-parse_llint(const char *str, int64_t *val)
+static int parse_llint(const char *str, int64_t *val)
 {
 	char *endptr;
 	int save_errno = errno;
@@ -55,8 +57,8 @@ parse_llint(const char *str, int64_t *val)
 	errno = 0;
 	*val = strtoll(str, &endptr, 0);
 
-	if ((errno == ERANGE && (*val == LLONG_MAX || *val == LLONG_MIN)) ||
-			(errno != 0 && *val == 0))
+	if ((errno == ERANGE && (*val == LLONG_MAX || *val == LLONG_MIN))
+	    || (errno != 0 && *val == 0))
 		return -1;
 
 	if (*endptr != 0) {
@@ -68,8 +70,7 @@ parse_llint(const char *str, int64_t *val)
 	return 0;
 }
 
-static int
-parse_ullint(const char *str, uint64_t *val)
+static int parse_ullint(const char *str, uint64_t *val)
 {
 	char *endptr;
 	int save_errno = errno;
@@ -86,8 +87,7 @@ parse_ullint(const char *str, uint64_t *val)
 	errno = 0;
 	*val = strtoull(str, &endptr, 0);
 
-	if ((errno == ERANGE && *val == ULLONG_MAX) ||
-			(errno != 0 && *val == 0))
+	if ((errno == ERANGE && *val == ULLONG_MAX) || (errno != 0 && *val == 0))
 		return -1;
 
 	if (*endptr != 0)
@@ -97,8 +97,7 @@ parse_ullint(const char *str, uint64_t *val)
 	return 0;
 }
 
-static int
-parse_bool(const char *str, bool *val)
+static int parse_bool(const char *str, bool *val)
 {
 	if (str == NULL) {
 		errno = EINVAL;
@@ -115,9 +114,7 @@ parse_bool(const char *str, bool *val)
 	return -1;
 }
 
-static int
-add_in_table(struct enode_table *table,
-	const yaml_node_t *ynode, struct ec_node *enode)
+static int add_in_table(struct enode_table *table, const yaml_node_t *ynode, struct ec_node *enode)
 {
 	struct pair *pair = NULL;
 
@@ -134,8 +131,7 @@ add_in_table(struct enode_table *table,
 	return 0;
 }
 
-static void
-free_table(struct enode_table *table)
+static void free_table(struct enode_table *table)
 {
 	size_t i;
 
@@ -144,10 +140,12 @@ free_table(struct enode_table *table)
 	free(table->pair);
 }
 
-static struct ec_config *
-parse_ec_config(struct enode_table *table,
-		const struct ec_config_schema *schema_elt,
-		const yaml_document_t *document, const yaml_node_t *ynode)
+static struct ec_config *parse_ec_config(
+	struct enode_table *table,
+	const struct ec_config_schema *schema_elt,
+	const yaml_document_t *document,
+	const yaml_node_t *ynode
+)
 {
 	const struct ec_config_schema *subschema;
 	struct ec_config *config = NULL;
@@ -167,7 +165,7 @@ parse_ec_config(struct enode_table *table,
 			goto fail;
 		}
 		value_str = (const char *)ynode->data.scalar.value;
-		if (parse_bool(value_str, &boolean)  < 0) {
+		if (parse_bool(value_str, &boolean) < 0) {
 			fprintf(stderr, "Failed to parse boolean\n");
 			goto fail;
 		}
@@ -183,7 +181,7 @@ parse_ec_config(struct enode_table *table,
 			goto fail;
 		}
 		value_str = (const char *)ynode->data.scalar.value;
-		if (parse_llint(value_str, &i64)  < 0) {
+		if (parse_llint(value_str, &i64) < 0) {
 			fprintf(stderr, "Failed to parse i64\n");
 			goto fail;
 		}
@@ -199,7 +197,7 @@ parse_ec_config(struct enode_table *table,
 			goto fail;
 		}
 		value_str = (const char *)ynode->data.scalar.value;
-		if (parse_ullint(value_str, &u64)  < 0) {
+		if (parse_ullint(value_str, &u64) < 0) {
 			fprintf(stderr, "Failed to parse u64\n");
 			goto fail;
 		}
@@ -265,10 +263,12 @@ fail:
 	return NULL;
 }
 
-static struct ec_config *
-parse_ec_config_list(struct enode_table *table,
-		const struct ec_config_schema *schema,
-		const yaml_document_t *document, const yaml_node_t *ynode)
+static struct ec_config *parse_ec_config_list(
+	struct enode_table *table,
+	const struct ec_config_schema *schema,
+	const yaml_document_t *document,
+	const yaml_node_t *ynode
+)
 {
 	struct ec_config *config = NULL, *subconfig = NULL;
 	const yaml_node_item_t *item;
@@ -285,8 +285,8 @@ parse_ec_config_list(struct enode_table *table,
 		goto fail;
 	}
 
-	for (item = ynode->data.sequence.items.start;
-	     item < ynode->data.sequence.items.top; item++) {
+	for (item = ynode->data.sequence.items.start; item < ynode->data.sequence.items.top;
+	     item++) {
 		value = document->nodes.start + (*item) - 1; // XXX -1 ?
 		subconfig = parse_ec_config(table, schema, document, value);
 		if (subconfig == NULL)
@@ -304,10 +304,12 @@ fail:
 	return NULL;
 }
 
-static struct ec_config *
-parse_ec_config_dict(struct enode_table *table,
-		const struct ec_config_schema *schema,
-		const yaml_document_t *document, const yaml_node_t *ynode)
+static struct ec_config *parse_ec_config_dict(
+	struct enode_table *table,
+	const struct ec_config_schema *schema,
+	const yaml_document_t *document,
+	const yaml_node_t *ynode
+)
 {
 	const struct ec_config_schema *schema_elt;
 	struct ec_config *config = NULL, *subconfig = NULL;
@@ -326,8 +328,7 @@ parse_ec_config_dict(struct enode_table *table,
 		goto fail;
 	}
 
-	for (pair = ynode->data.mapping.pairs.start;
-	     pair < ynode->data.mapping.pairs.top; pair++) {
+	for (pair = ynode->data.mapping.pairs.start; pair < ynode->data.mapping.pairs.top; pair++) {
 		key = document->nodes.start + pair->key - 1; // XXX -1 ?
 		value = document->nodes.start + pair->value - 1;
 		key_str = (const char *)key->data.scalar.value;
@@ -356,8 +357,7 @@ fail:
 }
 
 static struct ec_node *
-parse_ec_node(struct enode_table *table,
-	const yaml_document_t *document, const yaml_node_t *ynode)
+parse_ec_node(struct enode_table *table, const yaml_document_t *document, const yaml_node_t *ynode)
 {
 	const struct ec_config_schema *schema;
 	const struct ec_node_type *type = NULL;
@@ -383,8 +383,7 @@ parse_ec_node(struct enode_table *table,
 			return ec_node_clone(table->pair[i].enode);
 	}
 
-	for (pair = ynode->data.mapping.pairs.start;
-	     pair < ynode->data.mapping.pairs.top; pair++) {
+	for (pair = ynode->data.mapping.pairs.start; pair < ynode->data.mapping.pairs.top; pair++) {
 		key = document->nodes.start + pair->key - 1; // XXX -1 ?
 		value = document->nodes.start + pair->value - 1;
 		key_str = (const char *)key->data.scalar.value;
@@ -401,8 +400,7 @@ parse_ec_node(struct enode_table *table,
 			}
 			type = ec_node_type_lookup(value_str);
 			if (type == NULL) {
-				fprintf(stderr, "Cannot find type %s\n",
-					value_str);
+				fprintf(stderr, "Cannot find type %s\n", value_str);
 				goto fail;
 			}
 		} else if (!strcmp(key_str, "attrs")) {
@@ -458,8 +456,7 @@ parse_ec_node(struct enode_table *table,
 	/* create its config */
 	schema = ec_node_type_schema(type);
 	if (schema == NULL) {
-		fprintf(stderr, "No configuration schema for type %s\n",
-			ec_node_type_name(type));
+		fprintf(stderr, "No configuration schema for type %s\n", ec_node_type_name(type));
 		goto fail;
 	}
 
@@ -475,8 +472,7 @@ parse_ec_node(struct enode_table *table,
 	config = NULL; /* freed */
 
 	if (help != NULL) {
-		if (ec_dict_set(ec_node_attrs(enode), "help", help,
-					free) < 0) {
+		if (ec_dict_set(ec_node_attrs(enode), "help", help, free) < 0) {
 			fprintf(stderr, "Failed to set help\n");
 			help = NULL;
 			goto fail;
@@ -486,8 +482,8 @@ parse_ec_node(struct enode_table *table,
 
 	/* add attributes (all as string) */
 	if (attrs != NULL) {
-		for (pair = attrs->data.mapping.pairs.start;
-		     pair < attrs->data.mapping.pairs.top; pair++) {
+		for (pair = attrs->data.mapping.pairs.start; pair < attrs->data.mapping.pairs.top;
+		     pair++) {
 			key = document->nodes.start + pair->key - 1;
 			value = document->nodes.start + pair->value - 1;
 			key_str = (const char *)key->data.scalar.value;
@@ -495,8 +491,7 @@ parse_ec_node(struct enode_table *table,
 			value_dup = strdup(value_str);
 			if (value_dup == NULL)
 				goto fail;
-			if (ec_dict_set(ec_node_attrs(enode), key_str,
-						value_dup, free) < 0) {
+			if (ec_dict_set(ec_node_attrs(enode), key_str, value_dup, free) < 0) {
 				value_dup = NULL;
 				goto fail;
 			}
@@ -515,9 +510,7 @@ fail:
 	return NULL;
 }
 
-static struct ec_node *
-parse_document(struct enode_table *table,
-	const yaml_document_t *document)
+static struct ec_node *parse_document(struct enode_table *table, const yaml_document_t *document)
 {
 	yaml_node_t *node;
 
@@ -525,8 +518,7 @@ parse_document(struct enode_table *table,
 	return parse_ec_node(table, document, node);
 }
 
-struct ec_node *
-ec_yaml_import(const char *filename)
+struct ec_node *ec_yaml_import(const char *filename)
 {
 	FILE *file;
 	yaml_parser_t parser;

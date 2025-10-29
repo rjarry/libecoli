@@ -27,9 +27,7 @@ EC_TEST_MAIN()
 	}
 
 	count = 0;
-	for (iter = ec_htable_iter(htable);
-	     iter != NULL;
-	     iter = ec_htable_iter_next(iter)) {
+	for (iter = ec_htable_iter(htable); iter != NULL; iter = ec_htable_iter_next(iter)) {
 		count++;
 	}
 	testres |= EC_TEST_CHECK(count == 0, "invalid count in iterator");

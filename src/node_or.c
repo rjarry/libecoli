@@ -2,16 +2,15 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <assert.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
-#include <stdarg.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/config.h>
 #include <ecoli/log.h>
-#include <ecoli/node.h>
 #include <ecoli/node.h>
 #include <ecoli/node_helper.h>
 #include <ecoli/node_or.h>
@@ -26,10 +25,11 @@ struct ec_node_or {
 	size_t len;
 };
 
-static int
-ec_node_or_parse(const struct ec_node *node,
-		struct ec_pnode *pstate,
-		const struct ec_strvec *strvec)
+static int ec_node_or_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_or *priv = ec_node_priv(node);
 	unsigned int i;
@@ -45,18 +45,18 @@ ec_node_or_parse(const struct ec_node *node,
 	return EC_PARSE_NOMATCH;
 }
 
-static int
-ec_node_or_complete(const struct ec_node *node,
-		struct ec_comp *comp,
-		const struct ec_strvec *strvec)
+static int ec_node_or_complete(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_or *priv = ec_node_priv(node);
 	int ret;
 	size_t n;
 
 	for (n = 0; n < priv->len; n++) {
-		ret = ec_complete_child(priv->table[n],
-					comp, strvec);
+		ret = ec_complete_child(priv->table[n], comp, strvec);
 		if (ret < 0)
 			return ret;
 	}
@@ -90,7 +90,7 @@ static const struct ec_config_schema ec_node_or_schema[] = {
 	{
 		.key = "children",
 		.desc = "The list of children nodes defining the choice "
-		"elements.",
+			"elements.",
 		.type = EC_CONFIG_TYPE_LIST,
 		.subschema = ec_node_or_subschema,
 	},
@@ -99,15 +99,13 @@ static const struct ec_config_schema ec_node_or_schema[] = {
 	},
 };
 
-static int ec_node_or_set_config(struct ec_node *node,
-				const struct ec_config *config)
+static int ec_node_or_set_config(struct ec_node *node, const struct ec_config *config)
 {
 	struct ec_node_or *priv = ec_node_priv(node);
 	struct ec_node **table = NULL;
 	size_t i, len = 0;
 
-	table = ec_node_config_node_list_to_table(
-		ec_config_dict_get(config, "children"), &len);
+	table = ec_node_config_node_list_to_table(ec_config_dict_get(config, "children"), &len);
 	if (table == NULL)
 		return -1;
 
@@ -120,16 +118,18 @@ static int ec_node_or_set_config(struct ec_node *node,
 	return 0;
 }
 
-static size_t
-ec_node_or_get_children_count(const struct ec_node *node)
+static size_t ec_node_or_get_children_count(const struct ec_node *node)
 {
 	struct ec_node_or *priv = ec_node_priv(node);
 	return priv->len;
 }
 
-static int
-ec_node_or_get_child(const struct ec_node *node, size_t i,
-		struct ec_node **child, unsigned int *refs)
+static int ec_node_or_get_child(
+	const struct ec_node *node,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+)
 {
 	struct ec_node_or *priv = ec_node_priv(node);
 

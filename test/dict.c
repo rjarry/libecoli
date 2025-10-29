@@ -25,9 +25,7 @@ EC_TEST_MAIN()
 	}
 
 	count = 0;
-	for (iter = ec_dict_iter(dict);
-	     iter != NULL;
-	     iter = ec_dict_iter_next(iter)) {
+	for (iter = ec_dict_iter(dict); iter != NULL; iter = ec_dict_iter_next(iter)) {
 		count++;
 	}
 	testres |= EC_TEST_CHECK(count == 0, "invalid count in iterator");
@@ -40,30 +38,23 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK(ec_dict_len(dict) == 2, "bad dict len");
 
 	val = ec_dict_get(dict, "key1");
-	testres |= EC_TEST_CHECK(val != NULL && !strcmp(val, "val1"),
-				"invalid dict value");
+	testres |= EC_TEST_CHECK(val != NULL && !strcmp(val, "val1"), "invalid dict value");
 	val = ec_dict_get(dict, "key2");
-	testres |= EC_TEST_CHECK(val != NULL && !strcmp(val, "val2"),
-				"invalid dict value");
+	testres |= EC_TEST_CHECK(val != NULL && !strcmp(val, "val2"), "invalid dict value");
 	val = ec_dict_get(dict, "key3");
 	testres |= EC_TEST_CHECK(val == NULL, "key3 should be NULL");
 
 	ret = ec_dict_set(dict, "key1", "another_val1", NULL);
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set key");
-	ret = ec_dict_set(dict, "key2", strdup("another_val2"),
-			free);
+	ret = ec_dict_set(dict, "key2", strdup("another_val2"), free);
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set key");
-	testres |= EC_TEST_CHECK(ec_dict_len(dict) == 2,
-				"bad dict len");
+	testres |= EC_TEST_CHECK(ec_dict_len(dict) == 2, "bad dict len");
 
 	val = ec_dict_get(dict, "key1");
-	testres |= EC_TEST_CHECK(val != NULL && !strcmp(val, "another_val1"),
-		"invalid dict value");
+	testres |= EC_TEST_CHECK(val != NULL && !strcmp(val, "another_val1"), "invalid dict value");
 	val = ec_dict_get(dict, "key2");
-	testres |= EC_TEST_CHECK(val != NULL && !strcmp(val, "another_val2"),
-		"invalid dict value");
-	testres |= EC_TEST_CHECK(ec_dict_has_key(dict, "key1"),
-		"key1 should be in dict");
+	testres |= EC_TEST_CHECK(val != NULL && !strcmp(val, "another_val2"), "invalid dict value");
+	testres |= EC_TEST_CHECK(ec_dict_has_key(dict, "key1"), "key1 should be in dict");
 
 	f = open_memstream(&buf, &buflen);
 	if (f == NULL)
@@ -85,12 +76,10 @@ EC_TEST_MAIN()
 
 	ret = ec_dict_del(dict, "key1");
 	testres |= EC_TEST_CHECK(ret == 0, "cannot del key1");
-	testres |= EC_TEST_CHECK(ec_dict_len(dict) == 1,
-		"invalid dict len");
+	testres |= EC_TEST_CHECK(ec_dict_len(dict) == 1, "invalid dict len");
 	ret = ec_dict_del(dict, "key2");
 	testres |= EC_TEST_CHECK(ret == 0, "cannot del key2");
-	testres |= EC_TEST_CHECK(ec_dict_len(dict) == 0,
-		"invalid dict len");
+	testres |= EC_TEST_CHECK(ec_dict_len(dict) == 0, "invalid dict len");
 
 	for (i = 0; i < 100; i++) {
 		char key[8];
@@ -106,17 +95,15 @@ EC_TEST_MAIN()
 			snprintf(key, sizeof(key), "k%zd", i);
 			val = ec_dict_get(dup, key);
 			testres |= EC_TEST_CHECK(
-				val != NULL && !strcmp(val, "val"),
-				"invalid dict value");
+				val != NULL && !strcmp(val, "val"), "invalid dict value"
+			);
 		}
 		ec_dict_free(dup);
 		dup = NULL;
 	}
 
 	count = 0;
-	for (iter = ec_dict_iter(dict);
-	     iter != NULL;
-	     iter = ec_dict_iter_next(iter)) {
+	for (iter = ec_dict_iter(dict); iter != NULL; iter = ec_dict_iter_next(iter)) {
 		count++;
 	}
 	testres |= EC_TEST_CHECK(count == 100, "invalid count in iterator");

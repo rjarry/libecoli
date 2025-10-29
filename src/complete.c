@@ -2,11 +2,11 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <assert.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
-#include <errno.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/dict.h>
@@ -26,10 +26,10 @@ struct ec_comp_item {
 	TAILQ_ENTRY(ec_comp_item) next;
 	enum ec_comp_type type;
 	struct ec_comp_group *grp;
-	char *start;      /**< The initial token */
-	char *full;       /**< The full token after completion */
+	char *start; /**< The initial token */
+	char *full; /**< The full token after completion */
 	char *completion; /**< Chars that are added, NULL if not applicable */
-	char *display;    /**< What should be displayed by help/completers */
+	char *display; /**< What should be displayed by help/completers */
 	struct ec_dict *attrs;
 };
 
@@ -74,7 +74,7 @@ struct ec_comp *ec_comp(void)
 
 	return comp;
 
- fail:
+fail:
 	if (comp != NULL)
 		ec_dict_free(comp->attrs);
 	free(comp);
@@ -97,10 +97,11 @@ struct ec_dict *ec_comp_get_attrs(const struct ec_comp *comp)
 	return comp->attrs;
 }
 
-int
-ec_complete_child(const struct ec_node *node,
-		struct ec_comp *comp,
-		const struct ec_strvec *strvec)
+int ec_complete_child(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_pnode *child_pstate, *cur_pstate;
 	struct ec_comp_group *cur_group;
@@ -142,8 +143,7 @@ ec_complete_child(const struct ec_node *node,
 	return 0;
 }
 
-struct ec_comp *ec_complete_strvec(const struct ec_node *node,
-	const struct ec_strvec *strvec)
+struct ec_comp *ec_complete_strvec(const struct ec_node *node, const struct ec_strvec *strvec)
 {
 	struct ec_comp *comp = NULL;
 	int ret;
@@ -163,8 +163,7 @@ fail:
 	return NULL;
 }
 
-struct ec_comp *ec_complete(const struct ec_node *node,
-	const char *str)
+struct ec_comp *ec_complete(const struct ec_node *node, const char *str)
 {
 	struct ec_strvec *strvec = NULL;
 	struct ec_comp *comp;
@@ -184,14 +183,16 @@ struct ec_comp *ec_complete(const struct ec_node *node,
 	ec_strvec_free(strvec);
 	return comp;
 
- fail:
+fail:
 	ec_strvec_free(strvec);
 	return NULL;
 }
 
-struct ec_strvec *
-ec_complete_strvec_expand(const struct ec_node *node, enum ec_comp_type type,
-	const struct ec_strvec *strvec)
+struct ec_strvec *ec_complete_strvec_expand(
+	const struct ec_node *node,
+	enum ec_comp_type type,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_strvec *expanded = NULL;
 	const struct ec_comp_item *item;
@@ -242,8 +243,7 @@ err:
 }
 
 static struct ec_comp_group *
-ec_comp_group(const struct ec_comp *comp, const struct ec_node *node,
-	struct ec_pnode *parse)
+ec_comp_group(const struct ec_comp *comp, const struct ec_node *node, struct ec_pnode *parse)
 {
 	struct ec_comp_group *grp = NULL;
 
@@ -275,8 +275,7 @@ fail:
 }
 
 static struct ec_comp_item *
-ec_comp_item(enum ec_comp_type type,
-	const char *start, const char *full)
+ec_comp_item(enum ec_comp_type type, const char *start, const char *full)
 {
 	struct ec_comp_item *item = NULL;
 	struct ec_dict *attrs = NULL;
@@ -343,13 +342,11 @@ fail:
 	return NULL;
 }
 
-int ec_comp_item_set_display(struct ec_comp_item *item,
-				const char *display)
+int ec_comp_item_set_display(struct ec_comp_item *item, const char *display)
 {
 	char *display_copy = NULL;
 
-	if (item == NULL || display == NULL ||
-			item->type == EC_COMP_UNKNOWN) {
+	if (item == NULL || display == NULL || item->type == EC_COMP_UNKNOWN) {
 		errno = EINVAL;
 		return -1;
 	}
@@ -368,14 +365,11 @@ fail:
 	return -1;
 }
 
-int
-ec_comp_item_set_completion(struct ec_comp_item *item,
-				const char *completion)
+int ec_comp_item_set_completion(struct ec_comp_item *item, const char *completion)
 {
 	char *completion_copy = NULL;
 
-	if (item == NULL || completion == NULL ||
-			item->type == EC_COMP_UNKNOWN) {
+	if (item == NULL || completion == NULL || item->type == EC_COMP_UNKNOWN) {
 		errno = EINVAL;
 		return -1;
 	}
@@ -394,14 +388,11 @@ fail:
 	return -1;
 }
 
-int
-ec_comp_item_set_str(struct ec_comp_item *item,
-			const char *str)
+int ec_comp_item_set_str(struct ec_comp_item *item, const char *str)
 {
 	char *str_copy = NULL;
 
-	if (item == NULL || str == NULL ||
-			item->type == EC_COMP_UNKNOWN) {
+	if (item == NULL || str == NULL || item->type == EC_COMP_UNKNOWN) {
 		errno = EINVAL;
 		return -1;
 	}
@@ -421,8 +412,7 @@ fail:
 }
 
 static int
-ec_comp_item_add(struct ec_comp *comp, const struct ec_node *node,
-		struct ec_comp_item *item)
+ec_comp_item_add(struct ec_comp *comp, const struct ec_node *node, struct ec_comp_item *item)
 {
 	struct ec_comp_item *i;
 
@@ -453,7 +443,7 @@ ec_comp_item_add(struct ec_comp *comp, const struct ec_node *node,
 		if (grp == NULL)
 			return -1;
 
-		TAILQ_FOREACH(g, &comp->groups, next) {
+		TAILQ_FOREACH (g, &comp->groups, next) {
 			i = TAILQ_FIRST(&g->items);
 			if (i == NULL)
 				continue;
@@ -474,9 +464,8 @@ ec_comp_item_add(struct ec_comp *comp, const struct ec_node *node,
 
 	comp->count++;
 
-	TAILQ_FOREACH(i, &comp->cur_group->items, next) {
-		if (i->full != NULL && item->full != NULL
-		    && strcmp(i->full, item->full) > 0)
+	TAILQ_FOREACH (i, &comp->cur_group->items, next) {
+		if (i->full != NULL && item->full != NULL && strcmp(i->full, item->full) > 0)
 			break;
 	}
 	if (i == NULL)
@@ -489,44 +478,37 @@ ec_comp_item_add(struct ec_comp *comp, const struct ec_node *node,
 	return 0;
 }
 
-const char *
-ec_comp_item_get_str(const struct ec_comp_item *item)
+const char *ec_comp_item_get_str(const struct ec_comp_item *item)
 {
 	return item->full;
 }
 
-const char *
-ec_comp_item_get_display(const struct ec_comp_item *item)
+const char *ec_comp_item_get_display(const struct ec_comp_item *item)
 {
 	return item->display;
 }
 
-const char *
-ec_comp_item_get_completion(const struct ec_comp_item *item)
+const char *ec_comp_item_get_completion(const struct ec_comp_item *item)
 {
 	return item->completion;
 }
 
-enum ec_comp_type
-ec_comp_item_get_type(const struct ec_comp_item *item)
+enum ec_comp_type ec_comp_item_get_type(const struct ec_comp_item *item)
 {
 	return item->type;
 }
 
-const struct ec_comp_group *
-ec_comp_item_get_grp(const struct ec_comp_item *item)
+const struct ec_comp_group *ec_comp_item_get_grp(const struct ec_comp_item *item)
 {
 	return item->grp;
 }
 
-const struct ec_node *
-ec_comp_item_get_node(const struct ec_comp_item *item)
+const struct ec_node *ec_comp_item_get_node(const struct ec_comp_item *item)
 {
 	return ec_comp_item_get_grp(item)->node;
 }
 
-static void
-ec_comp_item_free(struct ec_comp_item *item)
+static void ec_comp_item_free(struct ec_comp_item *item)
 {
 	if (item == NULL)
 		return;
@@ -539,9 +521,13 @@ ec_comp_item_free(struct ec_comp_item *item)
 	free(item);
 }
 
-struct ec_comp_item *ec_comp_add_item(struct ec_comp *comp,
-		const struct ec_node *node, enum ec_comp_type type,
-		const char *start, const char *full)
+struct ec_comp_item *ec_comp_add_item(
+	struct ec_comp *comp,
+	const struct ec_node *node,
+	enum ec_comp_type type,
+	const char *start,
+	const char *full
+)
 {
 	struct ec_comp_item *item = NULL;
 	int ret;
@@ -562,10 +548,11 @@ fail:
 }
 
 /* return a completion item of type "unknown" */
-int
-ec_complete_unknown(const struct ec_node *gen_node,
-			struct ec_comp *comp,
-			const struct ec_strvec *strvec)
+int ec_complete_unknown(
+	const struct ec_node *gen_node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	const struct ec_comp_item *item = NULL;
 
@@ -596,20 +583,17 @@ static void ec_comp_group_free(struct ec_comp_group *grp)
 	free(grp);
 }
 
-const struct ec_node *
-ec_comp_group_get_node(const struct ec_comp_group *grp)
+const struct ec_node *ec_comp_group_get_node(const struct ec_comp_group *grp)
 {
 	return grp->node;
 }
 
-const struct ec_pnode *
-ec_comp_group_get_pstate(const struct ec_comp_group *grp)
+const struct ec_pnode *ec_comp_group_get_pstate(const struct ec_comp_group *grp)
 {
 	return grp->pstate;
 }
 
-const struct ec_dict *
-ec_comp_group_get_attrs(const struct ec_comp_group *grp)
+const struct ec_dict *ec_comp_group_get_attrs(const struct ec_comp_group *grp)
 {
 	return grp->attrs;
 }
@@ -640,32 +624,44 @@ void ec_comp_dump(FILE *out, const struct ec_comp *comp)
 		return;
 	}
 
-	fprintf(out, "completion: count=%zu full=%zu partial=%zu unknown=%zu\n",
-		comp->count, comp->count_full,
-		comp->count_partial,  comp->count_unknown);
+	fprintf(out,
+		"completion: count=%zu full=%zu partial=%zu unknown=%zu\n",
+		comp->count,
+		comp->count_full,
+		comp->count_partial,
+		comp->count_unknown);
 
-	TAILQ_FOREACH(grp, &comp->groups, next) {
-		fprintf(out, "node=%p, node_type=%s\n",
-			grp->node, ec_node_type(grp->node)->name);
-		TAILQ_FOREACH(item, &grp->items, next) {
+	TAILQ_FOREACH (grp, &comp->groups, next) {
+		fprintf(out, "node=%p, node_type=%s\n", grp->node, ec_node_type(grp->node)->name);
+		TAILQ_FOREACH (item, &grp->items, next) {
 			const char *typestr;
 
 			switch (item->type) {
-			case EC_COMP_UNKNOWN: typestr = "unknown"; break;
-			case EC_COMP_FULL: typestr = "full"; break;
-			case EC_COMP_PARTIAL: typestr = "partial"; break;
-			default: typestr = "unknown"; break;
+			case EC_COMP_UNKNOWN:
+				typestr = "unknown";
+				break;
+			case EC_COMP_FULL:
+				typestr = "full";
+				break;
+			case EC_COMP_PARTIAL:
+				typestr = "partial";
+				break;
+			default:
+				typestr = "unknown";
+				break;
 			}
 
-			fprintf(out, "  type=%s str=<%s> comp=<%s> disp=<%s>\n",
-				typestr, item->full, item->completion,
+			fprintf(out,
+				"  type=%s str=<%s> comp=<%s> disp=<%s>\n",
+				typestr,
+				item->full,
+				item->completion,
 				item->display);
 		}
 	}
 }
 
-int ec_comp_merge(struct ec_comp *to,
-		struct ec_comp *from)
+int ec_comp_merge(struct ec_comp *to, struct ec_comp *from)
 {
 	struct ec_comp_group *grp;
 
@@ -701,16 +697,15 @@ size_t ec_comp_count(const struct ec_comp *comp, enum ec_comp_type type)
 }
 
 static struct ec_comp_item *
-__ec_comp_iter_next(const struct ec_comp *comp, struct ec_comp_item *item,
-		enum ec_comp_type type)
+__ec_comp_iter_next(const struct ec_comp *comp, struct ec_comp_item *item, enum ec_comp_type type)
 {
 	struct ec_comp_group *cur_grp;
 	struct ec_comp_item *cur_match;
 
 	/* first call */
 	if (item == NULL) {
-		TAILQ_FOREACH(cur_grp, &comp->groups, next) {
-			TAILQ_FOREACH(cur_match, &cur_grp->items, next) {
+		TAILQ_FOREACH (cur_grp, &comp->groups, next) {
+			TAILQ_FOREACH (cur_match, &cur_grp->items, next) {
 				if (cur_match->type & type)
 					return cur_match;
 			}
@@ -727,7 +722,7 @@ __ec_comp_iter_next(const struct ec_comp *comp, struct ec_comp_item *item,
 	}
 	cur_grp = TAILQ_NEXT(cur_grp, next);
 	while (cur_grp != NULL) {
-		TAILQ_FOREACH(cur_match, &cur_grp->items, next) {
+		TAILQ_FOREACH (cur_match, &cur_grp->items, next) {
 			if (cur_match->type & type)
 				return cur_match;
 		}
@@ -736,17 +731,14 @@ __ec_comp_iter_next(const struct ec_comp *comp, struct ec_comp_item *item,
 	return NULL;
 }
 
-struct ec_comp_item *
-ec_comp_iter_next(struct ec_comp_item *item, enum ec_comp_type type)
+struct ec_comp_item *ec_comp_iter_next(struct ec_comp_item *item, enum ec_comp_type type)
 {
 	if (item == NULL)
 		return NULL;
 	return __ec_comp_iter_next(item->grp->comp, item, type);
 }
 
-
-struct ec_comp_item *
-ec_comp_iter_first(const struct ec_comp *comp, enum ec_comp_type type)
+struct ec_comp_item *ec_comp_iter_first(const struct ec_comp *comp, enum ec_comp_type type)
 {
 	return __ec_comp_iter_next(comp, NULL, type);
 }

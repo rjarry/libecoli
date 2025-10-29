@@ -11,12 +11,13 @@
 
 EC_LOG_TYPE_REGISTER(node_none);
 
-struct ec_node_none {
-};
+struct ec_node_none { };
 
-static int ec_node_none_parse(const struct ec_node *node,
-			struct ec_pnode *state,
-			const struct ec_strvec *strvec)
+static int ec_node_none_parse(
+	const struct ec_node *node,
+	struct ec_pnode *state,
+	const struct ec_strvec *strvec
+)
 {
 	(void)node;
 	(void)state;
@@ -25,10 +26,11 @@ static int ec_node_none_parse(const struct ec_node *node,
 	return EC_PARSE_NOMATCH;
 }
 
-static int
-ec_node_none_complete(const struct ec_node *node,
-			struct ec_comp *comp,
-			const struct ec_strvec *strvec)
+static int ec_node_none_complete(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	(void)node;
 	(void)comp;

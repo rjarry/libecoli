@@ -2,12 +2,12 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <errno.h>
+#include <regex.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
-#include <regex.h>
-#include <errno.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/config.h>
@@ -37,8 +37,7 @@ struct ec_node_re_lex {
 	size_t len;
 };
 
-static struct ec_strvec *
-tokenize(struct regexp_pattern *table, size_t table_len, const char *str)
+static struct ec_strvec *tokenize(struct regexp_pattern *table, size_t table_len, const char *str)
 {
 	struct ec_strvec *strvec = NULL;
 	struct ec_dict *attrs = NULL;
@@ -81,12 +80,10 @@ tokenize(struct regexp_pattern *table, size_t table_len, const char *str)
 				attrs = ec_dict();
 				if (attrs == NULL)
 					goto fail;
-				if (ec_dict_set(attrs, table[i].attr_name,
-						NULL, NULL) < 0)
+				if (ec_dict_set(attrs, table[i].attr_name, NULL, NULL) < 0)
 					goto fail;
-				if (ec_strvec_set_attrs(strvec,
-						ec_strvec_len(strvec) - 1,
-						attrs) < 0) {
+				if (ec_strvec_set_attrs(strvec, ec_strvec_len(strvec) - 1, attrs)
+				    < 0) {
 					attrs = NULL;
 					goto fail;
 				}
@@ -112,10 +109,11 @@ fail:
 	return NULL;
 }
 
-static int
-ec_node_re_lex_parse(const struct ec_node *node,
-		struct ec_pnode *pstate,
-		const struct ec_strvec *strvec)
+static int ec_node_re_lex_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_re_lex *priv = ec_node_priv(node);
 	struct ec_strvec *new_vec = NULL;
@@ -155,7 +153,7 @@ ec_node_re_lex_parse(const struct ec_node *node,
 
 	return ret;
 
- fail:
+fail:
 	ec_strvec_free(new_vec);
 	return -1;
 }
@@ -175,8 +173,7 @@ static void ec_node_re_lex_free_priv(struct ec_node *node)
 	free(priv->table);
 }
 
-static size_t
-ec_node_re_lex_get_children_count(const struct ec_node *node)
+static size_t ec_node_re_lex_get_children_count(const struct ec_node *node)
 {
 	struct ec_node_re_lex *priv = ec_node_priv(node);
 
@@ -185,9 +182,12 @@ ec_node_re_lex_get_children_count(const struct ec_node *node)
 	return 0;
 }
 
-static int
-ec_node_re_lex_get_child(const struct ec_node *node, size_t i,
-			struct ec_node **child, unsigned int *refs)
+static int ec_node_re_lex_get_child(
+	const struct ec_node *node,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+)
 {
 	struct ec_node_re_lex *priv = ec_node_priv(node);
 
@@ -208,7 +208,7 @@ static const struct ec_config_schema ec_node_re_lex_dict[] = {
 	{
 		.key = "keep",
 		.desc = "Whether to keep or drop the string matching "
-		"the regular expression.",
+			"the regular expression.",
 		.type = EC_CONFIG_TYPE_BOOL,
 	},
 	{
@@ -249,8 +249,7 @@ static const struct ec_config_schema ec_node_re_lex_schema[] = {
 	},
 };
 
-static int ec_node_re_lex_set_config(struct ec_node *node,
-				const struct ec_config *config)
+static int ec_node_re_lex_set_config(struct ec_node *node, const struct ec_config *config)
 {
 	struct ec_node_re_lex *priv = ec_node_priv(node);
 	struct regexp_pattern *table = NULL;
@@ -278,7 +277,7 @@ static int ec_node_re_lex_set_config(struct ec_node *node,
 			goto fail;
 
 		n = 0;
-		TAILQ_FOREACH(elt, &patterns->list, next) {
+		TAILQ_FOREACH (elt, &patterns->list, next) {
 			if (ec_config_get_type(elt) != EC_CONFIG_TYPE_DICT) {
 				errno = EINVAL;
 				goto fail;
@@ -302,8 +301,7 @@ static int ec_node_re_lex_set_config(struct ec_node *node,
 				goto fail;
 			}
 			attr = ec_config_dict_get(elt, "attr");
-			if (attr != NULL && ec_config_get_type(attr) !=
-					EC_CONFIG_TYPE_STRING) {
+			if (attr != NULL && ec_config_get_type(attr) != EC_CONFIG_TYPE_STRING) {
 				errno = EINVAL;
 				goto fail;
 			}
@@ -319,8 +317,9 @@ static int ec_node_re_lex_set_config(struct ec_node *node,
 			ret = regcomp(&table[n].r, pattern_str, REG_EXTENDED);
 			if (ret != 0) {
 				EC_LOG(EC_LOG_ERR,
-					"Regular expression <%s> compilation failed: %d\n",
-					pattern_str, ret);
+				       "Regular expression <%s> compilation failed: %d\n",
+				       pattern_str,
+				       ret);
 				if (ret == REG_ESPACE)
 					errno = ENOMEM;
 				else
@@ -380,8 +379,7 @@ static struct ec_node_type ec_node_re_lex_type = {
 
 EC_NODE_TYPE_REGISTER(ec_node_re_lex_type);
 
-int ec_node_re_lex_add(struct ec_node *node, const char *pattern, int keep,
-	const char *attr_name)
+int ec_node_re_lex_add(struct ec_node *node, const char *pattern, int keep, const char *attr_name)
 {
 	const struct ec_config *cur_config = NULL;
 	struct ec_config *config = NULL, *patterns = NULL, *elt = NULL;
@@ -398,8 +396,7 @@ int ec_node_re_lex_add(struct ec_node *node, const char *pattern, int keep,
 	if (ec_config_dict_set(elt, "keep", ec_config_bool(keep)) < 0)
 		goto fail;
 	if (attr_name != NULL) {
-		if (ec_config_dict_set(elt, "attr",
-					ec_config_string(attr_name)) < 0)
+		if (ec_config_dict_set(elt, "attr", ec_config_string(attr_name)) < 0)
 			goto fail;
 	}
 
@@ -440,8 +437,7 @@ fail:
 	return -1;
 }
 
-static int
-ec_node_re_lex_set_child(struct ec_node *node, struct ec_node *child)
+static int ec_node_re_lex_set_child(struct ec_node *node, struct ec_node *child)
 {
 	const struct ec_config *cur_config = NULL;
 	struct ec_config *config = NULL;

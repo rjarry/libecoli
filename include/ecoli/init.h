@@ -24,23 +24,22 @@
  * components may depend on those priorities and using them can lead to
  * uninitialized state, crashes, or undefined behaviour.
  */
-#define EC_INIT_REGISTER(t)						\
-	static void ec_init_init_##t(void);				\
-	static void __attribute__((constructor, used))			\
-	ec_init_init_##t(void)						\
-	{								\
-		 ec_init_register(&t);					\
+#define EC_INIT_REGISTER(t)                                                                        \
+	static void ec_init_init_##t(void);                                                        \
+	static void __attribute__((constructor, used)) ec_init_init_##t(void)                      \
+	{                                                                                          \
+		ec_init_register(&t);                                                              \
 	}
 
 /**
  * Type of init function. Return 0 on success, -1 on error.
  */
-typedef int (ec_init_t)(void);
+typedef int(ec_init_t)(void);
 
 /**
  * Type of exit function.
  */
-typedef void (ec_exit_t)(void);
+typedef void(ec_exit_t)(void);
 
 TAILQ_HEAD(ec_init_list, ec_init);
 
@@ -48,10 +47,10 @@ TAILQ_HEAD(ec_init_list, ec_init);
  * A structure describing a test case.
  */
 struct ec_init {
-	TAILQ_ENTRY(ec_init) next;  /**< Next in list. */
-	ec_init_t *init;            /**< Init function. */
-	ec_exit_t *exit;            /**< Exit function. */
-	unsigned int priority;      /**< Priority (0=first, 99=last) for internal */
+	TAILQ_ENTRY(ec_init) next; /**< Next in list. */
+	ec_init_t *init; /**< Init function. */
+	ec_exit_t *exit; /**< Exit function. */
+	unsigned int priority; /**< Priority (0=first, 99=last) for internal */
 };
 
 /**

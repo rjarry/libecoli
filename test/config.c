@@ -92,10 +92,8 @@ EC_TEST_MAIN()
 	int testres = 0;
 	int ret;
 
-	testres |= EC_TEST_CHECK(ec_config_key_is_reserved("id"),
-		"'id' should be reserved");
-	testres |= EC_TEST_CHECK(!ec_config_key_is_reserved("foo"),
-		"'foo' should not be reserved");
+	testres |= EC_TEST_CHECK(ec_config_key_is_reserved("id"), "'id' should be reserved");
+	testres |= EC_TEST_CHECK(!ec_config_key_is_reserved("foo"), "'foo' should not be reserved");
 
 	node = ec_node("empty", EC_NO_ID);
 	if (node == NULL)
@@ -116,32 +114,30 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set boolean");
 	value = ec_config_dict_get(config, "my_bool");
 	testres |= EC_TEST_CHECK(
-		value != NULL &&
-		value->type == EC_CONFIG_TYPE_BOOL &&
-		value->boolean == true,
-		"unexpected boolean value");
+		value != NULL && value->type == EC_CONFIG_TYPE_BOOL && value->boolean == true,
+		"unexpected boolean value"
+	);
 
 	ret = ec_config_dict_set(config, "my_int", ec_config_i64(1234));
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set int");
 	value = ec_config_dict_get(config, "my_int");
 	testres |= EC_TEST_CHECK(
-		value != NULL &&
-		value->type == EC_CONFIG_TYPE_INT64 &&
-		value->i64 == 1234,
-		"unexpected int value");
+		value != NULL && value->type == EC_CONFIG_TYPE_INT64 && value->i64 == 1234,
+		"unexpected int value"
+	);
 
 	testres |= EC_TEST_CHECK(
-		ec_config_validate(config, sch_baseconfig) == 0,
-		"cannot validate config\n");
+		ec_config_validate(config, sch_baseconfig) == 0, "cannot validate config\n"
+	);
 
 	ret = ec_config_dict_set(config, "my_string", ec_config_string("toto"));
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set string");
 	value = ec_config_dict_get(config, "my_string");
 	testres |= EC_TEST_CHECK(
-		value != NULL &&
-		value->type == EC_CONFIG_TYPE_STRING &&
-		!strcmp(value->string, "toto"),
-		"unexpected string value");
+		value != NULL && value->type == EC_CONFIG_TYPE_STRING
+			&& !strcmp(value->string, "toto"),
+		"unexpected string value"
+	);
 
 	list = ec_config_list();
 	if (list == NULL)
@@ -155,23 +151,21 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set int");
 	value = ec_config_dict_get(subconfig, "my_int");
 	testres |= EC_TEST_CHECK(
-		value != NULL &&
-		value->type == EC_CONFIG_TYPE_INT64 &&
-		value->i64 == 1,
-		"unexpected int value");
+		value != NULL && value->type == EC_CONFIG_TYPE_INT64 && value->i64 == 1,
+		"unexpected int value"
+	);
 
 	ret = ec_config_dict_set(subconfig, "my_int2", ec_config_i64(2));
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set int");
 	value = ec_config_dict_get(subconfig, "my_int2");
 	testres |= EC_TEST_CHECK(
-		value != NULL &&
-		value->type == EC_CONFIG_TYPE_INT64 &&
-		value->i64 == 2,
-		"unexpected int value");
+		value != NULL && value->type == EC_CONFIG_TYPE_INT64 && value->i64 == 2,
+		"unexpected int value"
+	);
 
 	testres |= EC_TEST_CHECK(
-		ec_config_validate(subconfig, sch_dict) == 0,
-		"cannot validate subconfig\n");
+		ec_config_validate(subconfig, sch_dict) == 0, "cannot validate subconfig\n"
+	);
 
 	ret = ec_config_list_add(list, subconfig);
 	subconfig = NULL; /* freed */
@@ -185,23 +179,21 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set int");
 	value = ec_config_dict_get(subconfig, "my_int");
 	testres |= EC_TEST_CHECK(
-		value != NULL &&
-		value->type == EC_CONFIG_TYPE_INT64 &&
-		value->i64 == 3,
-		"unexpected int value");
+		value != NULL && value->type == EC_CONFIG_TYPE_INT64 && value->i64 == 3,
+		"unexpected int value"
+	);
 
 	ret = ec_config_dict_set(subconfig, "my_int2", ec_config_i64(4));
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set int");
 	value = ec_config_dict_get(subconfig, "my_int2");
 	testres |= EC_TEST_CHECK(
-		value != NULL &&
-		value->type == EC_CONFIG_TYPE_INT64 &&
-		value->i64 == 4,
-		"unexpected int value");
+		value != NULL && value->type == EC_CONFIG_TYPE_INT64 && value->i64 == 4,
+		"unexpected int value"
+	);
 
 	testres |= EC_TEST_CHECK(
-		ec_config_validate(subconfig, sch_dict) == 0,
-		"cannot validate subconfig\n");
+		ec_config_validate(subconfig, sch_dict) == 0, "cannot validate subconfig\n"
+	);
 
 	ret = ec_config_list_add(list, subconfig);
 	subconfig = NULL; /* freed */
@@ -212,8 +204,8 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set list");
 
 	testres |= EC_TEST_CHECK(
-		ec_config_validate(config, sch_baseconfig) == 0,
-		"cannot validate config\n");
+		ec_config_validate(config, sch_baseconfig) == 0, "cannot validate config\n"
+	);
 
 	list_ = ec_config_dict_get(config, "my_dictlist");
 	for (config_ = ec_config_list_first(list_); config_ != NULL;
@@ -225,17 +217,15 @@ EC_TEST_MAIN()
 
 	config2 = ec_config_dup(config);
 	testres |= EC_TEST_CHECK(config2 != NULL, "cannot duplicate config");
-	testres |= EC_TEST_CHECK(
-		ec_config_cmp(config, config2) == 0,
-		"fail to compare config");
+	testres |= EC_TEST_CHECK(ec_config_cmp(config, config2) == 0, "fail to compare config");
 	ec_config_free(config2);
 	config2 = NULL;
 
 	/* remove the first element */
 	ec_config_list_del(list_, ec_config_list_first(list_));
 	testres |= EC_TEST_CHECK(
-		ec_config_validate(config, sch_baseconfig) == 0,
-		"cannot validate config\n");
+		ec_config_validate(config, sch_baseconfig) == 0, "cannot validate config\n"
+	);
 
 	ec_config_dump(stdout, config);
 

@@ -25,7 +25,6 @@
  * @return
  *   The ecoli node.
  */
-struct ec_node *
-ec_node_any(const char *id, const char *attr);
+struct ec_node *ec_node_any(const char *id, const char *attr);
 
 /** @} */

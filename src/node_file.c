@@ -3,13 +3,13 @@
  */
 
 #include <assert.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
-#include <dirent.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/log.h>
@@ -35,10 +35,11 @@ void ec_node_file_set_ops(const struct ec_node_file_ops *ops)
 	file_ops = *ops;
 }
 
-static int
-ec_node_file_parse(const struct ec_node *node,
-		struct ec_pnode *pstate,
-		const struct ec_strvec *strvec)
+static int ec_node_file_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	(void)node;
 	(void)pstate;
@@ -97,10 +98,11 @@ static int split_path(const char *path, char **dname_p, char **bname_p)
 	return 0;
 }
 
-static int
-ec_node_file_complete(const struct ec_node *node,
-		struct ec_comp *comp,
-		const struct ec_strvec *strvec)
+static int ec_node_file_complete(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	char *dname = NULL, *bname = NULL, *effective_dir;
 	struct ec_comp_item *item = NULL;
@@ -188,15 +190,13 @@ ec_node_file_complete(const struct ec_node *node,
 
 		if (is_dir) {
 			type = EC_COMP_PARTIAL;
-			if (asprintf(&comp_str, "%s%s/", input,
-					&de->d_name[bname_len]) < 0)
+			if (asprintf(&comp_str, "%s%s/", input, &de->d_name[bname_len]) < 0)
 				goto fail;
 			if (asprintf(&disp_str, "%s/", de->d_name) < 0)
 				goto fail;
 		} else {
 			type = EC_COMP_FULL;
-			if (asprintf(&comp_str, "%s%s", input,
-					&de->d_name[bname_len]) < 0)
+			if (asprintf(&comp_str, "%s%s", input, &de->d_name[bname_len]) < 0)
 				goto fail;
 			if (asprintf(&disp_str, "%s", de->d_name) < 0)
 				goto fail;

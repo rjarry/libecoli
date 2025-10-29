@@ -36,10 +36,11 @@ struct ec_strvec *ec_strvec(void);
  * @return
  *   The new strvec object, or NULL on error (errno is set).
  */
-#define EC_STRVEC(args...) ({						\
-			const char *_arr[] = {args};			\
-			ec_strvec_from_array(_arr, EC_COUNT_OF(_arr));	\
-		})
+#define EC_STRVEC(args...)                                                                         \
+	({                                                                                         \
+		const char *_arr[] = {args};                                                       \
+		ec_strvec_from_array(_arr, EC_COUNT_OF(_arr));                                     \
+	})
 /**
  * Allocate a new string vector
  *
@@ -53,8 +54,7 @@ struct ec_strvec *ec_strvec(void);
  * @return
  *   The new strvec object, or NULL on error (errno is set).
  */
-struct ec_strvec *ec_strvec_from_array(const char * const *strarr,
-	size_t n);
+struct ec_strvec *ec_strvec_from_array(const char *const *strarr, size_t n);
 
 /**
  * Options for ec_strvec_sh_lex_str().
@@ -95,8 +95,8 @@ typedef enum {
  * @return
  *   The new strvec object, or NULL on error (errno is set).
  */
-struct ec_strvec *ec_strvec_sh_lex_str(const char *str, ec_strvec_flag_t flags,
-				       char *unclosed_quote);
+struct ec_strvec *
+ec_strvec_sh_lex_str(const char *str, ec_strvec_flag_t flags, char *unclosed_quote);
 
 /**
  * Set a string in the vector at specified index.
@@ -160,8 +160,7 @@ struct ec_strvec *ec_strvec_dup(const struct ec_strvec *strvec);
  * @return
  *   The duplicated strvec object, or NULL on error (errno is set).
  */
-struct ec_strvec *ec_strvec_ndup(const struct ec_strvec *strvec,
-	size_t off, size_t len);
+struct ec_strvec *ec_strvec_ndup(const struct ec_strvec *strvec, size_t off, size_t len);
 
 /**
  * Free a string vector.
@@ -205,8 +204,7 @@ const char *ec_strvec_val(const struct ec_strvec *strvec, size_t idx);
  *   The read-only attributes (dictionnary) of the string at specified
  *   index, or NULL if there is no attribute.
  */
-const struct ec_dict *ec_strvec_get_attrs(const struct ec_strvec *strvec,
-	size_t idx);
+const struct ec_dict *ec_strvec_get_attrs(const struct ec_strvec *strvec, size_t idx);
 
 /**
  * Set the attributes of a vector element.
@@ -221,8 +219,7 @@ const struct ec_dict *ec_strvec_get_attrs(const struct ec_strvec *strvec,
  *   0 on success, -1 on error (errno is set). On error, attrs
  *   are freed and must not be used by the caller.
  */
-int ec_strvec_set_attrs(struct ec_strvec *strvec, size_t idx,
-			struct ec_dict *attrs);
+int ec_strvec_set_attrs(struct ec_strvec *strvec, size_t idx, struct ec_dict *attrs);
 
 /**
  * Compare two string vectors
@@ -234,8 +231,7 @@ int ec_strvec_set_attrs(struct ec_strvec *strvec, size_t idx,
  * @return
  *   0 if the string vectors are equal.
  */
-int ec_strvec_cmp(const struct ec_strvec *strvec1,
-		const struct ec_strvec *strvec2);
+int ec_strvec_cmp(const struct ec_strvec *strvec1, const struct ec_strvec *strvec2);
 
 /**
  * Sort the string vector.
@@ -247,8 +243,7 @@ int ec_strvec_cmp(const struct ec_strvec *strvec1,
  * @param str_cmp
  *   The sort function to use. If NULL, use strcmp.
  */
-void ec_strvec_sort(struct ec_strvec *strvec,
-		int (*str_cmp)(const char *s1, const char *s2));
+void ec_strvec_sort(struct ec_strvec *strvec, int (*str_cmp)(const char *s1, const char *s2));
 
 /**
  * Dump a string vector.

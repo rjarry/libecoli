@@ -2,11 +2,11 @@
  * Copyright 2018, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <getopt.h>
 #include <errno.h>
+#include <getopt.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <ecoli.h>
 
@@ -14,11 +14,10 @@ static char *input_file;
 static char *output_file;
 static bool complete;
 
-static const char short_options[] =
-	"h"  /* help */
-	"i:" /* input-file */
-	"o:" /* output-file */
-	"c"  /* complete */
+static const char short_options[] = "h" /* help */
+				    "i:" /* input-file */
+				    "o:" /* output-file */
+				    "c" /* complete */
 	;
 
 #define OPT_HELP "help"
@@ -36,29 +35,28 @@ static const struct option long_options[] = {
 
 static void usage(const char *prgname)
 {
-	fprintf(stderr, "%s -o <file.sh> -i <file.yaml>\n"
+	fprintf(stderr,
+		"%s -o <file.sh> -i <file.yaml>\n"
 		"  -h\n"
-		"  --"OPT_HELP"\n"
+		"  --" OPT_HELP "\n"
 		"      Show this help.\n"
 		"  -i <input-file>\n"
-		"  --"OPT_INPUT_FILE"=<file>\n"
+		"  --" OPT_INPUT_FILE "=<file>\n"
 		"      Set the yaml input file describing the grammar.\n"
 		"  -o <output-file>\n"
-		"  --"OPT_OUTPUT_FILE"=<file>\n"
+		"  --" OPT_OUTPUT_FILE "=<file>\n"
 		"      Set the output file.\n"
 		"  -c\n"
-		"  --"OPT_COMPLETE"\n"
-		"      Output the completion list.\n"
-		, prgname);
+		"  --" OPT_COMPLETE "\n"
+		"      Output the completion list.\n",
+		prgname);
 }
 
 static int parse_args(int argc, char **argv)
 {
 	int ret, opt;
 
-	while ((opt = getopt_long(argc, argv, short_options,
-				long_options, NULL)) != EOF) {
-
+	while ((opt = getopt_long(argc, argv, short_options, long_options, NULL)) != EOF) {
 		switch (opt) {
 		case 'h': /* help */
 			usage(argv[0]);
@@ -80,7 +78,6 @@ static int parse_args(int argc, char **argv)
 			usage(argv[0]);
 			return -1;
 		}
-
 	}
 
 	if (input_file == NULL) {
@@ -100,8 +97,7 @@ static int parse_args(int argc, char **argv)
 	return ret;
 }
 
-static int
-__dump_as_shell(FILE *f, const struct ec_pnode *parse, size_t *seq)
+static int __dump_as_shell(FILE *f, const struct ec_pnode *parse, size_t *seq)
 {
 	const struct ec_node *node = ec_pnode_get_node(parse);
 	struct ec_pnode *child;
@@ -110,7 +106,6 @@ __dump_as_shell(FILE *f, const struct ec_pnode *parse, size_t *seq)
 
 	(*seq)++;
 	cur_seq = *seq;
-
 
 	quoted = ec_str_quote(ec_node_id(node), '\'');
 	fprintf(f, "ec_node%zu_id=%s\n", cur_seq, quoted);
@@ -129,26 +124,22 @@ __dump_as_shell(FILE *f, const struct ec_pnode *parse, size_t *seq)
 	}
 
 	if (ec_pnode_get_first_child(parse) != NULL) {
-		fprintf(f, "ec_node%zu_first_child='ec_node%zu'\n",
-			cur_seq, cur_seq + 1);
+		fprintf(f, "ec_node%zu_first_child='ec_node%zu'\n", cur_seq, cur_seq + 1);
 	}
 
-	EC_PNODE_FOREACH_CHILD(child, parse) {
-		fprintf(f, "ec_node%zu_parent='ec_node%zu'\n",
-			*seq + 1, cur_seq);
+	EC_PNODE_FOREACH_CHILD (child, parse) {
+		fprintf(f, "ec_node%zu_parent='ec_node%zu'\n", *seq + 1, cur_seq);
 		__dump_as_shell(f, child, seq);
 	}
 
 	if (ec_pnode_next(parse) != NULL) {
-		fprintf(f, "ec_node%zu_next='ec_node%zu'\n",
-			cur_seq, *seq + 1);
+		fprintf(f, "ec_node%zu_next='ec_node%zu'\n", cur_seq, *seq + 1);
 	}
 
 	return 0;
 }
 
-static int
-dump_as_shell(const struct ec_pnode *parse)
+static int dump_as_shell(const struct ec_pnode *parse)
 {
 	FILE *f;
 	size_t seq = 0;
@@ -165,8 +156,7 @@ dump_as_shell(const struct ec_pnode *parse)
 	return ret;
 }
 
-static int
-interact(struct ec_node *node)
+static int interact(struct ec_node *node)
 {
 	struct ec_editline *editline = NULL;
 	struct ec_pnode *parse = NULL;
@@ -213,8 +203,7 @@ fail:
 	return -1;
 }
 
-static int
-complete_words(const struct ec_node *node, int argc, char *argv[])
+static int complete_words(const struct ec_node *node, int argc, char *argv[])
 {
 	struct ec_comp *comp = NULL;
 	struct ec_strvec *strvec = NULL;
@@ -223,8 +212,7 @@ complete_words(const struct ec_node *node, int argc, char *argv[])
 
 	if (argc <= 1)
 		goto fail;
-	strvec = ec_strvec_from_array((const char * const *)&argv[1],
-				argc - 1);
+	strvec = ec_strvec_from_array((const char *const *)&argv[1], argc - 1);
 	if (strvec == NULL)
 		goto fail;
 
@@ -232,11 +220,9 @@ complete_words(const struct ec_node *node, int argc, char *argv[])
 	if (comp == NULL)
 		goto fail;
 
-	count = ec_comp_count(comp, EC_COMP_UNKNOWN | EC_COMP_FULL |
-			EC_COMP_PARTIAL);
+	count = ec_comp_count(comp, EC_COMP_UNKNOWN | EC_COMP_FULL | EC_COMP_PARTIAL);
 
-	EC_COMP_FOREACH(item, comp, EC_COMP_UNKNOWN | EC_COMP_FULL |
-			EC_COMP_PARTIAL) {
+	EC_COMP_FOREACH (item, comp, EC_COMP_UNKNOWN | EC_COMP_FULL | EC_COMP_PARTIAL) {
 		/* only one match, display it fully */
 		if (count == 1) {
 			printf("%s\n", ec_comp_item_get_str(item));
@@ -257,8 +243,7 @@ fail:
 	return -1;
 }
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	struct ec_node *node = NULL;
 	int ret;

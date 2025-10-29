@@ -3,9 +3,8 @@
  */
 
 #include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -31,16 +30,13 @@ struct ec_editline {
 };
 
 /* used by qsort below */
-static int
-strcasecmp_cb(const void *p1, const void *p2)
+static int strcasecmp_cb(const void *p1, const void *p2)
 {
-	return strcasecmp(*(char * const *)p1, *(char * const *)p2);
+	return strcasecmp(*(char *const *)p1, *(char *const *)p2);
 }
 
 /* Show the matches as a multi-columns list */
-int
-ec_editline_print_cols(struct ec_editline *editline,
-		char const * const *matches, size_t n)
+int ec_editline_print_cols(struct ec_editline *editline, char const *const *matches, size_t n)
 {
 	size_t max_strlen = 0, len, i, j, ncols;
 	int width, height;
@@ -78,7 +74,7 @@ ec_editline_print_cols(struct ec_editline *editline,
 	ncols = width / (max_strlen + 4);
 	if (ncols == 0)
 		ncols = 1;
-	for (i = 0; i < n; i+= ncols) {
+	for (i = 0; i < n; i += ncols) {
 		for (j = 0; j < ncols; j++) {
 			if (i + j >= n)
 				break;
@@ -86,8 +82,7 @@ ec_editline_print_cols(struct ec_editline *editline,
 				space = "";
 			else
 				space = "    ";
-			fprintf(f, "%s%-*s", space,
-				(int)max_strlen, matches[i+j]);
+			fprintf(f, "%s%-*s", space, (int)max_strlen, matches[i + j]);
 		}
 		fprintf(f, "\n");
 	}
@@ -97,9 +92,11 @@ ec_editline_print_cols(struct ec_editline *editline,
 }
 
 /* Show the helps on editline output */
-int
-ec_editline_print_helps(const struct ec_editline *editline,
-			const struct ec_editline_help *helps, size_t len)
+int ec_editline_print_helps(
+	const struct ec_editline *editline,
+	const struct ec_editline_help *helps,
+	size_t len
+)
 {
 	size_t i;
 	FILE *out;
@@ -108,16 +105,14 @@ ec_editline_print_helps(const struct ec_editline *editline,
 		return -1;
 
 	for (i = 0; i < len; i++) {
-		if (fprintf(out, "%-20s %s\n",
-				helps[i].desc, helps[i].help) < 0)
+		if (fprintf(out, "%-20s %s\n", helps[i].desc, helps[i].help) < 0)
 			return -1;
 	}
 
 	return 0;
 }
 
-void
-ec_editline_free_helps(struct ec_editline_help *helps, size_t n)
+void ec_editline_free_helps(struct ec_editline_help *helps, size_t n)
 {
 	size_t i;
 
@@ -130,8 +125,7 @@ ec_editline_free_helps(struct ec_editline_help *helps, size_t n)
 	free(helps);
 }
 
-static char *
-prompt_cb(EditLine *el)
+static char *prompt_cb(EditLine *el)
 {
 	struct ec_editline *editline;
 	void *clientdata;
@@ -146,8 +140,7 @@ prompt_cb(EditLine *el)
 	return editline->prompt;
 }
 
-int
-ec_editline_set_prompt(struct ec_editline *editline, const char *prompt)
+int ec_editline_set_prompt(struct ec_editline *editline, const char *prompt)
 {
 	char *copy = NULL;
 
@@ -170,9 +163,7 @@ fail:
 	return -1;
 }
 
-int
-ec_editline_set_prompt_esc(struct ec_editline *editline, const char *prompt,
-			   char delim)
+int ec_editline_set_prompt_esc(struct ec_editline *editline, const char *prompt, char delim)
 {
 	char *copy = NULL;
 
@@ -195,9 +186,13 @@ fail:
 	return -1;
 }
 
-struct ec_editline *
-ec_editline(const char *prog, FILE *f_in, FILE *f_out, FILE *f_err,
-	    enum ec_editline_init_flags flags)
+struct ec_editline *ec_editline(
+	const char *prog,
+	FILE *f_in,
+	FILE *f_out,
+	FILE *f_err,
+	enum ec_editline_init_flags flags
+)
 {
 	struct ec_editline *editline = NULL;
 	EditLine *el;
@@ -251,15 +246,13 @@ ec_editline(const char *prog, FILE *f_in, FILE *f_out, FILE *f_err,
 
 	/* set up history */
 	if ((flags & EC_EDITLINE_DISABLE_HISTORY) == 0) {
-		if (ec_editline_set_history(
-				editline, EC_EDITLINE_HISTORY_SIZE, NULL) < 0)
+		if (ec_editline_set_history(editline, EC_EDITLINE_HISTORY_SIZE, NULL) < 0)
 			goto fail;
 	}
 
 	/* register completion callback */
 	if ((flags & EC_EDITLINE_DISABLE_COMPLETION) == 0) {
-		if (el_set(el, EL_ADDFN, "ed-complete", "Complete buffer",
-				ec_editline_complete))
+		if (el_set(el, EL_ADDFN, "ed-complete", "Complete buffer", ec_editline_complete))
 			goto fail;
 		if (el_set(el, EL_BIND, "^I", "ed-complete", NULL))
 			goto fail;
@@ -292,14 +285,12 @@ EditLine *ec_editline_get_el(struct ec_editline *editline)
 	return editline->el;
 }
 
-const struct ec_node *
-ec_editline_get_node(const struct ec_editline *editline)
+const struct ec_node *ec_editline_get_node(const struct ec_editline *editline)
 {
 	return editline->node;
 }
 
-int
-ec_editline_set_node(struct ec_editline *editline, const struct ec_node *node)
+int ec_editline_set_node(struct ec_editline *editline, const struct ec_node *node)
 {
 	if (strcmp(ec_node_get_type_name(node), "sh_lex")) {
 		errno = EINVAL;
@@ -310,8 +301,7 @@ ec_editline_set_node(struct ec_editline *editline, const struct ec_node *node)
 	return 0;
 }
 
-int ec_editline_set_history(struct ec_editline *editline,
-	size_t hist_size, const char *hist_file)
+int ec_editline_set_history(struct ec_editline *editline, size_t hist_size, const char *hist_file)
 {
 	EditLine *el = editline->el;
 
@@ -328,8 +318,7 @@ int ec_editline_set_history(struct ec_editline *editline,
 	editline->history = history_init();
 	if (editline->history == NULL)
 		goto fail;
-	if (history(editline->history, &editline->histev, H_SETSIZE,
-			hist_size) < 0)
+	if (history(editline->history, &editline->histev, H_SETSIZE, hist_size) < 0)
 		goto fail;
 	if (history(editline->history, &editline->histev, H_SETUNIQUE, 1))
 		goto fail;
@@ -338,8 +327,7 @@ int ec_editline_set_history(struct ec_editline *editline,
 		if (editline->hist_file == NULL)
 			goto fail;
 		// ignore errors
-		history(editline->history, &editline->histev,
-					H_LOAD, editline->hist_file);
+		history(editline->history, &editline->histev, H_LOAD, editline->hist_file);
 	}
 	if (el_set(el, EL_HIST, history, editline->history))
 		goto fail;
@@ -365,14 +353,13 @@ void ec_editline_free_completions(char **matches, size_t len)
 	free(matches);
 }
 
-ssize_t
-ec_editline_get_completions(const struct ec_comp *cmpl, char ***matches_out)
+ssize_t ec_editline_get_completions(const struct ec_comp *cmpl, char ***matches_out)
 {
 	struct ec_comp_item *item;
 	char **matches = NULL;
 	size_t count = 0;
 
-	EC_COMP_FOREACH(item, cmpl, EC_COMP_FULL | EC_COMP_PARTIAL) {
+	EC_COMP_FOREACH (item, cmpl, EC_COMP_FULL | EC_COMP_PARTIAL) {
 		char **tmp;
 
 		tmp = realloc(matches, (count + 1) * sizeof(char *));
@@ -394,15 +381,14 @@ fail:
 	return -1;
 }
 
-char *
-ec_editline_append_chars(const struct ec_comp *cmpl)
+char *ec_editline_append_chars(const struct ec_comp *cmpl)
 {
 	struct ec_comp_item *item;
 	const char *append;
 	char *ret = NULL;
 	size_t n;
 
-	EC_COMP_FOREACH(item, cmpl, EC_COMP_FULL | EC_COMP_PARTIAL) {
+	EC_COMP_FOREACH (item, cmpl, EC_COMP_FULL | EC_COMP_PARTIAL) {
 		append = ec_comp_item_get_completion(item);
 		if (ret == NULL) {
 			ret = strdup(append);
@@ -423,8 +409,7 @@ fail:
 }
 
 /* this function builds the help string */
-static int get_node_help(const struct ec_comp_item *item,
-			struct ec_editline_help *help)
+static int get_node_help(const struct ec_comp_item *item, struct ec_editline_help *help)
 {
 	const struct ec_comp_group *grp;
 	const struct ec_pnode *pstate;
@@ -441,8 +426,7 @@ static int get_node_help(const struct ec_comp_item *item,
 	     pstate = ec_pnode_get_parent(pstate)) {
 		node = ec_pnode_get_node(pstate);
 		if (node_help == NULL)
-			node_help = ec_dict_get(ec_node_attrs(node),
-						EC_EDITLINE_HELP_ATTR);
+			node_help = ec_dict_get(ec_node_attrs(node), EC_EDITLINE_HELP_ATTR);
 		if (node_desc == NULL) {
 			node_desc = ec_node_desc(node);
 			if (node_desc == NULL)
@@ -470,9 +454,11 @@ fail:
 	return -1;
 }
 
-ssize_t
-ec_editline_get_helps(const struct ec_editline *editline, const char *line,
-		      struct ec_editline_help **helps_out)
+ssize_t ec_editline_get_helps(
+	const struct ec_editline *editline,
+	const char *line,
+	struct ec_editline_help **helps_out
+)
 {
 	const struct ec_comp_group *grp, *prev_grp = NULL;
 	struct ec_comp_item *item;
@@ -516,8 +502,7 @@ ec_editline_get_helps(const struct ec_editline *editline, const char *line,
 	}
 
 	/* let's display one contextual help per node */
-	EC_COMP_FOREACH(item, cmpl,
-			EC_COMP_UNKNOWN | EC_COMP_FULL | EC_COMP_PARTIAL) {
+	EC_COMP_FOREACH (item, cmpl, EC_COMP_UNKNOWN | EC_COMP_FULL | EC_COMP_PARTIAL) {
 		struct ec_editline_help *tmp = NULL;
 
 		/* keep one help per group, skip other items  */
@@ -557,8 +542,7 @@ fail:
 	return -1;
 }
 
-char *
-ec_editline_curline(const struct ec_editline *editline, bool trim_after_cursor)
+char *ec_editline_curline(const struct ec_editline *editline, bool trim_after_cursor)
 {
 	const LineInfo *line_info = NULL;
 	char *line = NULL;
@@ -586,8 +570,7 @@ fail:
 	return NULL;
 }
 
-int
-ec_editline_complete(EditLine *el, int c)
+int ec_editline_complete(EditLine *el, int c)
 {
 	struct ec_editline *editline;
 	int ret = CC_REFRESH;
@@ -628,8 +611,7 @@ ec_editline_complete(EditLine *el, int c)
 		goto fail;
 
 	append = ec_editline_append_chars(cmpl);
-	comp_count = ec_comp_count(cmpl, EC_COMP_FULL) +
-		ec_comp_count(cmpl, EC_COMP_PARTIAL);
+	comp_count = ec_comp_count(cmpl, EC_COMP_FULL) + ec_comp_count(cmpl, EC_COMP_PARTIAL);
 
 	if (c == '?') {
 		struct ec_editline_help *helps = NULL;
@@ -657,10 +639,9 @@ ec_editline_complete(EditLine *el, int c)
 		}
 
 		if (ec_editline_print_cols(
-				editline,
-				EC_CAST(matches, char **,
-					char const * const *),
-				count) < 0) {
+			    editline, EC_CAST(matches, char **, char const *const *), count
+		    )
+		    < 0) {
 			fprintf(err, "completion failure: cannot print\n");
 			ec_editline_free_completions(matches, count);
 			goto fail;
@@ -695,10 +676,11 @@ fail:
 	return CC_ERROR;
 }
 
-ssize_t
-ec_editline_get_error_helps(const struct ec_editline *editline,
-			    struct ec_editline_help **helps_out,
-			    size_t *char_idx)
+ssize_t ec_editline_get_error_helps(
+	const struct ec_editline *editline,
+	struct ec_editline_help **helps_out,
+	size_t *char_idx
+)
 {
 	struct ec_strvec *line_vec_partial = NULL;
 	const struct ec_strvec *parsed_vec = NULL;
@@ -772,9 +754,8 @@ ec_editline_get_error_helps(const struct ec_editline *editline,
 			parsed_vec_len = 0;
 
 		/* if it matches or if it completes, return the helps */
-		if ((ec_pnode_matches(parse) && (int)parsed_vec_len == i) ||
-		    ec_comp_count(comp, EC_COMP_ALL) > 0) {
-
+		if ((ec_pnode_matches(parse) && (int)parsed_vec_len == i)
+		    || ec_comp_count(comp, EC_COMP_ALL) > 0) {
 			/* get the position of the error and store it in char_idx */
 			if (i == (int)len) {
 				attrs = ec_strvec_get_attrs(line_vec, i - 1);
@@ -819,10 +800,12 @@ fail:
 	goto out;
 }
 
-int
-ec_editline_print_error_helps(const struct ec_editline *editline,
-			      const struct ec_editline_help *helps,
-			      size_t n, size_t char_idx)
+int ec_editline_print_error_helps(
+	const struct ec_editline *editline,
+	const struct ec_editline_help *helps,
+	size_t n,
+	size_t char_idx
+)
 {
 	char *line = NULL;
 	FILE *out;
@@ -847,8 +830,7 @@ fail:
 	return -1;
 }
 
-char *
-ec_editline_gets(struct ec_editline *editline)
+char *ec_editline_gets(struct ec_editline *editline)
 {
 	EditLine *el = editline->el;
 	char *line_copy = NULL;
@@ -866,11 +848,9 @@ ec_editline_gets(struct ec_editline *editline)
 	line_copy[strlen(line_copy) - 1] = '\0'; /* remove \n */
 
 	if (editline->history != NULL && !ec_str_is_space(line_copy)) {
-		history(editline->history, &editline->histev,
-			H_ENTER, line_copy);
+		history(editline->history, &editline->histev, H_ENTER, line_copy);
 		if (editline->hist_file != NULL)
-			history(editline->history, &editline->histev,
-				H_SAVE, editline->hist_file);
+			history(editline->history, &editline->histev, H_SAVE, editline->hist_file);
 	}
 
 	return line_copy;
@@ -880,8 +860,7 @@ fail:
 	return NULL;
 }
 
-struct ec_pnode *
-ec_editline_parse(struct ec_editline *editline)
+struct ec_pnode *ec_editline_parse(struct ec_editline *editline)
 {
 	struct ec_pnode *parse = NULL;
 	const struct ec_node *node;
@@ -914,8 +893,7 @@ static ec_editline_command_cb_t get_callback(struct ec_pnode *parse)
 	struct ec_pnode *iter;
 	ec_editline_command_cb_t cb;
 
-	for (iter = parse; iter != NULL;
-	     iter = EC_PNODE_ITER_NEXT(parse, iter, 1)) {
+	for (iter = parse; iter != NULL; iter = EC_PNODE_ITER_NEXT(parse, iter, 1)) {
 		cb = ec_dict_get(ec_node_attrs(ec_pnode_get_node(iter)), "cb");
 		if (cb != NULL)
 			return cb;
@@ -924,10 +902,11 @@ static ec_editline_command_cb_t get_callback(struct ec_pnode *parse)
 	return NULL;
 }
 
-int
-ec_editline_interact(struct ec_editline *editline,
-		     ec_editline_check_exit_cb_t check_exit_cb,
-		     void *opaque)
+int ec_editline_interact(
+	struct ec_editline *editline,
+	ec_editline_check_exit_cb_t check_exit_cb,
+	void *opaque
+)
 {
 	struct ec_editline_help *helps = NULL;
 	struct ec_strvec *line_vec = NULL;
@@ -973,11 +952,9 @@ ec_editline_interact(struct ec_editline *editline,
 		}
 
 		if (!ec_pnode_matches(parse)) {
-			n = ec_editline_get_error_helps(editline, &helps,
-							&char_idx);
-			if (n < 0 ||
-			    ec_editline_print_error_helps(editline, helps,
-							  n, char_idx) < 0)
+			n = ec_editline_get_error_helps(editline, &helps, &char_idx);
+			if (n < 0
+			    || ec_editline_print_error_helps(editline, helps, n, char_idx) < 0)
 				fprintf(err, "Invalid command\n");
 			if (n >= 0)
 				ec_editline_free_helps(helps, n);
@@ -1022,12 +999,10 @@ int ec_editline_set_help(struct ec_node *node, const char *help)
 	if (copy == NULL)
 		return -1;
 
-	return ec_dict_set(ec_node_attrs(node), EC_EDITLINE_HELP_ATTR,
-			   copy, free);
+	return ec_dict_set(ec_node_attrs(node), EC_EDITLINE_HELP_ATTR, copy, free);
 }
 
 int ec_editline_set_callback(struct ec_node *node, ec_editline_command_cb_t cb)
 {
-	return ec_dict_set(ec_node_attrs(node), EC_EDITLINE_CB_ATTR,
-			   cb, NULL);
+	return ec_dict_set(ec_node_attrs(node), EC_EDITLINE_CB_ATTR, cb, NULL);
 }

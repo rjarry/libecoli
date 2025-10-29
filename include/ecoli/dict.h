@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 typedef void (*ec_dict_elt_free_t)(void *);
 
@@ -86,8 +86,7 @@ int ec_dict_del(struct ec_dict *dict, const char *key);
  *   0 on success, or -1 on error (errno is set).
  *   On error, the passed value is freed (free_cb(val) is called).
  */
-int ec_dict_set(struct ec_dict *dict, const char *key, void *val,
-	ec_dict_elt_free_t free_cb);
+int ec_dict_set(struct ec_dict *dict, const char *key, void *val, ec_dict_elt_free_t free_cb);
 
 /**
  * Free a hash table an all its objects.
@@ -150,8 +149,7 @@ void ec_dict_dump(FILE *out, const struct ec_dict *dict);
  * @return
  *   An iterator element, or NULL if the dict is empty.
  */
-struct ec_dict_elt_ref *
-ec_dict_iter(const struct ec_dict *dict);
+struct ec_dict_elt_ref *ec_dict_iter(const struct ec_dict *dict);
 
 /**
  * Make the iterator point to the next element in the hash table.
@@ -161,8 +159,7 @@ ec_dict_iter(const struct ec_dict *dict);
  * @return
  *   An iterator element, or NULL there is no more element.
  */
-struct ec_dict_elt_ref *
-ec_dict_iter_next(struct ec_dict_elt_ref *iter);
+struct ec_dict_elt_ref *ec_dict_iter_next(struct ec_dict_elt_ref *iter);
 
 /**
  * Get a pointer to the key of the current element.
@@ -173,8 +170,7 @@ ec_dict_iter_next(struct ec_dict_elt_ref *iter);
  *   The current element key, or NULL if the iterator points to an
  *   invalid element.
  */
-const char *
-ec_dict_iter_get_key(const struct ec_dict_elt_ref *iter);
+const char *ec_dict_iter_get_key(const struct ec_dict_elt_ref *iter);
 
 /**
  * Get the value of the current element.
@@ -185,7 +181,6 @@ ec_dict_iter_get_key(const struct ec_dict_elt_ref *iter);
  *   The current element value, or NULL if the iterator points to an
  *   invalid element.
  */
-void *
-ec_dict_iter_get_val(const struct ec_dict_elt_ref *iter);
+void *ec_dict_iter_get_val(const struct ec_dict_elt_ref *iter);
 
 /** @} */

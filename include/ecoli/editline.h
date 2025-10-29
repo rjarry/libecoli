@@ -26,8 +26,8 @@ struct ec_comp;
  * A structure describing a contextual help.
  */
 struct ec_editline_help {
-	char *desc;   /**< The short description of the item. */
-	char *help;   /**< The associated help. */
+	char *desc; /**< The short description of the item. */
+	char *help; /**< The associated help. */
 };
 
 /**
@@ -132,8 +132,13 @@ typedef int (*ec_editline_check_exit_cb_t)(void *opaque);
  * @return
  *   The allocated ec_editline structure, or NULL on error.
  */
-struct ec_editline *ec_editline(const char *prog, FILE *f_in, FILE *f_out,
-				FILE *f_err, enum ec_editline_init_flags flags);
+struct ec_editline *ec_editline(
+	const char *prog,
+	FILE *f_in,
+	FILE *f_out,
+	FILE *f_err,
+	enum ec_editline_init_flags flags
+);
 
 /**
  * Free an editline structure allocated with ec_editline().
@@ -166,8 +171,7 @@ EditLine *ec_editline_get_el(struct ec_editline *editline);
  *   0 on success, or -1 on error. errno is set to EINVAL if the node is not
  *   of type sh_lex.
  */
-int ec_editline_set_node(struct ec_editline *editline,
-			 const struct ec_node *node);
+int ec_editline_set_node(struct ec_editline *editline, const struct ec_node *node);
 
 /**
  * Return the ecoli node attached to the editline structure.
@@ -195,8 +199,7 @@ const struct ec_node *ec_editline_get_node(const struct ec_editline *editline);
  * @return
  *   0 on success, or -1 on error (errno is set).
  */
-int ec_editline_set_history(struct ec_editline *editline,
-			    size_t hist_size, const char *hist_file);
+int ec_editline_set_history(struct ec_editline *editline, size_t hist_size, const char *hist_file);
 
 /**
  * Get completion matches as an array of strings.
@@ -208,8 +211,7 @@ int ec_editline_set_history(struct ec_editline *editline,
  * @return
  *   The size of the array on success (>= 0), or -1 on error.
  */
-ssize_t ec_editline_get_completions(const struct ec_comp *cmpl,
-				    char ***matches_out);
+ssize_t ec_editline_get_completions(const struct ec_comp *cmpl, char ***matches_out);
 
 /**
  * Free the array of completion matches.
@@ -233,8 +235,7 @@ void ec_editline_free_completions(char **matches, size_t n);
  * @return
  *   0 on success, or -1 on error.
  */
-int ec_editline_print_cols(struct ec_editline *editline,
-			   char const * const *matches, size_t n);
+int ec_editline_print_cols(struct ec_editline *editline, char const *const *matches, size_t n);
 
 /**
  * Get characters to append to the line for a completion.
@@ -260,9 +261,11 @@ char *ec_editline_append_chars(const struct ec_comp *cmpl);
  * @return
  *   The size of the array on success (>= 0), or -1 on error.
  */
-ssize_t
-ec_editline_get_helps(const struct ec_editline *editline, const char *line,
-		      struct ec_editline_help **helps_out);
+ssize_t ec_editline_get_helps(
+	const struct ec_editline *editline,
+	const char *line,
+	struct ec_editline_help **helps_out
+);
 
 /**
  * Print helps generated with ec_editline_get_helps().
@@ -276,8 +279,11 @@ ec_editline_get_helps(const struct ec_editline *editline, const char *line,
  * @return
  *   0 on success, or -1 on error.
  */
-int ec_editline_print_helps(const struct ec_editline *editline,
-			    const struct ec_editline_help *helps, size_t n);
+int ec_editline_print_helps(
+	const struct ec_editline *editline,
+	const struct ec_editline_help *helps,
+	size_t n
+);
 
 /**
  * Free contextual helps.
@@ -305,9 +311,11 @@ void ec_editline_free_helps(struct ec_editline_help *helps, size_t n);
  * @return
  *   The size of the array on success (>= 0), or -1 on error.
  */
-ssize_t ec_editline_get_error_helps(const struct ec_editline *editline,
-				    struct ec_editline_help **helps_out,
-				    size_t *char_idx);
+ssize_t ec_editline_get_error_helps(
+	const struct ec_editline *editline,
+	struct ec_editline_help **helps_out,
+	size_t *char_idx
+);
 
 /**
  * Print suggestions generated with ec_editline_get_error_helps().
@@ -323,9 +331,12 @@ ssize_t ec_editline_get_error_helps(const struct ec_editline *editline,
  * @return
  *   0 on success, or -1 on error.
  */
-int ec_editline_print_error_helps(const struct ec_editline *editline,
-				  const struct ec_editline_help *helps,
-				  size_t n, size_t char_idx);
+int ec_editline_print_error_helps(
+	const struct ec_editline *editline,
+	const struct ec_editline_help *helps,
+	size_t n,
+	size_t char_idx
+);
 
 /**
  * Set editline prompt.
@@ -361,8 +372,7 @@ int ec_editline_set_prompt(struct ec_editline *editline, const char *prompt);
  * @return
  *   0 on success, or -1 on error.
  */
-int ec_editline_set_prompt_esc(struct ec_editline *editline, const char *prompt,
-			       char delim);
+int ec_editline_set_prompt_esc(struct ec_editline *editline, const char *prompt, char delim);
 
 /**
  * Get the current edited line.
@@ -375,8 +385,7 @@ int ec_editline_set_prompt_esc(struct ec_editline *editline, const char *prompt,
  *   An allocated string containing the current line. It must be freed by the
  *   user. Return NULL on error.
  */
-char *ec_editline_curline(const struct ec_editline *editline,
-			  bool trim_after_cursor);
+char *ec_editline_curline(const struct ec_editline *editline, bool trim_after_cursor);
 
 /**
  * Get a line interactively (with completion).
@@ -426,9 +435,11 @@ struct ec_pnode *ec_editline_parse(struct ec_editline *editline);
  * @return
  *   0 if interactive loop exited gracefully, or -1 on error.
  */
-int ec_editline_interact(struct ec_editline *el,
-			 ec_editline_check_exit_cb_t check_exit_cb,
-			 void *opaque);
+int ec_editline_interact(
+	struct ec_editline *el,
+	ec_editline_check_exit_cb_t check_exit_cb,
+	void *opaque
+);
 
 /**
  * Default completion callback used by editline.

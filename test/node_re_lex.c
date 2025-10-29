@@ -9,13 +9,18 @@ EC_TEST_MAIN()
 	struct ec_node *node;
 	int ret, testres = 0;
 
-	node = ec_node_re_lex(EC_NO_ID,
-		ec_node_many(EC_NO_ID,
-			EC_NODE_OR(EC_NO_ID,
+	node = ec_node_re_lex(
+		EC_NO_ID,
+		ec_node_many(
+			EC_NO_ID,
+			EC_NODE_OR(
+				EC_NO_ID,
 				ec_node_str(EC_NO_ID, "foo"),
 				ec_node_str(EC_NO_ID, "bar"),
 				ec_node_int(EC_NO_ID, 0, 1000, 0)
-			), 0, 0
+			),
+			0,
+			0
 		)
 	);
 	if (node == NULL) {
@@ -47,9 +52,7 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK_PARSE(node, -1, "foobar");
 
 	/* no completion */
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"", EC_VA_END,
-		EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, "", EC_VA_END, EC_VA_END);
 
 	ec_node_free(node);
 

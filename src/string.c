@@ -2,14 +2,14 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <stdarg.h>
-#include <stddef.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <ctype.h>
 #include <errno.h>
 #include <limits.h>
-#include <ctype.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <ecoli/assert.h>
 #include <ecoli/string.h>
@@ -46,8 +46,7 @@ bool ec_str_is_space(const char *s)
 	return true;
 }
 
-int ec_str_parse_llint(const char *str, unsigned int base, int64_t min,
-		int64_t max, int64_t *val)
+int ec_str_parse_llint(const char *str, unsigned int base, int64_t min, int64_t max, int64_t *val)
 {
 	char *endptr;
 	int save_errno = errno;
@@ -55,8 +54,8 @@ int ec_str_parse_llint(const char *str, unsigned int base, int64_t min,
 	errno = 0;
 	*val = strtoll(str, &endptr, base);
 
-	if ((errno == ERANGE && (*val == LLONG_MAX || *val == LLONG_MIN)) ||
-			(errno != 0 && *val == 0))
+	if ((errno == ERANGE && (*val == LLONG_MAX || *val == LLONG_MIN))
+	    || (errno != 0 && *val == 0))
 		return -1;
 
 	if (*val < min) {
@@ -78,8 +77,13 @@ int ec_str_parse_llint(const char *str, unsigned int base, int64_t min,
 	return 0;
 }
 
-int ec_str_parse_ullint(const char *str, unsigned int base, uint64_t min,
-			uint64_t max, uint64_t *val)
+int ec_str_parse_ullint(
+	const char *str,
+	unsigned int base,
+	uint64_t min,
+	uint64_t max,
+	uint64_t *val
+)
 {
 	char *endptr;
 	int save_errno = errno;
@@ -92,8 +96,7 @@ int ec_str_parse_ullint(const char *str, unsigned int base, uint64_t min,
 	errno = 0;
 	*val = strtoull(str, &endptr, base);
 
-	if ((errno == ERANGE && *val == ULLONG_MAX) ||
-			(errno != 0 && *val == 0))
+	if ((errno == ERANGE && *val == ULLONG_MAX) || (errno != 0 && *val == 0))
 		return -1;
 
 	if (*val < min)

@@ -21,9 +21,11 @@ struct ec_node_any {
 	char *attr_name;
 };
 
-static int ec_node_any_parse(const struct ec_node *node,
-			struct ec_pnode *pstate,
-			const struct ec_strvec *strvec)
+static int ec_node_any_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_any *priv = ec_node_priv(node);
 	const struct ec_dict *attrs;
@@ -59,8 +61,7 @@ static const struct ec_config_schema ec_node_any_schema[] = {
 	},
 };
 
-static int ec_node_any_set_config(struct ec_node *node,
-				const struct ec_config *config)
+static int ec_node_any_set_config(struct ec_node *node, const struct ec_config *config)
 {
 	struct ec_node_any *priv = ec_node_priv(node);
 	const struct ec_config *value = NULL;
@@ -94,8 +95,7 @@ static struct ec_node_type ec_node_any_type = {
 
 EC_NODE_TYPE_REGISTER(ec_node_any_type);
 
-struct ec_node *
-ec_node_any(const char *id, const char *attr)
+struct ec_node *ec_node_any(const char *id, const char *attr)
 {
 	struct ec_config *config = NULL;
 	struct ec_node *node = NULL;

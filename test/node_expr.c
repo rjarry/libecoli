@@ -2,9 +2,9 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <assert.h>
 #include <errno.h>
 #include <limits.h>
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -16,9 +16,7 @@ struct my_eval_result {
 	int val;
 };
 
-static int
-ec_node_expr_test_eval_var(void **result, void *userctx,
-	const struct ec_pnode *var)
+static int ec_node_expr_test_eval_var(void **result, void *userctx, const struct ec_pnode *var)
 {
 	const struct ec_strvec *vec;
 	const struct ec_node *node;
@@ -49,9 +47,12 @@ ec_node_expr_test_eval_var(void **result, void *userctx,
 	return 0;
 }
 
-static int
-ec_node_expr_test_eval_pre_op(void **result, void *userctx, void *operand,
-	const struct ec_pnode *operator)
+static int ec_node_expr_test_eval_pre_op(
+	void **result,
+	void *userctx,
+	void *operand,
+	const struct ec_pnode *operator
+)
 {
 	const struct ec_strvec *vec;
 	struct my_eval_result *eval = operand;
@@ -72,16 +73,18 @@ ec_node_expr_test_eval_pre_op(void **result, void *userctx, void *operand,
 		return -1;
 	}
 
-
 	EC_LOG(EC_LOG_DEBUG, "eval pre_op %d\n", eval->val);
 	*result = eval;
 
 	return 0;
 }
 
-static int
-ec_node_expr_test_eval_post_op(void **result, void *userctx, void *operand,
-	const struct ec_pnode *operator)
+static int ec_node_expr_test_eval_post_op(
+	void **result,
+	void *userctx,
+	void *operand,
+	const struct ec_pnode *operator
+)
 {
 	const struct ec_strvec *vec;
 	struct my_eval_result *eval = operand;
@@ -108,10 +111,13 @@ ec_node_expr_test_eval_post_op(void **result, void *userctx, void *operand,
 	return 0;
 }
 
-static int
-ec_node_expr_test_eval_bin_op(void **result, void *userctx, void *operand1,
-	const struct ec_pnode *operator, void *operand2)
-
+static int ec_node_expr_test_eval_bin_op(
+	void **result,
+	void *userctx,
+	void *operand1,
+	const struct ec_pnode *operator,
+	void *operand2
+)
 {
 	const struct ec_strvec *vec;
 	struct my_eval_result *eval1 = operand1;
@@ -142,11 +148,13 @@ ec_node_expr_test_eval_bin_op(void **result, void *userctx, void *operand1,
 	return 0;
 }
 
-static int
-ec_node_expr_test_eval_parenthesis(void **result, void *userctx,
+static int ec_node_expr_test_eval_parenthesis(
+	void **result,
+	void *userctx,
 	const struct ec_pnode *open_paren,
 	const struct ec_pnode *close_paren,
-	void *value)
+	void *value
+)
 {
 	(void)userctx;
 	(void)open_paren;
@@ -158,8 +166,7 @@ ec_node_expr_test_eval_parenthesis(void **result, void *userctx,
 	return 0;
 }
 
-static void
-ec_node_expr_test_eval_free(void *result, void *userctx)
+static void ec_node_expr_test_eval_free(void *result, void *userctx)
 {
 	(void)userctx;
 	free(result);
@@ -174,9 +181,12 @@ static const struct ec_node_expr_eval_ops test_ops = {
 	.eval_free = ec_node_expr_test_eval_free,
 };
 
-static int ec_node_expr_test_eval(struct ec_node *lex_node,
+static int ec_node_expr_test_eval(
+	struct ec_node *lex_node,
 	const struct ec_node *expr_node,
-	const char *str, int val)
+	const char *str,
+	int val
+)
 {
 	struct ec_pnode *p;
 	void *result;
@@ -207,7 +217,8 @@ static int ec_node_expr_test_eval(struct ec_node *lex_node,
 	return ret;
 }
 
-EC_TEST_MAIN() {
+EC_TEST_MAIN()
+{
 	struct ec_node *node = NULL, *lex_node = NULL;
 	int testres = 0;
 
@@ -218,10 +229,9 @@ EC_TEST_MAIN() {
 	ec_node_expr_set_val_node(node, ec_node_int(EC_NO_ID, 0, UCHAR_MAX, 0));
 	ec_node_expr_add_bin_op(node, ec_node_str(EC_NO_ID, "+"));
 	ec_node_expr_add_bin_op(node, ec_node_str(EC_NO_ID, "*"));
-	ec_node_expr_add_pre_op(node, ec_node_str(EC_NO_ID, "!"));  /* not */
+	ec_node_expr_add_pre_op(node, ec_node_str(EC_NO_ID, "!")); /* not */
 	ec_node_expr_add_post_op(node, ec_node_str(EC_NO_ID, "^")); /* square */
-	ec_node_expr_add_parenthesis(node, ec_node_str(EC_NO_ID, "("),
-		ec_node_str(EC_NO_ID, ")"));
+	ec_node_expr_add_parenthesis(node, ec_node_str(EC_NO_ID, "("), ec_node_str(EC_NO_ID, ")"));
 	testres |= EC_TEST_CHECK_PARSE(node, 1, "1");
 	testres |= EC_TEST_CHECK_PARSE(node, 1, "1", "1");
 	testres |= EC_TEST_CHECK_PARSE(node, 1, "1", "*");
@@ -231,10 +241,8 @@ EC_TEST_MAIN() {
 	testres |= EC_TEST_CHECK_PARSE(node, 4, "1", "^", "+", "1");
 	testres |= EC_TEST_CHECK_PARSE(node, 5, "1", "*", "1", "*", "1");
 	testres |= EC_TEST_CHECK_PARSE(node, 5, "1", "*", "1", "+", "1");
-	testres |= EC_TEST_CHECK_PARSE(node, 7, "1", "*", "1", "*", "1", "*",
-				"1");
-	testres |= EC_TEST_CHECK_PARSE(
-		node, 10, "!", "(", "1", "*", "(", "1", "+", "1", ")", ")");
+	testres |= EC_TEST_CHECK_PARSE(node, 7, "1", "*", "1", "*", "1", "*", "1");
+	testres |= EC_TEST_CHECK_PARSE(node, 10, "!", "(", "1", "*", "(", "1", "+", "1", ")", ")");
 	testres |= EC_TEST_CHECK_PARSE(node, 5, "1", "+", "!", "1", "^");
 
 	/* prepend a lexer to the expression node */

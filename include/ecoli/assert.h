@@ -31,16 +31,14 @@
  *
  * @internal
  */
-#define ec_assert_print(expr, args...) \
-	__ec_assert_print(expr, #expr, args)
+#define ec_assert_print(expr, args...) __ec_assert_print(expr, #expr, args)
 
 /**
  * Actual function invoked by ec_assert_print()
  *
  * @internal
  */
-void __ec_assert_print(bool expr, const char *expr_str,
-		const char *format, ...);
+void __ec_assert_print(bool expr, const char *expr_str, const char *format, ...);
 
 /**
  * Check a condition or return.
@@ -57,11 +55,12 @@ void __ec_assert_print(bool expr, const char *expr_str,
  *
  * @internal
  */
-#define EC_CHECK_ARG(cond, ret, err) do {				\
-		if (!(cond)) {						\
-			errno = err;					\
-			return ret;					\
-		}							\
-	} while(0)
+#define EC_CHECK_ARG(cond, ret, err)                                                               \
+	do {                                                                                       \
+		if (!(cond)) {                                                                     \
+			errno = err;                                                               \
+			return ret;                                                                \
+		}                                                                                  \
+	} while (0)
 
 /** @} */

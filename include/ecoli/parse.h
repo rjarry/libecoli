@@ -20,11 +20,11 @@
 
 #pragma once
 
+#include <limits.h>
+#include <stdbool.h>
+#include <stdio.h>
 #include <sys/queue.h>
 #include <sys/types.h>
-#include <limits.h>
-#include <stdio.h>
-#include <stdbool.h>
 
 struct ec_node;
 
@@ -137,8 +137,7 @@ struct ec_pnode *ec_parse(const struct ec_node *node, const char *str);
  * @return
  *   A parsing tree, or NULL on error (errno is set).
  */
-struct ec_pnode *ec_parse_strvec(const struct ec_node *node,
-				const struct ec_strvec *strvec);
+struct ec_pnode *ec_parse_strvec(const struct ec_node *node, const struct ec_strvec *strvec);
 
 /**
  * Return value of ec_parse_child() when input does not match grammar.
@@ -169,8 +168,11 @@ struct ec_pnode *ec_parse_strvec(const struct ec_node *node,
  *   value) if the input does not match the grammar. On error, -1 is
  *   returned, and errno is set.
  */
-int ec_parse_child(const struct ec_node *node, struct ec_pnode *pstate,
-		const struct ec_strvec *strvec);
+int ec_parse_child(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+);
 
 /**
  * Link a parsing node to a parsing tree.
@@ -207,14 +209,15 @@ void ec_pnode_unlink_child(struct ec_pnode *child);
  * @return
  *   The root of the parsing tree.
  */
-#define EC_PNODE_GET_ROOT(parse) ({				\
-	const struct ec_pnode *p_ = parse; /* check type */	\
-	struct ec_pnode *pnode_ = (struct ec_pnode *)parse;	\
-	__typeof__(parse) res_;					\
-	(void)p_;						\
-	res_ = ec_pnode_get_root(pnode_);			\
-	res_;							\
-})
+#define EC_PNODE_GET_ROOT(parse)                                                                   \
+	({                                                                                         \
+		const struct ec_pnode *p_ = parse; /* check type */                                \
+		struct ec_pnode *pnode_ = (struct ec_pnode *)parse;                                \
+		__typeof__(parse) res_;                                                            \
+		(void)p_;                                                                          \
+		res_ = ec_pnode_get_root(pnode_);                                                  \
+		res_;                                                                              \
+	})
 
 /**
  * Get the root of the parsing tree.
@@ -280,10 +283,8 @@ struct ec_pnode *ec_pnode_next(const struct ec_pnode *pnode);
  * @param pnode
  *   The parent node in the parsing tree.
  */
-#define EC_PNODE_FOREACH_CHILD(child, pnode)			\
-	for (child = ec_pnode_get_first_child(pnode);		\
-	     child != NULL;					\
-	     child = ec_pnode_next(child))			\
+#define EC_PNODE_FOREACH_CHILD(child, pnode)                                                       \
+	for (child = ec_pnode_get_first_child(pnode); child != NULL; child = ec_pnode_next(child))
 
 /**
  * Get the grammar node corresponding to the parsing node.
@@ -368,9 +369,12 @@ const struct ec_pnode *ec_pnode_find(const struct ec_pnode *root, const char *id
  * @return
  *   The next node matching the identifier, or NULL if not found.
  */
-const struct ec_pnode *ec_pnode_find_next(const struct ec_pnode *root,
-				const struct ec_pnode *prev,
-				const char *id, bool iter_children);
+const struct ec_pnode *ec_pnode_find_next(
+	const struct ec_pnode *root,
+	const struct ec_pnode *prev,
+	const char *id,
+	bool iter_children
+);
 
 /**
  * Iterate among parse tree
@@ -378,18 +382,19 @@ const struct ec_pnode *ec_pnode_find_next(const struct ec_pnode *root,
  * Use it with:
  * for (iter = pnode; iter != NULL; iter = EC_PNODE_ITER_NEXT(pnode, iter, 1))
  */
-struct ec_pnode *__ec_pnode_iter_next(const struct ec_pnode *root,
-				struct ec_pnode *pnode, bool iter_children);
+struct ec_pnode *
+__ec_pnode_iter_next(const struct ec_pnode *root, struct ec_pnode *pnode, bool iter_children);
 
 /* keep the const if any */
-#define EC_PNODE_ITER_NEXT(root, parse, iter_children) ({		\
-	const struct ec_pnode *p_ = parse; /* check type */		\
-	struct ec_pnode *pnode_ = (struct ec_pnode *)parse;		\
-	__typeof__(parse) res_;						\
-	(void)p_;							\
-	res_ = __ec_pnode_iter_next(root, pnode_, iter_children);	\
-	res_;								\
-})
+#define EC_PNODE_ITER_NEXT(root, parse, iter_children)                                             \
+	({                                                                                         \
+		const struct ec_pnode *p_ = parse; /* check type */                                \
+		struct ec_pnode *pnode_ = (struct ec_pnode *)parse;                                \
+		__typeof__(parse) res_;                                                            \
+		(void)p_;                                                                          \
+		res_ = __ec_pnode_iter_next(root, pnode_, iter_children);                          \
+		res_;                                                                              \
+	})
 
 /**
  * Get the total number of elements in a parse node.

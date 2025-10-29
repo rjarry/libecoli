@@ -2,10 +2,10 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/config.h>
@@ -22,10 +22,11 @@ struct ec_node_option {
 	struct ec_node *child;
 };
 
-static int
-ec_node_option_parse(const struct ec_node *node,
-		struct ec_pnode *pstate,
-		const struct ec_strvec *strvec)
+static int ec_node_option_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_option *priv = ec_node_priv(node);
 	int ret;
@@ -40,10 +41,11 @@ ec_node_option_parse(const struct ec_node *node,
 	return ret;
 }
 
-static int
-ec_node_option_complete(const struct ec_node *node,
-			struct ec_comp *comp,
-			const struct ec_strvec *strvec)
+static int ec_node_option_complete(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_option *priv = ec_node_priv(node);
 
@@ -57,8 +59,7 @@ static void ec_node_option_free_priv(struct ec_node *node)
 	ec_node_free(priv->child);
 }
 
-static size_t
-ec_node_option_get_children_count(const struct ec_node *node)
+static size_t ec_node_option_get_children_count(const struct ec_node *node)
 {
 	struct ec_node_option *priv = ec_node_priv(node);
 
@@ -67,9 +68,12 @@ ec_node_option_get_children_count(const struct ec_node *node)
 	return 0;
 }
 
-static int
-ec_node_option_get_child(const struct ec_node *node, size_t i,
-	struct ec_node **child, unsigned int *refs)
+static int ec_node_option_get_child(
+	const struct ec_node *node,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+)
 {
 	struct ec_node_option *priv = ec_node_priv(node);
 
@@ -92,8 +96,7 @@ static const struct ec_config_schema ec_node_option_schema[] = {
 	},
 };
 
-static int ec_node_option_set_config(struct ec_node *node,
-				const struct ec_config *config)
+static int ec_node_option_set_config(struct ec_node *node, const struct ec_config *config)
 {
 	struct ec_node_option *priv = ec_node_priv(node);
 	const struct ec_config *child;
@@ -130,8 +133,7 @@ static struct ec_node_type ec_node_option_type = {
 
 EC_NODE_TYPE_REGISTER(ec_node_option_type);
 
-int
-ec_node_option_set_child(struct ec_node *node, struct ec_node *child)
+int ec_node_option_set_child(struct ec_node *node, struct ec_node *child)
 {
 	const struct ec_config *cur_config = NULL;
 	struct ec_config *config = NULL;

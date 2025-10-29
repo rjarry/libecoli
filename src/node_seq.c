@@ -2,11 +2,11 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <assert.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
-#include <stdarg.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/config.h>
@@ -28,10 +28,11 @@ struct ec_node_seq {
 	size_t len;
 };
 
-static int
-ec_node_seq_parse(const struct ec_node *node,
-		struct ec_pnode *pstate,
-		const struct ec_strvec *strvec)
+static int ec_node_seq_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_seq *priv = ec_node_priv(node);
 	struct ec_strvec *childvec = NULL;
@@ -40,8 +41,7 @@ ec_node_seq_parse(const struct ec_node *node,
 	int ret;
 
 	for (i = 0; i < priv->len; i++) {
-		childvec = ec_strvec_ndup(strvec, len,
-			ec_strvec_len(strvec) - len);
+		childvec = ec_strvec_ndup(strvec, len, ec_strvec_len(strvec) - len);
 		if (childvec == NULL)
 			goto fail;
 
@@ -67,10 +67,12 @@ fail:
 	return -1;
 }
 
-static int
-__ec_node_seq_complete(struct ec_node **table, size_t table_len,
-		struct ec_comp *comp,
-		const struct ec_strvec *strvec)
+static int __ec_node_seq_complete(
+	struct ec_node **table,
+	size_t table_len,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_pnode *parse = ec_comp_get_cur_pstate(comp);
 	struct ec_strvec *childvec = NULL;
@@ -122,9 +124,7 @@ __ec_node_seq_complete(struct ec_node **table, size_t table_len,
 			goto fail;
 		}
 
-		ret = __ec_node_seq_complete(&table[1],
-					table_len - 1,
-					comp, childvec);
+		ret = __ec_node_seq_complete(&table[1], table_len - 1, comp, childvec);
 		ec_pnode_del_last_child(parse);
 		ec_strvec_free(childvec);
 		childvec = NULL;
@@ -140,15 +140,15 @@ fail:
 	return -1;
 }
 
-static int
-ec_node_seq_complete(const struct ec_node *node,
-		struct ec_comp *comp,
-		const struct ec_strvec *strvec)
+static int ec_node_seq_complete(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_seq *priv = ec_node_priv(node);
 
-	return __ec_node_seq_complete(priv->table, priv->len, comp,
-				strvec);
+	return __ec_node_seq_complete(priv->table, priv->len, comp, strvec);
 }
 
 static void ec_node_seq_free_priv(struct ec_node *node)
@@ -185,15 +185,13 @@ static const struct ec_config_schema ec_node_seq_schema[] = {
 	},
 };
 
-static int ec_node_seq_set_config(struct ec_node *node,
-				const struct ec_config *config)
+static int ec_node_seq_set_config(struct ec_node *node, const struct ec_config *config)
 {
 	struct ec_node_seq *priv = ec_node_priv(node);
 	struct ec_node **table = NULL;
 	size_t i, len = 0;
 
-	table = ec_node_config_node_list_to_table(
-		ec_config_dict_get(config, "children"), &len);
+	table = ec_node_config_node_list_to_table(ec_config_dict_get(config, "children"), &len);
 	if (table == NULL)
 		return -1;
 
@@ -206,16 +204,18 @@ static int ec_node_seq_set_config(struct ec_node *node,
 	return 0;
 }
 
-static size_t
-ec_node_seq_get_children_count(const struct ec_node *node)
+static size_t ec_node_seq_get_children_count(const struct ec_node *node)
 {
 	struct ec_node_seq *priv = ec_node_priv(node);
 	return priv->len;
 }
 
-static int
-ec_node_seq_get_child(const struct ec_node *node, size_t i,
-		struct ec_node **child, unsigned int *refs)
+static int ec_node_seq_get_child(
+	const struct ec_node *node,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+)
 {
 	struct ec_node_seq *priv = ec_node_priv(node);
 

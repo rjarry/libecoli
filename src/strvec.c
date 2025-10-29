@@ -3,12 +3,12 @@
  */
 
 #include <ctype.h>
-#include <sys/types.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
-#include <stdlib.h>
 #include <errno.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
 
 #include <ecoli/dict.h>
 #include <ecoli/log.h>
@@ -40,8 +40,7 @@ struct ec_strvec *ec_strvec(void)
 	return strvec;
 }
 
-static struct ec_strvec_elt *
-__ec_strvec_elt(const char *s)
+static struct ec_strvec_elt *__ec_strvec_elt(const char *s)
 {
 	struct ec_strvec_elt *elt;
 
@@ -59,8 +58,7 @@ __ec_strvec_elt(const char *s)
 	return elt;
 }
 
-static void
-__ec_strvec_elt_free(struct ec_strvec_elt *elt)
+static void __ec_strvec_elt_free(struct ec_strvec_elt *elt)
 {
 	elt->refcnt--;
 	if (elt->refcnt == 0) {
@@ -98,8 +96,7 @@ int ec_strvec_add(struct ec_strvec *strvec, const char *s)
 		return -1;
 	}
 
-	new_vec = realloc(strvec->vec,
-		sizeof(*strvec->vec) * (strvec->len + 1));
+	new_vec = realloc(strvec->vec, sizeof(*strvec->vec) * (strvec->len + 1));
 	if (new_vec == NULL)
 		return -1;
 
@@ -115,8 +112,7 @@ int ec_strvec_add(struct ec_strvec *strvec, const char *s)
 	return 0;
 }
 
-struct ec_strvec *ec_strvec_from_array(const char * const *strarr,
-	size_t n)
+struct ec_strvec *ec_strvec_from_array(const char *const *strarr, size_t n)
 {
 	struct ec_strvec *strvec = NULL;
 	size_t i;
@@ -150,8 +146,7 @@ int ec_strvec_del_last(struct ec_strvec *strvec)
 	return 0;
 }
 
-struct ec_strvec *ec_strvec_ndup(const struct ec_strvec *strvec, size_t off,
-	size_t len)
+struct ec_strvec *ec_strvec_ndup(const struct ec_strvec *strvec, size_t off, size_t len)
 {
 	struct ec_strvec *copy = NULL;
 	size_t i, veclen;
@@ -219,8 +214,7 @@ const char *ec_strvec_val(const struct ec_strvec *strvec, size_t idx)
 	return strvec->vec[idx]->str;
 }
 
-const struct ec_dict *ec_strvec_get_attrs(const struct ec_strvec *strvec,
-	size_t idx)
+const struct ec_dict *ec_strvec_get_attrs(const struct ec_strvec *strvec, size_t idx)
 {
 	if (strvec == NULL || idx >= strvec->len) {
 		errno = EINVAL;
@@ -230,8 +224,7 @@ const struct ec_dict *ec_strvec_get_attrs(const struct ec_strvec *strvec,
 	return strvec->vec[idx]->attrs;
 }
 
-int ec_strvec_set_attrs(struct ec_strvec *strvec, size_t idx,
-			struct ec_dict *attrs)
+int ec_strvec_set_attrs(struct ec_strvec *strvec, size_t idx, struct ec_dict *attrs)
 {
 	struct ec_strvec_elt *elt;
 
@@ -259,8 +252,7 @@ fail:
 	return -1;
 }
 
-int ec_strvec_cmp(const struct ec_strvec *strvec1,
-		const struct ec_strvec *strvec2)
+int ec_strvec_cmp(const struct ec_strvec *strvec1, const struct ec_strvec *strvec2)
 {
 	size_t i;
 
@@ -268,8 +260,7 @@ int ec_strvec_cmp(const struct ec_strvec *strvec1,
 		return -1;
 
 	for (i = 0; i < ec_strvec_len(strvec1); i++) {
-		if (strcmp(ec_strvec_val(strvec1, i),
-				ec_strvec_val(strvec2, i)))
+		if (strcmp(ec_strvec_val(strvec1, i), ec_strvec_val(strvec2, i)))
 			return -1;
 	}
 
@@ -313,18 +304,15 @@ static char_class_t get_char_class(char c)
 	return OTHER;
 }
 
-static int sh_lex_set_attrs(struct ec_strvec *strvec, size_t idx,
-			    size_t arg_start, size_t arg_end)
+static int sh_lex_set_attrs(struct ec_strvec *strvec, size_t idx, size_t arg_start, size_t arg_end)
 {
 	struct ec_dict *attrs = ec_dict();
 	if (attrs == NULL)
 		return -1;
 
-	if (ec_dict_set(attrs, EC_STRVEC_ATTR_START,
-			(void *)(uintptr_t)arg_start, NULL) < 0)
+	if (ec_dict_set(attrs, EC_STRVEC_ATTR_START, (void *)(uintptr_t)arg_start, NULL) < 0)
 		goto fail;
-	if (ec_dict_set(attrs, EC_STRVEC_ATTR_END,
-			(void *)(uintptr_t)arg_end, NULL) < 0)
+	if (ec_dict_set(attrs, EC_STRVEC_ATTR_END, (void *)(uintptr_t)arg_end, NULL) < 0)
 		goto fail;
 
 	return ec_strvec_set_attrs(strvec, idx, attrs);
@@ -333,9 +321,7 @@ fail:
 	return -1;
 }
 
-struct ec_strvec *
-ec_strvec_sh_lex_str(const char *str, ec_strvec_flag_t flags,
-		     char *missing_quote)
+struct ec_strvec *ec_strvec_sh_lex_str(const char *str, ec_strvec_flag_t flags, char *missing_quote)
 {
 	struct ec_strvec *strvec = NULL;
 	lexer_state_t state = START;
@@ -346,13 +332,13 @@ ec_strvec_sh_lex_str(const char *str, ec_strvec_flag_t flags,
 	char token[BUFSIZ];
 	char c, quote;
 
-#define append(buffer, position, character) \
-	do { \
-		buffer[position++] = character; \
-		if (position >= sizeof(buffer)) { \
-			errno = ENOBUFS; \
-			goto fail; \
-		} \
+#define append(buffer, position, character)                                                        \
+	do {                                                                                       \
+		buffer[position++] = character;                                                    \
+		if (position >= sizeof(buffer)) {                                                  \
+			errno = ENOBUFS;                                                           \
+			goto fail;                                                                 \
+		}                                                                                  \
 	} while (0)
 
 	if (str == NULL) {
@@ -409,9 +395,10 @@ ec_strvec_sh_lex_str(const char *str, ec_strvec_flag_t flags,
 				token[t] = '\0';
 				if (ec_strvec_add(strvec, token) < 0)
 					goto fail;
-				if (sh_lex_set_attrs(strvec,
-						     ec_strvec_len(strvec) - 1,
-						     arg_start, i) < 0)
+				if (sh_lex_set_attrs(
+					    strvec, ec_strvec_len(strvec) - 1, arg_start, i
+				    )
+				    < 0)
 					goto fail;
 				state = START;
 				trailing_space = true;
@@ -492,14 +479,12 @@ ec_strvec_sh_lex_str(const char *str, ec_strvec_flag_t flags,
 		token[t] = '\0';
 		if (ec_strvec_add(strvec, token) < 0)
 			goto fail;
-		if (sh_lex_set_attrs(strvec, ec_strvec_len(strvec) - 1,
-				     arg_start, i) < 0)
+		if (sh_lex_set_attrs(strvec, ec_strvec_len(strvec) - 1, arg_start, i) < 0)
 			goto fail;
 	} else if (trailing_space && (flags & EC_STRVEC_TRAILSP)) {
 		if (ec_strvec_add(strvec, "") < 0)
 			goto fail;
-		if (sh_lex_set_attrs(strvec, ec_strvec_len(strvec) - 1,
-				     arg_start + 1, i + 1) < 0)
+		if (sh_lex_set_attrs(strvec, ec_strvec_len(strvec) - 1, arg_start + 1, i + 1) < 0)
 			goto fail;
 	}
 
@@ -510,22 +495,19 @@ fail:
 	return NULL;
 }
 
-static int
-cmp_vec_elt(const void *p1, const void *p2, void *arg)
+static int cmp_vec_elt(const void *p1, const void *p2, void *arg)
 {
 	int (*str_cmp)(const char *s1, const char *s2) = arg;
-	const struct ec_strvec_elt * const *e1 = p1, * const *e2 = p2;
+	const struct ec_strvec_elt *const *e1 = p1, *const *e2 = p2;
 
 	return str_cmp((*e1)->str, (*e2)->str);
 }
 
-void ec_strvec_sort(struct ec_strvec *strvec,
-	int (*str_cmp)(const char *s1, const char *s2))
+void ec_strvec_sort(struct ec_strvec *strvec, int (*str_cmp)(const char *s1, const char *s2))
 {
 	if (str_cmp == NULL)
 		str_cmp = strcmp;
-	qsort_r(strvec->vec, ec_strvec_len(strvec),
-		sizeof(*strvec->vec), cmp_vec_elt, str_cmp);
+	qsort_r(strvec->vec, ec_strvec_len(strvec), sizeof(*strvec->vec), cmp_vec_elt, str_cmp);
 }
 
 void ec_strvec_dump(FILE *out, const struct ec_strvec *strvec)
@@ -555,5 +537,4 @@ void ec_strvec_dump(FILE *out, const struct ec_strvec *strvec)
 		free(elt);
 	}
 	fprintf(out, "]\n");
-
 }

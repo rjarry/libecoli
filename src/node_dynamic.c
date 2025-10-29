@@ -2,10 +2,10 @@
  * Copyright 2017, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/dict.h>
@@ -25,10 +25,11 @@ struct ec_node_dynamic {
 	void *opaque;
 };
 
-static int
-ec_node_dynamic_parse(const struct ec_node *node,
-		struct ec_pnode *parse,
-		const struct ec_strvec *strvec)
+static int ec_node_dynamic_parse(
+	const struct ec_node *node,
+	struct ec_pnode *parse,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_dynamic *priv = ec_node_priv(node);
 	struct ec_node *child = NULL;
@@ -43,8 +44,7 @@ ec_node_dynamic_parse(const struct ec_node *node,
 	/* add the node pointer in the attributes, so it will be freed
 	 * when parse is freed */
 	snprintf(key, sizeof(key), "_dyn_%p", child);
-	ret = ec_dict_set(ec_pnode_get_attrs(parse), key, child,
-			(void *)node_free);
+	ret = ec_dict_set(ec_pnode_get_attrs(parse), key, child, (void *)node_free);
 	if (ret < 0) {
 		child = NULL; /* already freed */
 		goto fail;
@@ -57,10 +57,11 @@ fail:
 	return ret;
 }
 
-static int
-ec_node_dynamic_complete(const struct ec_node *node,
-		struct ec_comp *comp,
-		const struct ec_strvec *strvec)
+static int ec_node_dynamic_complete(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_dynamic *priv = ec_node_priv(node);
 	struct ec_pnode *parse;
@@ -77,8 +78,7 @@ ec_node_dynamic_complete(const struct ec_node *node,
 	/* add the node pointer in the attributes, so it will be freed
 	 * when parse is freed */
 	snprintf(key, sizeof(key), "_dyn_%p", child);
-	ret = ec_dict_set(ec_comp_get_attrs(comp), key, child,
-			(void *)node_free);
+	ret = ec_dict_set(ec_comp_get_attrs(comp), key, child, (void *)node_free);
 	if (ret < 0) {
 		child = NULL; /* already freed */
 		goto fail;
@@ -98,8 +98,7 @@ static struct ec_node_type ec_node_dynamic_type = {
 	.size = sizeof(struct ec_node_dynamic),
 };
 
-struct ec_node *
-ec_node_dynamic(const char *id, ec_node_dynamic_build_t build, void *opaque)
+struct ec_node *ec_node_dynamic(const char *id, ec_node_dynamic_build_t build, void *opaque)
 {
 	struct ec_node *node = NULL;
 	struct ec_node_dynamic *priv;
@@ -122,7 +121,6 @@ ec_node_dynamic(const char *id, ec_node_dynamic_build_t build, void *opaque)
 fail:
 	ec_node_free(node);
 	return NULL;
-
 }
 
 EC_NODE_TYPE_REGISTER(ec_node_dynamic_type);

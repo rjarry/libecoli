@@ -48,10 +48,10 @@
 
 #pragma once
 
-#include <sys/queue.h>
-#include <sys/types.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <sys/queue.h>
+#include <sys/types.h>
 
 /**
  * Node has no identifier.
@@ -77,15 +77,12 @@ struct ec_config_schema;
  * @param t
  *   The name of the ec_node_type structure variable.
  */
-#define EC_NODE_TYPE_REGISTER(t)					\
-	static void ec_node_init_##t(void);				\
-	static void __attribute__((constructor, used))			\
-	ec_node_init_##t(void)						\
-	{								\
-		if (ec_node_type_register(&t, 0) < 0)			\
-			fprintf(stderr,					\
-				"cannot register node type %s\n",	\
-				t.name);				\
+#define EC_NODE_TYPE_REGISTER(t)                                                                   \
+	static void ec_node_init_##t(void);                                                        \
+	static void __attribute__((constructor, used)) ec_node_init_##t(void)                      \
+	{                                                                                          \
+		if (ec_node_type_register(&t, 0) < 0)                                              \
+			fprintf(stderr, "cannot register node type %s\n", t.name);                 \
 	}
 
 /**
@@ -101,15 +98,12 @@ struct ec_config_schema;
  * @param t
  *   The name of the ec_node_type structure variable.
  */
-#define EC_NODE_TYPE_REGISTER_OVERRIDE(t)				\
-	static void ec_node_init_##t(void);				\
-	static void __attribute__((constructor, used))			\
-	ec_node_init_##t(void)						\
-	{								\
-		if (ec_node_type_register(&t, 1) < 0)			\
-			fprintf(stderr,					\
-				"cannot register node type %s\n",	\
-				t.name);				\
+#define EC_NODE_TYPE_REGISTER_OVERRIDE(t)                                                          \
+	static void ec_node_init_##t(void);                                                        \
+	static void __attribute__((constructor, used)) ec_node_init_##t(void)                      \
+	{                                                                                          \
+		if (ec_node_type_register(&t, 1) < 0)                                              \
+			fprintf(stderr, "cannot register node type %s\n", t.name);                 \
 	}
 
 /**
@@ -133,8 +127,7 @@ TAILQ_HEAD(ec_node_type_list, ec_node_type);
  * @return
  *   0 on success, negative on error (errno is set).
  */
-typedef int (*ec_node_set_config_t)(struct ec_node *node,
-				const struct ec_config *config);
+typedef int (*ec_node_set_config_t)(struct ec_node *node, const struct ec_config *config);
 
 /**
  * Parse a string vector using the given grammar graph.
@@ -159,9 +152,11 @@ typedef int (*ec_node_set_config_t)(struct ec_node *node,
  *   (can be 0) or EC_PARSE_NOMATCH if the node cannot parse the string
  *   vector. On error, a negative value is returned and errno is set.
  */
-typedef int (*ec_parse_t)(const struct ec_node *node,
-			struct ec_pnode *pstate,
-			const struct ec_strvec *strvec);
+typedef int (*ec_parse_t)(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+);
 
 /**
  * Get completion items using the given grammar graph.
@@ -204,9 +199,11 @@ typedef int (*ec_parse_t)(const struct ec_node *node,
  * @return
  *   0 on success, or a negative value on error (errno is set).
  */
-typedef int (*ec_complete_t)(const struct ec_node *node,
-				struct ec_comp *comp,
-				const struct ec_strvec *strvec);
+typedef int (*ec_complete_t)(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+);
 
 /**
  * Get the short description of a grammar node.
@@ -233,7 +230,7 @@ typedef int (*ec_complete_t)(const struct ec_node *node,
  *
  * On error, NULL is returned and errno is set.
  */
-typedef char * (*ec_node_desc_t)(const struct ec_node *);
+typedef char *(*ec_node_desc_t)(const struct ec_node *);
 
 /**
  * Initialize the node private area.
@@ -290,8 +287,12 @@ typedef size_t (*ec_node_get_children_count_t)(const struct ec_node *);
  * On success, 0 is returned. On error, a negative value is returned and
  * errno is set.
  */
-typedef int (*ec_node_get_child_t)(const struct ec_node *,
-	size_t i, struct ec_node **child, unsigned int *refs);
+typedef int (*ec_node_get_child_t)(
+	const struct ec_node *,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+);
 
 /**
  * A structure describing a grammar node type.
@@ -301,21 +302,21 @@ typedef int (*ec_node_get_child_t)(const struct ec_node *,
  * `ecoli_node_<type>.c` files.
  */
 struct ec_node_type {
-	TAILQ_ENTRY(ec_node_type) next;  /**< Next in list. */
-	const char *name;                /**< Node type name. */
+	TAILQ_ENTRY(ec_node_type) next; /**< Next in list. */
+	const char *name; /**< Node type name. */
 	/** Configuration schema array, must be terminated by a sentinel
 	 *  (.type = EC_CONFIG_TYPE_NONE). */
 	const struct ec_config_schema *schema;
-	size_t size;                     /**< Size of private area */
+	size_t size; /**< Size of private area */
 	ec_node_set_config_t set_config; /**< Validate and set configuration. */
-	ec_parse_t parse;                /**< Parse a string vector. */
-	ec_complete_t complete;          /**< Get completion items. */
-	ec_node_desc_t desc;             /**< Get short description. */
-	ec_node_init_priv_t init_priv;   /**< Initialize private area. */
-	ec_node_free_priv_t free_priv;   /**< Free node resourses. */
+	ec_parse_t parse; /**< Parse a string vector. */
+	ec_complete_t complete; /**< Get completion items. */
+	ec_node_desc_t desc; /**< Get short description. */
+	ec_node_init_priv_t init_priv; /**< Initialize private area. */
+	ec_node_free_priv_t free_priv; /**< Free node resourses. */
 	/** Get children count. */
 	ec_node_get_children_count_t get_children_count;
-	ec_node_get_child_t get_child;   /**< Get the i-th child. */
+	ec_node_get_child_t get_child; /**< Get the i-th child. */
 };
 
 /**
@@ -363,8 +364,7 @@ void ec_node_type_dump(FILE *out);
  *   The (read-only) config schema of the node type, or NULL
  *   if the node type has no config schema.
  */
-const struct ec_config_schema *
-ec_node_type_schema(const struct ec_node_type *type);
+const struct ec_config_schema *ec_node_type_schema(const struct ec_node_type *type);
 
 /**
  * Get the name of a node type.
@@ -374,8 +374,7 @@ ec_node_type_schema(const struct ec_node_type *type);
  * @return
  *   The (read-only) name of the node type.
  */
-const char *
-ec_node_type_name(const struct ec_node_type *type);
+const char *ec_node_type_name(const struct ec_node_type *type);
 
 /**
  * create a new node when the type is known, typically called from the node
@@ -400,9 +399,12 @@ int ec_node_set_config(struct ec_node *node, struct ec_config *config);
 const struct ec_config *ec_node_get_config(struct ec_node *node);
 
 size_t ec_node_get_children_count(const struct ec_node *node);
-int
-ec_node_get_child(const struct ec_node *node, size_t i,
-	struct ec_node **child, unsigned int *refs);
+int ec_node_get_child(
+	const struct ec_node *node,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+);
 
 /* XXX add more accessors */
 const struct ec_node_type *ec_node_type(const struct ec_node *node);
@@ -415,8 +417,7 @@ void ec_node_dump(FILE *out, const struct ec_node *node);
 struct ec_node *ec_node_find(struct ec_node *node, const char *id);
 
 /* check the type of a node */
-int ec_node_check_type(const struct ec_node *node,
-		const struct ec_node_type *type);
+int ec_node_check_type(const struct ec_node *node, const struct ec_node_type *type);
 
 const char *ec_node_get_type_name(const struct ec_node *node);
 
@@ -430,4 +431,4 @@ const char *ec_node_get_type_name(const struct ec_node *node);
  */
 void *ec_node_priv(const struct ec_node *node);
 
- /** @} */
+/** @} */

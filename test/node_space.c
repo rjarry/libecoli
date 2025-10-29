@@ -28,15 +28,9 @@ EC_TEST_MAIN()
 		return -1;
 	}
 	/* never completes whatever the input */
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"", EC_VA_END,
-		EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		" ", EC_VA_END,
-		EC_VA_END);
-	testres |= EC_TEST_CHECK_COMPLETE(node,
-		"foo", EC_VA_END,
-		EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, "", EC_VA_END, EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, " ", EC_VA_END, EC_VA_END);
+	testres |= EC_TEST_CHECK_COMPLETE(node, "foo", EC_VA_END, EC_VA_END);
 	ec_node_free(node);
 
 	return testres;

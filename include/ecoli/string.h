@@ -12,8 +12,8 @@
 #pragma once
 
 #include <stdarg.h>
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 /** count the number of identical chars at the beginning of 2 strings */
@@ -41,8 +41,7 @@ bool ec_str_is_space(const char *s);
  * @return
  *   On success, return 0. Else, return -1 and set errno.
  */
-int ec_str_parse_llint(const char *str, unsigned int base, int64_t min,
-		int64_t max, int64_t *val);
+int ec_str_parse_llint(const char *str, unsigned int base, int64_t min, int64_t max, int64_t *val);
 
 /**
  * Parse a string for an unsigned integer.
@@ -60,8 +59,13 @@ int ec_str_parse_llint(const char *str, unsigned int base, int64_t min,
  * @return
  *   On success, return 0. Else, return -1 and set errno.
  */
-int ec_str_parse_ullint(const char *str, unsigned int base, uint64_t min,
-			uint64_t max, uint64_t *val);
+int ec_str_parse_ullint(
+	const char *str,
+	unsigned int base,
+	uint64_t min,
+	uint64_t max,
+	uint64_t *val
+);
 
 /**
  * Quote a string, escaping nested quotes.

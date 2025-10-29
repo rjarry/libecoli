@@ -16,11 +16,11 @@ static void str_free(void *elt)
 	free(*s);
 }
 
-#define GOTO_FAIL do {					     \
-		EC_LOG(EC_LOG_ERR, "%s:%d: test failed\n",   \
-			__FILE__, __LINE__);		     \
-		goto fail;				     \
-	} while(0)
+#define GOTO_FAIL                                                                                  \
+	do {                                                                                       \
+		EC_LOG(EC_LOG_ERR, "%s:%d: test failed\n", __FILE__, __LINE__);                    \
+		goto fail;                                                                         \
+	} while (0)
 
 EC_TEST_MAIN()
 {

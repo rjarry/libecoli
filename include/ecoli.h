@@ -30,6 +30,7 @@
 #include <ecoli/init.h>
 #include <ecoli/log.h>
 #include <ecoli/murmurhash.h>
+#include <ecoli/node.h>
 #include <ecoli/node_any.h>
 #include <ecoli/node_bypass.h>
 #include <ecoli/node_cmd.h>
@@ -38,7 +39,6 @@
 #include <ecoli/node_empty.h>
 #include <ecoli/node_expr.h>
 #include <ecoli/node_file.h>
-#include <ecoli/node.h>
 #include <ecoli/node_helper.h>
 #include <ecoli/node_int.h>
 #include <ecoli/node_many.h>

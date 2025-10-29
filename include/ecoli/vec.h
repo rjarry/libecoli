@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <sys/types.h>
 #include <stdint.h>
+#include <sys/types.h>
 
 /**
  * Custom free callback.
@@ -32,8 +32,7 @@ typedef void (*ec_vec_elt_free_t)(void *ptr);
 typedef void (*ec_vec_elt_copy_t)(void *dst, void *src);
 
 /** Create a new vector. */
-struct ec_vec *ec_vec(size_t elt_size, size_t size,
-		ec_vec_elt_copy_t copy, ec_vec_elt_free_t free);
+struct ec_vec *ec_vec(size_t elt_size, size_t size, ec_vec_elt_copy_t copy, ec_vec_elt_free_t free);
 
 /** Add reference to a vector. */
 int ec_vec_add_by_ref(struct ec_vec *vec, void *ptr);
@@ -56,13 +55,11 @@ int ec_vec_get(void *ptr, const struct ec_vec *vec, size_t idx);
 /** Duplicate a vector. */
 struct ec_vec *ec_vec_dup(const struct ec_vec *vec);
 /** Duplicate a portion of a vector. */
-struct ec_vec *ec_vec_ndup(const struct ec_vec *vec,
-	size_t off, size_t len);
+struct ec_vec *ec_vec_ndup(const struct ec_vec *vec, size_t off, size_t len);
 /** Free a vector and all its contents. */
 void ec_vec_free(struct ec_vec *vec);
 
 /** Get the size of a vector. */
-__attribute__((pure))
-size_t ec_vec_len(const struct ec_vec *vec);
+__attribute__((pure)) size_t ec_vec_len(const struct ec_vec *vec);
 
 /** @} */

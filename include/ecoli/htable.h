@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include <stdio.h>
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 
 typedef void (*ec_htable_elt_free_t)(void *);
 
@@ -44,8 +44,7 @@ struct ec_htable *ec_htable(void);
  *   The element if it is found, or NULL on error (errno is set).
  *   In case of success but the element is NULL, errno is set to 0.
  */
-void *ec_htable_get(const struct ec_htable *htable,
-		const void *key, size_t key_len);
+void *ec_htable_get(const struct ec_htable *htable, const void *key, size_t key_len);
 
 /**
  * Check if the hash table contains this key.
@@ -59,8 +58,7 @@ void *ec_htable_get(const struct ec_htable *htable,
  * @return
  *   true if it contains the key, else false.
  */
-bool ec_htable_has_key(const struct ec_htable *htable,
-		const void *key, size_t key_len);
+bool ec_htable_has_key(const struct ec_htable *htable, const void *key, size_t key_len);
 
 /**
  * Delete an object from the hash table.
@@ -94,8 +92,13 @@ int ec_htable_del(struct ec_htable *htable, const void *key, size_t key_len);
  *   0 on success, or -1 on error (errno is set).
  *   On error, the passed value is freed (free_cb(val) is called).
  */
-int ec_htable_set(struct ec_htable *htable, const void *key, size_t key_len,
-		void *val, ec_htable_elt_free_t free_cb);
+int ec_htable_set(
+	struct ec_htable *htable,
+	const void *key,
+	size_t key_len,
+	void *val,
+	ec_htable_elt_free_t free_cb
+);
 
 /**
  * Free a hash table an all its objects.
@@ -168,8 +171,7 @@ void ec_htable_dump(FILE *out, const struct ec_htable *htable);
  * @return
  *   An iterator element, or NULL if the dict is empty.
  */
-struct ec_htable_elt_ref *
-ec_htable_iter(const struct ec_htable *htable);
+struct ec_htable_elt_ref *ec_htable_iter(const struct ec_htable *htable);
 
 /**
  * Make the iterator point to the next element in the hash table.
@@ -179,8 +181,7 @@ ec_htable_iter(const struct ec_htable *htable);
  * @return
  *   An iterator element, or NULL there is no more element.
  */
-struct ec_htable_elt_ref *
-ec_htable_iter_next(struct ec_htable_elt_ref *iter);
+struct ec_htable_elt_ref *ec_htable_iter_next(struct ec_htable_elt_ref *iter);
 
 /**
  * Get the key of the current element.
@@ -191,8 +192,7 @@ ec_htable_iter_next(struct ec_htable_elt_ref *iter);
  *   The current element key, or NULL if the iterator points to an
  *   invalid element.
  */
-const void *
-ec_htable_iter_get_key(const struct ec_htable_elt_ref *iter);
+const void *ec_htable_iter_get_key(const struct ec_htable_elt_ref *iter);
 
 /**
  * Get the key length of the current element.
@@ -203,8 +203,7 @@ ec_htable_iter_get_key(const struct ec_htable_elt_ref *iter);
  *   The current element key length, or 0 if the iterator points to an
  *   invalid element.
  */
-size_t
-ec_htable_iter_get_key_len(const struct ec_htable_elt_ref *iter);
+size_t ec_htable_iter_get_key_len(const struct ec_htable_elt_ref *iter);
 
 /**
  * Get the value of the current element.
@@ -215,7 +214,6 @@ ec_htable_iter_get_key_len(const struct ec_htable_elt_ref *iter);
  *   The current element value, or NULL if the iterator points to an
  *   invalid element.
  */
-void *
-ec_htable_iter_get_val(const struct ec_htable_elt_ref *iter);
+void *ec_htable_iter_get_val(const struct ec_htable_elt_ref *iter);
 
 /** @} */

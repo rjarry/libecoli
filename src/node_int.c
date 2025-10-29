@@ -2,12 +2,12 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <limits.h>
 #include <errno.h>
+#include <limits.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/config.h>
@@ -36,8 +36,7 @@ struct ec_node_int_uint {
 	unsigned int base;
 };
 
-static int parse_llint(struct ec_node_int_uint *priv, const char *str,
-	int64_t *val)
+static int parse_llint(struct ec_node_int_uint *priv, const char *str, int64_t *val)
 {
 	int64_t min, max;
 
@@ -53,8 +52,7 @@ static int parse_llint(struct ec_node_int_uint *priv, const char *str,
 	return ec_str_parse_llint(str, priv->base, min, max, val);
 }
 
-static int parse_ullint(struct ec_node_int_uint *priv, const char *str,
-			uint64_t *val)
+static int parse_ullint(struct ec_node_int_uint *priv, const char *str, uint64_t *val)
 {
 	uint64_t min, max;
 
@@ -70,9 +68,11 @@ static int parse_ullint(struct ec_node_int_uint *priv, const char *str,
 	return ec_str_parse_ullint(str, priv->base, min, max, val);
 }
 
-static int ec_node_int_uint_parse(const struct ec_node *node,
-			struct ec_pnode *pstate,
-			const struct ec_strvec *strvec)
+static int ec_node_int_uint_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_int_uint *priv = ec_node_priv(node);
 	const char *str;
@@ -95,8 +95,7 @@ static int ec_node_int_uint_parse(const struct ec_node *node,
 	return 1;
 }
 
-static int
-ec_node_uint_init_priv(struct ec_node *node)
+static int ec_node_uint_init_priv(struct ec_node *node)
 {
 	struct ec_node_int_uint *priv = ec_node_priv(node);
 
@@ -126,8 +125,7 @@ static const struct ec_config_schema ec_node_int_schema[] = {
 	},
 };
 
-static int ec_node_int_set_config(struct ec_node *node,
-				const struct ec_config *config)
+static int ec_node_int_set_config(struct ec_node *node, const struct ec_config *config)
 {
 	struct ec_node_int_uint *priv = ec_node_priv(node);
 	const struct ec_config *min_value = NULL;
@@ -179,8 +177,7 @@ static struct ec_node_type ec_node_int_type = {
 
 EC_NODE_TYPE_REGISTER(ec_node_int_type);
 
-struct ec_node *ec_node_int(const char *id, int64_t min,
-	int64_t max, unsigned int base)
+struct ec_node *ec_node_int(const char *id, int64_t min, int64_t max, unsigned int base)
 {
 	struct ec_config *config = NULL;
 	struct ec_node *node = NULL;
@@ -238,8 +235,7 @@ static const struct ec_config_schema ec_node_uint_schema[] = {
 	},
 };
 
-static int ec_node_uint_set_config(struct ec_node *node,
-				const struct ec_config *config)
+static int ec_node_uint_set_config(struct ec_node *node, const struct ec_config *config)
 {
 	struct ec_node_int_uint *priv = ec_node_priv(node);
 	const struct ec_config *min_value = NULL;
@@ -290,8 +286,7 @@ static struct ec_node_type ec_node_uint_type = {
 
 EC_NODE_TYPE_REGISTER(ec_node_uint_type);
 
-struct ec_node *ec_node_uint(const char *id, uint64_t min,
-	uint64_t max, unsigned int base)
+struct ec_node *ec_node_uint(const char *id, uint64_t min, uint64_t max, unsigned int base)
 {
 	struct ec_config *config = NULL;
 	struct ec_node *node = NULL;
@@ -328,8 +323,7 @@ fail:
 	return NULL;
 }
 
-int ec_node_int_getval(const struct ec_node *node, const char *str,
-			int64_t *result)
+int ec_node_int_getval(const struct ec_node *node, const char *str, int64_t *result)
 {
 	struct ec_node_int_uint *priv = ec_node_priv(node);
 	int ret;
@@ -344,8 +338,7 @@ int ec_node_int_getval(const struct ec_node *node, const char *str,
 	return 0;
 }
 
-int ec_node_uint_getval(const struct ec_node *node, const char *str,
-			uint64_t *result)
+int ec_node_uint_getval(const struct ec_node *node, const char *str, uint64_t *result)
 {
 	struct ec_node_int_uint *priv = ec_node_priv(node);
 	int ret;

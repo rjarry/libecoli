@@ -2,11 +2,11 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <assert.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
-#include <errno.h>
 
 #include <ecoli/assert.h>
 #include <ecoli/dict.h>
@@ -31,9 +31,12 @@ struct ec_pnode {
 	struct ec_dict *attrs;
 };
 
-static int __ec_parse_child(const struct ec_node *node,
-				struct ec_pnode *pstate,
-				bool is_root, const struct ec_strvec *strvec)
+static int __ec_parse_child(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	bool is_root,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_strvec *match_strvec;
 	struct ec_pnode *child = NULL;
@@ -83,15 +86,17 @@ fail:
 	return -1;
 }
 
-int ec_parse_child(const struct ec_node *node, struct ec_pnode *pstate,
-			const struct ec_strvec *strvec)
+int ec_parse_child(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	assert(pstate != NULL);
 	return __ec_parse_child(node, pstate, false, strvec);
 }
 
-struct ec_pnode *ec_parse_strvec(const struct ec_node *node,
-				const struct ec_strvec *strvec)
+struct ec_pnode *ec_parse_strvec(const struct ec_node *node, const struct ec_strvec *strvec)
 {
 	struct ec_pnode *pnode = ec_pnode(node);
 	int ret;
@@ -128,7 +133,7 @@ struct ec_pnode *ec_parse(const struct ec_node *node, const char *str)
 	ec_strvec_free(strvec);
 	return pnode;
 
- fail:
+fail:
 	ec_strvec_free(strvec);
 	ec_pnode_free(pnode);
 	return NULL;
@@ -151,7 +156,7 @@ struct ec_pnode *ec_pnode(const struct ec_node *node)
 
 	return pnode;
 
- fail:
+fail:
 	if (pnode != NULL)
 		ec_dict_free(pnode->attrs);
 	free(pnode);
@@ -160,8 +165,7 @@ struct ec_pnode *ec_pnode(const struct ec_node *node)
 }
 
 static struct ec_pnode *
-__ec_pnode_dup(const struct ec_pnode *root, const struct ec_pnode *ref,
-		struct ec_pnode **new_ref)
+__ec_pnode_dup(const struct ec_pnode *root, const struct ec_pnode *ref, struct ec_pnode **new_ref)
 {
 	struct ec_pnode *dup = NULL;
 	struct ec_pnode *child, *dup_child;
@@ -189,7 +193,7 @@ __ec_pnode_dup(const struct ec_pnode *root, const struct ec_pnode *ref,
 			goto fail;
 	}
 
-	TAILQ_FOREACH(child, &root->children, next) {
+	TAILQ_FOREACH (child, &root->children, next) {
 		dup_child = __ec_pnode_dup(child, ref, new_ref);
 		if (dup_child == NULL)
 			goto fail;
@@ -237,8 +241,7 @@ void ec_pnode_free(struct ec_pnode *pnode)
 	if (pnode == NULL)
 		return;
 
-	ec_assert_print(pnode->parent == NULL,
-			"parent not NULL in ec_pnode_free()");
+	ec_assert_print(pnode->parent == NULL, "parent not NULL in ec_pnode_free()");
 
 	ec_pnode_free_children(pnode);
 	ec_strvec_free(pnode->strvec);
@@ -246,8 +249,7 @@ void ec_pnode_free(struct ec_pnode *pnode)
 	free(pnode);
 }
 
-static void __ec_pnode_dump(FILE *out,
-	const struct ec_pnode *pnode, size_t indent)
+static void __ec_pnode_dump(FILE *out, const struct ec_pnode *pnode, size_t indent)
 {
 	struct ec_pnode *child;
 	const struct ec_strvec *vec;
@@ -261,12 +263,18 @@ static void __ec_pnode_dump(FILE *out,
 		desc = ec_node_desc(pnode->node);
 	}
 
-	fprintf(out, "%*s" "%s type=%s id=%s vec=",
-		(int)indent * 4, "", desc ? : "none", typename, id);
+	fprintf(out,
+		"%*s"
+		"%s type=%s id=%s vec=",
+		(int)indent * 4,
+		"",
+		desc ?: "none",
+		typename,
+		id);
 	vec = ec_pnode_get_strvec(pnode);
 	ec_strvec_dump(out, vec);
 
-	TAILQ_FOREACH(child, &pnode->children, next)
+	TAILQ_FOREACH (child, &pnode->children, next)
 		__ec_pnode_dump(out, child, indent + 1);
 
 	free(desc);
@@ -294,8 +302,7 @@ void ec_pnode_dump(FILE *out, const struct ec_pnode *pnode)
 	__ec_pnode_dump(out, pnode, 0);
 }
 
-void ec_pnode_link_child(struct ec_pnode *pnode,
-	struct ec_pnode *child)
+void ec_pnode_link_child(struct ec_pnode *pnode, struct ec_pnode *child)
 {
 	TAILQ_INSERT_TAIL(&pnode->children, child, next);
 	child->parent = pnode;
@@ -311,14 +318,12 @@ void ec_pnode_unlink_child(struct ec_pnode *child)
 	}
 }
 
-struct ec_pnode *
-ec_pnode_get_first_child(const struct ec_pnode *pnode)
+struct ec_pnode *ec_pnode_get_first_child(const struct ec_pnode *pnode)
 {
 	return TAILQ_FIRST(&pnode->children);
 }
 
-struct ec_pnode *
-ec_pnode_get_last_child(const struct ec_pnode *pnode)
+struct ec_pnode *ec_pnode_get_last_child(const struct ec_pnode *pnode)
 {
 	return TAILQ_LAST(&pnode->children, ec_pnode_list);
 }
@@ -366,8 +371,8 @@ struct ec_pnode *ec_pnode_get_parent(const struct ec_pnode *pnode)
 	return pnode->parent;
 }
 
-struct ec_pnode *__ec_pnode_iter_next(const struct ec_pnode *root,
-				struct ec_pnode *pnode, bool iter_children)
+struct ec_pnode *
+__ec_pnode_iter_next(const struct ec_pnode *root, struct ec_pnode *pnode, bool iter_children)
 {
 	struct ec_pnode *child, *parent, *next;
 
@@ -387,9 +392,12 @@ struct ec_pnode *__ec_pnode_iter_next(const struct ec_pnode *root,
 	return NULL;
 }
 
-const struct ec_pnode *
-ec_pnode_find_next(const struct ec_pnode *root, const struct ec_pnode *prev,
-		const char *id, bool iter_children)
+const struct ec_pnode *ec_pnode_find_next(
+	const struct ec_pnode *root,
+	const struct ec_pnode *prev,
+	const char *id,
+	bool iter_children
+)
 {
 	const struct ec_pnode *iter;
 
@@ -400,24 +408,20 @@ ec_pnode_find_next(const struct ec_pnode *root, const struct ec_pnode *prev,
 	else
 		prev = EC_PNODE_ITER_NEXT(root, prev, iter_children);
 
-	for (iter = prev; iter != NULL;
-	     iter = EC_PNODE_ITER_NEXT(root, iter, 1)) {
-		if (iter->node != NULL &&
-				!strcmp(ec_node_id(iter->node), id))
+	for (iter = prev; iter != NULL; iter = EC_PNODE_ITER_NEXT(root, iter, 1)) {
+		if (iter->node != NULL && !strcmp(ec_node_id(iter->node), id))
 			return iter;
 	}
 
 	return NULL;
 }
 
-const struct ec_pnode *
-ec_pnode_find(const struct ec_pnode *root, const char *id)
+const struct ec_pnode *ec_pnode_find(const struct ec_pnode *root, const char *id)
 {
 	return ec_pnode_find_next(root, NULL, id, 1);
 }
 
-struct ec_dict *
-ec_pnode_get_attrs(struct ec_pnode *pnode)
+struct ec_dict *ec_pnode_get_attrs(struct ec_pnode *pnode)
 {
 	if (pnode == NULL)
 		return NULL;

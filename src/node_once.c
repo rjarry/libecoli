@@ -2,10 +2,10 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/config.h>
@@ -24,8 +24,7 @@ struct ec_node_once {
 	struct ec_node *child;
 };
 
-static unsigned int
-count_node(struct ec_pnode *parse, const struct ec_node *node)
+static unsigned int count_node(struct ec_pnode *parse, const struct ec_node *node)
 {
 	struct ec_pnode *child;
 	unsigned int count = 0;
@@ -36,16 +35,17 @@ count_node(struct ec_pnode *parse, const struct ec_node *node)
 	if (ec_pnode_get_node(parse) == node)
 		count++;
 
-	EC_PNODE_FOREACH_CHILD(child, parse)
+	EC_PNODE_FOREACH_CHILD (child, parse)
 		count += count_node(child, node);
 
 	return count;
 }
 
-static int
-ec_node_once_parse(const struct ec_node *node,
-		struct ec_pnode *state,
-		const struct ec_strvec *strvec)
+static int ec_node_once_parse(
+	const struct ec_node *node,
+	struct ec_pnode *state,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_once *priv = ec_node_priv(node);
 	unsigned int count;
@@ -60,10 +60,11 @@ ec_node_once_parse(const struct ec_node *node,
 	return ec_parse_child(priv->child, state, strvec);
 }
 
-static int
-ec_node_once_complete(const struct ec_node *node,
-		struct ec_comp *comp,
-		const struct ec_strvec *strvec)
+static int ec_node_once_complete(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_once *priv = ec_node_priv(node);
 	struct ec_pnode *parse = ec_comp_get_cur_pstate(comp);
@@ -91,8 +92,7 @@ static void ec_node_once_free_priv(struct ec_node *node)
 	ec_node_free(priv->child);
 }
 
-static size_t
-ec_node_once_get_children_count(const struct ec_node *node)
+static size_t ec_node_once_get_children_count(const struct ec_node *node)
 {
 	struct ec_node_once *priv = ec_node_priv(node);
 
@@ -101,9 +101,12 @@ ec_node_once_get_children_count(const struct ec_node *node)
 	return 0;
 }
 
-static int
-ec_node_once_get_child(const struct ec_node *node, size_t i,
-		struct ec_node **child, unsigned int *refs)
+static int ec_node_once_get_child(
+	const struct ec_node *node,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+)
 {
 	struct ec_node_once *priv = ec_node_priv(node);
 
@@ -126,8 +129,7 @@ static const struct ec_config_schema ec_node_once_schema[] = {
 	},
 };
 
-static int ec_node_once_set_config(struct ec_node *node,
-				const struct ec_config *config)
+static int ec_node_once_set_config(struct ec_node *node, const struct ec_config *config)
 {
 	struct ec_node_once *priv = ec_node_priv(node);
 	const struct ec_config *child;
@@ -164,8 +166,7 @@ static struct ec_node_type ec_node_once_type = {
 
 EC_NODE_TYPE_REGISTER(ec_node_once_type);
 
-int
-ec_node_once_set_child(struct ec_node *node, struct ec_node *child)
+int ec_node_once_set_child(struct ec_node *node, struct ec_node *child)
 {
 	const struct ec_config *cur_config = NULL;
 	struct ec_config *config = NULL;

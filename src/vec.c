@@ -2,12 +2,12 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <sys/types.h>
+#include <assert.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <assert.h>
+#include <sys/types.h>
 
 #include <ecoli/assert.h>
 #include <ecoli/log.h>
@@ -31,8 +31,7 @@ static void *get_obj(const struct ec_vec *vec, size_t idx)
 }
 
 struct ec_vec *
-ec_vec(size_t elt_size, size_t size, ec_vec_elt_copy_t elt_copy,
-	ec_vec_elt_free_t elt_free)
+ec_vec(size_t elt_size, size_t size, ec_vec_elt_copy_t elt_copy, ec_vec_elt_free_t elt_free)
 {
 	struct ec_vec *vec;
 
@@ -114,8 +113,7 @@ int ec_vec_add_u64(struct ec_vec *vec, uint64_t elt)
 	return ec_vec_add_by_ref(vec, &elt);
 }
 
-struct ec_vec *ec_vec_ndup(const struct ec_vec *vec, size_t off,
-	size_t len)
+struct ec_vec *ec_vec_ndup(const struct ec_vec *vec, size_t off, size_t len)
 {
 	struct ec_vec *copy = NULL;
 	size_t i, veclen;
@@ -135,8 +133,7 @@ struct ec_vec *ec_vec_ndup(const struct ec_vec *vec, size_t off,
 		if (vec->copy)
 			vec->copy(get_obj(copy, i), get_obj(vec, i + off));
 		else
-			memcpy(get_obj(copy, i), get_obj(vec, i + off),
-				vec->elt_size);
+			memcpy(get_obj(copy, i), get_obj(vec, i + off), vec->elt_size);
 	}
 	copy->len = len;
 

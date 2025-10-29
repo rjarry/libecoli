@@ -50,6 +50,19 @@ meson_opts += $(MESON_EXTRA_OPTS)
 $(BUILDDIR)/build.ninja:
 	meson setup $(BUILDDIR) $(meson_opts)
 
+CLANG_FORMAT ?= clang-format
+c_src = git ls-files '*.[ch]'
+
+.PHONY: lint
+lint:
+	@echo '[clang-format]'
+	$Q $(c_src) | $(CLANG_FORMAT) --files=/proc/self/fd/0 --dry-run --Werror
+
+.PHONY: format
+format:
+	@echo '[clang-format]'
+	$Q $(c_src) | $(CLANG_FORMAT) --files=/proc/self/fd/0 -i --verbose
+
 .PHONY: tag-release
 tag-release:
 	@cur_version=`sed -En "s/^[[:space:]]+version[[:space:]]*:[[:space:]]*'([0-9\.]+)'\\$$/\\1/p" meson.build` && \

@@ -2,12 +2,12 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#include <readline/readline.h>
 #include <readline/history.h>
+#include <readline/readline.h>
 
 #include <ecoli.h>
 
@@ -53,7 +53,6 @@ static char *my_completion_entry(const char *s, int state)
 
 	item_str = ec_comp_item_get_str(item);
 	if (ec_comp_count(c, EC_COMP_FULL) == 1) {
-
 		/* don't add the trailing space for partial completions */
 		if (state == 0) {
 			item_type = ec_comp_item_get_type(item);
@@ -160,7 +159,7 @@ static int show_help(int ignore, int invoking_key)
 		helps[1] = "<return>";
 
 	/* let's display one contextual help per node */
-	EC_COMP_FOREACH(item, c, EC_COMP_UNKNOWN | EC_COMP_FULL | EC_COMP_PARTIAL) {
+	EC_COMP_FOREACH (item, c, EC_COMP_UNKNOWN | EC_COMP_FULL | EC_COMP_PARTIAL) {
 		char **tmp;
 
 		/* keep one help per group, skip other items  */
@@ -209,10 +208,11 @@ static int create_commands(void)
 	if (cmdlist == NULL)
 		goto fail;
 
-
-	cmd = EC_NODE_SEQ(EC_NO_ID,
+	cmd = EC_NODE_SEQ(
+		EC_NO_ID,
 		ec_node_str(EC_NO_ID, "hello"),
-		EC_NODE_OR("name",
+		EC_NODE_OR(
+			"name",
 			ec_node_str("john", "john"),
 			ec_node_str(EC_NO_ID, "johnny"),
 			ec_node_str(EC_NO_ID, "mike")
@@ -221,76 +221,73 @@ static int create_commands(void)
 	);
 	if (cmd == NULL)
 		goto fail;
-	ec_dict_set(ec_node_attrs(cmd), "help",
-		"say hello to someone several times", NULL);
-	ec_dict_set(ec_node_attrs(ec_node_find(cmd, "john")),
-		"help", "specific help for john", NULL);
-	ec_dict_set(ec_node_attrs(ec_node_find(cmd, "name")),
-		"help", "the name of the person", NULL);
-	ec_dict_set(ec_node_attrs(ec_node_find(cmd, "int")),
-		"help", "an integer (0-10)", NULL);
-	if (ec_node_or_add(cmdlist, cmd) < 0)
-		goto fail;
-
-
-	cmd = EC_NODE_CMD(EC_NO_ID, "good morning name [count]",
-			EC_NODE_CMD("name", "bob|bobby|michael"),
-			ec_node_int("count", 0, 10, 10));
-	if (cmd == NULL)
-		goto fail;
-	ec_dict_set(ec_node_attrs(cmd), "help",
-		"say good morning to someone several times", NULL);
-	ec_dict_set(ec_node_attrs(ec_node_find(cmd, "name")), "help",
-		"the person to greet", NULL);
-	ec_dict_set(ec_node_attrs(ec_node_find(cmd, "count")), "help",
-		"how many times to greet (0-10)", NULL);
-	if (ec_node_or_add(cmdlist, cmd) < 0)
-		goto fail;
-
-
-	cmd = EC_NODE_CMD(EC_NO_ID,
-			"buy potatoes,carrots,pumpkins");
-	if (cmd == NULL)
-		goto fail;
-	ec_dict_set(ec_node_attrs(cmd), "help",
-		"buy some vegetables", NULL);
-	if (ec_node_or_add(cmdlist, cmd) < 0)
-		goto fail;
-
-
-	cmd = EC_NODE_CMD(EC_NO_ID, "eat vegetables",
-			ec_node_many("vegetables",
-				EC_NODE_OR(EC_NO_ID,
-					ec_node_str(EC_NO_ID, "potatoes"),
-					ec_node_once(EC_NO_ID,
-						ec_node_str(EC_NO_ID, "carrots")),
-					ec_node_once(EC_NO_ID,
-						ec_node_str(EC_NO_ID, "pumpkins"))),
-			1, 0));
-	if (cmd == NULL)
-		goto fail;
-	ec_dict_set(ec_node_attrs(cmd), "help",
-		"eat vegetables (take some more potatoes)", NULL);
-	if (ec_node_or_add(cmdlist, cmd) < 0)
-		goto fail;
-
-
-	cmd = EC_NODE_SEQ(EC_NO_ID,
-		ec_node_str(EC_NO_ID, "bye")
+	ec_dict_set(ec_node_attrs(cmd), "help", "say hello to someone several times", NULL);
+	ec_dict_set(
+		ec_node_attrs(ec_node_find(cmd, "john")), "help", "specific help for john", NULL
 	);
+	ec_dict_set(
+		ec_node_attrs(ec_node_find(cmd, "name")), "help", "the name of the person", NULL
+	);
+	ec_dict_set(ec_node_attrs(ec_node_find(cmd, "int")), "help", "an integer (0-10)", NULL);
+	if (ec_node_or_add(cmdlist, cmd) < 0)
+		goto fail;
+
+	cmd = EC_NODE_CMD(
+		EC_NO_ID,
+		"good morning name [count]",
+		EC_NODE_CMD("name", "bob|bobby|michael"),
+		ec_node_int("count", 0, 10, 10)
+	);
+	if (cmd == NULL)
+		goto fail;
+	ec_dict_set(ec_node_attrs(cmd), "help", "say good morning to someone several times", NULL);
+	ec_dict_set(ec_node_attrs(ec_node_find(cmd, "name")), "help", "the person to greet", NULL);
+	ec_dict_set(
+		ec_node_attrs(ec_node_find(cmd, "count")),
+		"help",
+		"how many times to greet (0-10)",
+		NULL
+	);
+	if (ec_node_or_add(cmdlist, cmd) < 0)
+		goto fail;
+
+	cmd = EC_NODE_CMD(EC_NO_ID, "buy potatoes,carrots,pumpkins");
+	if (cmd == NULL)
+		goto fail;
+	ec_dict_set(ec_node_attrs(cmd), "help", "buy some vegetables", NULL);
+	if (ec_node_or_add(cmdlist, cmd) < 0)
+		goto fail;
+
+	cmd = EC_NODE_CMD(
+		EC_NO_ID,
+		"eat vegetables",
+		ec_node_many(
+			"vegetables",
+			EC_NODE_OR(
+				EC_NO_ID,
+				ec_node_str(EC_NO_ID, "potatoes"),
+				ec_node_once(EC_NO_ID, ec_node_str(EC_NO_ID, "carrots")),
+				ec_node_once(EC_NO_ID, ec_node_str(EC_NO_ID, "pumpkins"))
+			),
+			1,
+			0
+		)
+	);
+	if (cmd == NULL)
+		goto fail;
+	ec_dict_set(ec_node_attrs(cmd), "help", "eat vegetables (take some more potatoes)", NULL);
+	if (ec_node_or_add(cmdlist, cmd) < 0)
+		goto fail;
+
+	cmd = EC_NODE_SEQ(EC_NO_ID, ec_node_str(EC_NO_ID, "bye"));
 	ec_dict_set(ec_node_attrs(cmd), "help", "say bye", NULL);
 	if (ec_node_or_add(cmdlist, cmd) < 0)
 		goto fail;
 
-
-	cmd = EC_NODE_SEQ(EC_NO_ID,
-		ec_node_str(EC_NO_ID, "load"),
-		ec_node("file", EC_NO_ID)
-	);
+	cmd = EC_NODE_SEQ(EC_NO_ID, ec_node_str(EC_NO_ID, "load"), ec_node("file", EC_NO_ID));
 	ec_dict_set(ec_node_attrs(cmd), "help", "load a file", NULL);
 	if (ec_node_or_add(cmdlist, cmd) < 0)
 		goto fail;
-
 
 	commands = ec_node_sh_lex(EC_NO_ID, cmdlist);
 	if (commands == NULL)
@@ -298,7 +295,7 @@ static int create_commands(void)
 
 	return 0;
 
- fail:
+fail:
 	fprintf(stderr, "cannot initialize nodes\n");
 	ec_node_free(cmdlist);
 	return -1;
@@ -331,8 +328,6 @@ int main(void)
 		ec_pnode_free(p);
 	}
 
-
 	ec_node_free(commands);
 	return 0;
-
 }

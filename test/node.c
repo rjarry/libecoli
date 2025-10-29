@@ -24,9 +24,7 @@ EC_TEST_MAIN()
 	int testres = 0;
 	int ret;
 
-	node = EC_NODE_SEQ(EC_NO_ID,
-			ec_node_str("id_x", "x"),
-			ec_node_str("id_y", "y"));
+	node = EC_NODE_SEQ(EC_NO_ID, ec_node_str("id_x", "x"), ec_node_str("id_y", "y"));
 	if (node == NULL)
 		goto fail;
 
@@ -42,86 +40,76 @@ EC_TEST_MAIN()
 	fclose(f);
 	f = NULL;
 
+	testres |= EC_TEST_CHECK(strstr(buf, "type=seq id="), "bad dump\n");
 	testres |= EC_TEST_CHECK(
-		strstr(buf, "type=seq id="), "bad dump\n");
-	testres |= EC_TEST_CHECK(
-		strstr(buf, "type=str id=id_x") &&
-		strstr(strstr(buf, "type=str id=id_x") + 1,
-			"type=str id=id_y"),
-		"bad dump\n");
+		strstr(buf, "type=str id=id_x")
+			&& strstr(strstr(buf, "type=str id=id_x") + 1, "type=str id=id_y"),
+		"bad dump\n"
+	);
 	free(buf);
 	buf = NULL;
 
 	desc = ec_node_desc(node);
 	testres |= EC_TEST_CHECK(
-		!strcmp(ec_node_type(node)->name, "seq") &&
-		!strcmp(ec_node_id(node), EC_NO_ID) &&
-		!strcmp(desc, "<seq>"),
-		"bad child 0");
+		!strcmp(ec_node_type(node)->name, "seq") && !strcmp(ec_node_id(node), EC_NO_ID)
+			&& !strcmp(desc, "<seq>"),
+		"bad child 0"
+	);
 	free(desc);
 	desc = NULL;
 
-	testres |= EC_TEST_CHECK(
-		ec_node_get_children_count(node) == 2,
-		"bad children count\n");
+	testres |= EC_TEST_CHECK(ec_node_get_children_count(node) == 2, "bad children count\n");
 	ret = ec_node_get_child(node, 0, &child, &refs);
-	testres |= EC_TEST_CHECK(ret == 0 &&
-		child != NULL &&
-		!strcmp(ec_node_type(child)->name, "str") &&
-		!strcmp(ec_node_id(child), "id_x"),
-		"bad child 0");
+	testres |= EC_TEST_CHECK(
+		ret == 0 && child != NULL && !strcmp(ec_node_type(child)->name, "str")
+			&& !strcmp(ec_node_id(child), "id_x"),
+		"bad child 0"
+	);
 	ret = ec_node_get_child(node, 1, &child, &refs);
-	testres |= EC_TEST_CHECK(ret == 0 &&
-		child != NULL &&
-		!strcmp(ec_node_type(child)->name, "str") &&
-		!strcmp(ec_node_id(child), "id_y"),
-		"bad child 1");
+	testres |= EC_TEST_CHECK(
+		ret == 0 && child != NULL && !strcmp(ec_node_type(child)->name, "str")
+			&& !strcmp(ec_node_id(child), "id_y"),
+		"bad child 1"
+	);
 	ret = ec_node_get_child(node, 2, &child, &refs);
-	testres |= EC_TEST_CHECK(ret != 0,
-		"ret should be != 0");
-	testres |= EC_TEST_CHECK(child == NULL,
-		"child 2 should be NULL");
+	testres |= EC_TEST_CHECK(ret != 0, "ret should be != 0");
+	testres |= EC_TEST_CHECK(child == NULL, "child 2 should be NULL");
 
 	child = ec_node_find(node, "id_x");
 	desc = ec_node_desc(child);
-	testres |= EC_TEST_CHECK(child != NULL &&
-		!strcmp(ec_node_type(child)->name, "str") &&
-		!strcmp(ec_node_id(child), "id_x") &&
-		!strcmp(desc, "x"),
-		"bad child id_x");
+	testres |= EC_TEST_CHECK(
+		child != NULL && !strcmp(ec_node_type(child)->name, "str")
+			&& !strcmp(ec_node_id(child), "id_x") && !strcmp(desc, "x"),
+		"bad child id_x"
+	);
 	free(desc);
 	desc = NULL;
 	child = ec_node_find(node, "id_dezdex");
-	testres |= EC_TEST_CHECK(child == NULL,
-		"child with wrong id should be NULL");
+	testres |= EC_TEST_CHECK(child == NULL, "child with wrong id should be NULL");
 
 	ret = ec_dict_set(ec_node_attrs(node), "key", "val", NULL);
-	testres |= EC_TEST_CHECK(ret == 0,
-		"cannot set node attribute\n");
+	testres |= EC_TEST_CHECK(ret == 0, "cannot set node attribute\n");
 
 	type = ec_node_type_lookup("seq");
-	testres |= EC_TEST_CHECK(type != NULL &&
-		ec_node_check_type(node, type) == 0,
-		"cannot get seq node type");
+	testres |= EC_TEST_CHECK(
+		type != NULL && ec_node_check_type(node, type) == 0, "cannot get seq node type"
+	);
 	type = ec_node_type_lookup("str");
-	testres |= EC_TEST_CHECK(type != NULL &&
-		ec_node_check_type(node, type) < 0,
-		"node type should not be str");
+	testres |= EC_TEST_CHECK(
+		type != NULL && ec_node_check_type(node, type) < 0, "node type should not be str"
+	);
 
 	ec_node_free(node);
 	node = NULL;
 
 	node = ec_node("deznuindez", EC_NO_ID);
-	testres |= EC_TEST_CHECK(node == NULL,
-			"should not be able to create node\n");
+	testres |= EC_TEST_CHECK(node == NULL, "should not be able to create node\n");
 
 	/* test loop */
 	expr = ec_node("or", EC_NO_ID);
 	val = ec_node_int(EC_NO_ID, 0, 10, 0);
 	op = ec_node_str(EC_NO_ID, "!");
-	seq = EC_NODE_SEQ(EC_NO_ID,
-			op,
-			ec_node_clone(expr));
+	seq = EC_NODE_SEQ(EC_NO_ID, op, ec_node_clone(expr));
 	op = NULL;
 	if (expr == NULL || val == NULL || seq == NULL)
 		goto fail;
@@ -146,9 +134,7 @@ EC_TEST_MAIN()
 	expr2 = ec_node_clone(expr);
 	val = ec_node_int(EC_NO_ID, 0, 10, 0);
 	op = ec_node_str(EC_NO_ID, "!");
-	seq = EC_NODE_SEQ(EC_NO_ID,
-			op,
-			ec_node_clone(expr));
+	seq = EC_NODE_SEQ(EC_NO_ID, op, ec_node_clone(expr));
 	op = NULL;
 	if (expr == NULL || val == NULL || seq == NULL)
 		goto fail;

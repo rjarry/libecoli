@@ -9,10 +9,11 @@ EC_TEST_MAIN()
 	struct ec_node *node;
 	int testres = 0;
 
-	node =  ec_node_cond(EC_NO_ID,
-			"cmp(le, count(find(root(), id_node)), 3)",
-			ec_node_many(EC_NO_ID,
-				ec_node_str("id_node", "foo"), 0, 0));
+	node = ec_node_cond(
+		EC_NO_ID,
+		"cmp(le, count(find(root(), id_node)), 3)",
+		ec_node_many(EC_NO_ID, ec_node_str("id_node", "foo"), 0, 0)
+	);
 	if (node == NULL) {
 		EC_LOG(EC_LOG_ERR, "cannot create node\n");
 		return -1;

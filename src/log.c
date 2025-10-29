@@ -41,8 +41,7 @@ enum ec_log_level ec_log_level_get(void)
 	return global_level;
 }
 
-int ec_log_default_cb(int type, enum ec_log_level level, void *opaque,
-		const char *str)
+int ec_log_default_cb(int type, enum ec_log_level level, void *opaque, const char *str)
 {
 	(void)opaque;
 
@@ -68,8 +67,7 @@ int ec_log_fct_register(ec_log_t usr_log, void *opaque)
 	return 0;
 }
 
-int
-ec_log_lookup(const char *name)
+int ec_log_lookup(const char *name)
 {
 	size_t i;
 
@@ -83,8 +81,7 @@ ec_log_lookup(const char *name)
 	return -1;
 }
 
-int
-ec_log_type_register(const char *name)
+int ec_log_type_register(const char *name)
 {
 	struct ec_log_type *new_types;
 	char *copy;
@@ -95,8 +92,7 @@ ec_log_type_register(const char *name)
 		return id;
 
 	// XXX not that good to allocate in constructor
-	new_types = realloc(log_types,
-		sizeof(*new_types) * (log_types_len + 1));
+	new_types = realloc(log_types, sizeof(*new_types) * (log_types_len + 1));
 	if (new_types == NULL)
 		return -1; /* errno is set */
 	log_types = new_types;
@@ -112,8 +108,7 @@ ec_log_type_register(const char *name)
 	return id;
 }
 
-const char *
-ec_log_name(int type)
+const char *ec_log_name(int type)
 {
 	if (type < 0 || (unsigned int)type >= log_types_len)
 		return "unknown";

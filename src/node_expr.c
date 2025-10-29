@@ -2,12 +2,12 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
 #include <assert.h>
 #include <errno.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <ecoli/complete.h>
 #include <ecoli/log.h>
@@ -38,9 +38,11 @@ struct ec_node_expr {
 	unsigned int paren_len;
 };
 
-static int ec_node_expr_parse(const struct ec_node *node,
-			struct ec_pnode *pstate,
-			const struct ec_strvec *strvec)
+static int ec_node_expr_parse(
+	const struct ec_node *node,
+	struct ec_pnode *pstate,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_expr *priv = ec_node_priv(node);
 
@@ -52,10 +54,11 @@ static int ec_node_expr_parse(const struct ec_node *node,
 	return ec_parse_child(priv->child, pstate, strvec);
 }
 
-static int
-ec_node_expr_complete(const struct ec_node *node,
-		struct ec_comp *comp,
-		const struct ec_strvec *strvec)
+static int ec_node_expr_complete(
+	const struct ec_node *node,
+	struct ec_comp *comp,
+	const struct ec_strvec *strvec
+)
 {
 	struct ec_node_expr *priv = ec_node_priv(node);
 
@@ -94,9 +97,8 @@ static void ec_node_expr_free_priv(struct ec_node *node)
 
 static int ec_node_expr_build(struct ec_node_expr *priv)
 {
-	struct ec_node *term = NULL, *expr = NULL, *next = NULL,
-		*pre_op = NULL, *post_op = NULL, *ref = NULL,
-		*post = NULL;
+	struct ec_node *term = NULL, *expr = NULL, *next = NULL, *pre_op = NULL, *post_op = NULL,
+		       *ref = NULL, *post = NULL;
 	unsigned int i;
 
 	ec_node_free(priv->child);
@@ -107,8 +109,7 @@ static int ec_node_expr_build(struct ec_node_expr *priv)
 		return -1;
 	}
 
-	if (priv->bin_ops_len == 0 && priv->pre_ops_len == 0 &&
-			priv->post_ops_len == 0) {
+	if (priv->bin_ops_len == 0 && priv->pre_ops_len == 0 && priv->post_ops_len == 0) {
 		errno = EINVAL;
 		return -1;
 	}
@@ -155,34 +156,41 @@ static int ec_node_expr_build(struct ec_node_expr *priv)
 		goto fail;
 	if (ec_node_or_add(post, ec_node_clone(priv->val_node)) < 0)
 		goto fail;
-	if (ec_node_or_add(post,
-		EC_NODE_SEQ(EC_NO_ID,
-			ec_node_clone(pre_op),
-			ec_node_clone(ref))) < 0)
+	if (ec_node_or_add(post, EC_NODE_SEQ(EC_NO_ID, ec_node_clone(pre_op), ec_node_clone(ref)))
+	    < 0)
 		goto fail;
 	for (i = 0; i < priv->paren_len; i++) {
-		if (ec_node_or_add(post, EC_NODE_SEQ(EC_NO_ID,
-					ec_node_clone(priv->open_ops[i]),
-					ec_node_clone(ref),
-					ec_node_clone(priv->close_ops[i]))) < 0)
+		if (ec_node_or_add(
+			    post,
+			    EC_NODE_SEQ(
+				    EC_NO_ID,
+				    ec_node_clone(priv->open_ops[i]),
+				    ec_node_clone(ref),
+				    ec_node_clone(priv->close_ops[i])
+			    )
+		    )
+		    < 0)
 			goto fail;
 	}
-	term = EC_NODE_SEQ("term",
-		ec_node_clone(post),
-		ec_node_many(EC_NO_ID, ec_node_clone(post_op), 0, 0)
+	term = EC_NODE_SEQ(
+		"term", ec_node_clone(post), ec_node_many(EC_NO_ID, ec_node_clone(post_op), 0, 0)
 	);
 	if (term == NULL)
 		goto fail;
 
 	for (i = 0; i < priv->bin_ops_len; i++) {
-		next = EC_NODE_SEQ("next",
+		next = EC_NODE_SEQ(
+			"next",
 			ec_node_clone(term),
-			ec_node_many(EC_NO_ID,
-				EC_NODE_SEQ(EC_NO_ID,
+			ec_node_many(
+				EC_NO_ID,
+				EC_NODE_SEQ(
+					EC_NO_ID,
 					ec_node_clone(priv->bin_ops[i]),
 					ec_node_clone(term)
 				),
-				0, 0
+				0,
+				0
 			)
 		);
 		ec_node_free(term);
@@ -221,8 +229,7 @@ fail:
 	return -1;
 }
 
-static size_t
-ec_node_expr_get_children_count(const struct ec_node *node)
+static size_t ec_node_expr_get_children_count(const struct ec_node *node)
 {
 	struct ec_node_expr *priv = ec_node_priv(node);
 
@@ -231,9 +238,12 @@ ec_node_expr_get_children_count(const struct ec_node *node)
 	return 0;
 }
 
-static int
-ec_node_expr_get_child(const struct ec_node *node, size_t i,
-		struct ec_node **child, unsigned int *refs)
+static int ec_node_expr_get_child(
+	const struct ec_node *node,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+)
 {
 	struct ec_node_expr *priv = ec_node_priv(node);
 
@@ -294,8 +304,7 @@ int ec_node_expr_add_bin_op(struct ec_node *node, struct ec_node *op)
 		goto fail;
 	}
 
-	bin_ops = realloc(priv->bin_ops,
-		(priv->bin_ops_len + 1) * sizeof(*priv->bin_ops));
+	bin_ops = realloc(priv->bin_ops, (priv->bin_ops_len + 1) * sizeof(*priv->bin_ops));
 	if (bin_ops == NULL)
 		goto fail;
 
@@ -325,8 +334,7 @@ int ec_node_expr_add_pre_op(struct ec_node *node, struct ec_node *op)
 		goto fail;
 	}
 
-	pre_ops = realloc(priv->pre_ops,
-		(priv->pre_ops_len + 1) * sizeof(*priv->pre_ops));
+	pre_ops = realloc(priv->pre_ops, (priv->pre_ops_len + 1) * sizeof(*priv->pre_ops));
 	if (pre_ops == NULL)
 		goto fail;
 
@@ -356,8 +364,7 @@ int ec_node_expr_add_post_op(struct ec_node *node, struct ec_node *op)
 		goto fail;
 	}
 
-	post_ops = realloc(priv->post_ops,
-		(priv->post_ops_len + 1) * sizeof(*priv->post_ops));
+	post_ops = realloc(priv->post_ops, (priv->post_ops_len + 1) * sizeof(*priv->post_ops));
 	if (post_ops == NULL)
 		goto fail;
 
@@ -374,8 +381,7 @@ fail:
 }
 
 /* add parenthesis symbols */
-int ec_node_expr_add_parenthesis(struct ec_node *node,
-	struct ec_node *open, struct ec_node *close)
+int ec_node_expr_add_parenthesis(struct ec_node *node, struct ec_node *open, struct ec_node *close)
 {
 	struct ec_node_expr *priv = ec_node_priv(node);
 	struct ec_node **open_ops, **close_ops;
@@ -388,12 +394,10 @@ int ec_node_expr_add_parenthesis(struct ec_node *node,
 		goto fail;
 	}
 
-	open_ops = realloc(priv->open_ops,
-		(priv->paren_len + 1) * sizeof(*priv->open_ops));
+	open_ops = realloc(priv->open_ops, (priv->paren_len + 1) * sizeof(*priv->open_ops));
 	if (open_ops == NULL)
 		goto fail;
-	close_ops = realloc(priv->close_ops,
-		(priv->paren_len + 1) * sizeof(*priv->close_ops));
+	close_ops = realloc(priv->close_ops, (priv->paren_len + 1) * sizeof(*priv->close_ops));
 	if (close_ops == NULL)
 		goto fail;
 
@@ -422,8 +426,8 @@ enum expr_node_type {
 	PAREN_CLOSE,
 };
 
-static enum expr_node_type get_node_type(const struct ec_node *expr_node,
-	const struct ec_node *check)
+static enum expr_node_type
+get_node_type(const struct ec_node *expr_node, const struct ec_node *check)
 {
 	struct ec_node_expr *expr_priv = ec_node_priv(expr_node);
 	size_t i;
@@ -464,9 +468,12 @@ struct result {
 };
 
 /* merge x and y results in x */
-static int merge_results(void *userctx,
+static int merge_results(
+	void *userctx,
 	const struct ec_node_expr_eval_ops *ops,
-	struct result *x, const struct result *y)
+	struct result *x,
+	const struct result *y
+)
 {
 	if (y->has_val == 0 && y->op == NULL)
 		return 0;
@@ -477,8 +484,7 @@ static int merge_results(void *userctx,
 
 	if (x->has_val && y->has_val && y->op != NULL) {
 		if (y->op_type == BIN_OP) {
-			if (ops->eval_bin_op(&x->val, userctx, x->val,
-					y->op, y->val) < 0)
+			if (ops->eval_bin_op(&x->val, userctx, x->val, y->op, y->val) < 0)
 				return -1;
 
 			return 0;
@@ -487,8 +493,7 @@ static int merge_results(void *userctx,
 
 	if (x->has_val == 0 && x->op != NULL && y->has_val && y->op == NULL) {
 		if (x->op_type == PRE_OP) {
-			if (ops->eval_pre_op(&x->val, userctx, y->val,
-						x->op) < 0)
+			if (ops->eval_pre_op(&x->val, userctx, y->val, x->op) < 0)
 				return -1;
 			x->has_val = true;
 			x->op_type = NONE;
@@ -512,12 +517,13 @@ static int merge_results(void *userctx,
 	return -1;
 }
 
-static int eval_expression(struct result *result,
+static int eval_expression(
+	struct result *result,
 	void *userctx,
 	const struct ec_node_expr_eval_ops *ops,
 	const struct ec_node *expr_node,
-	const struct ec_pnode *parse)
-
+	const struct ec_pnode *parse
+)
 {
 	struct ec_pnode *open = NULL, *close = NULL;
 	struct result child_result;
@@ -537,8 +543,7 @@ static int eval_expression(struct result *result,
 		result->op_type = type;
 	}
 
-	EC_PNODE_FOREACH_CHILD(child, parse) {
-
+	EC_PNODE_FOREACH_CHILD (child, parse) {
 		type = get_node_type(expr_node, ec_pnode_get_node(child));
 		if (type == PAREN_OPEN) {
 			open = child;
@@ -548,8 +553,7 @@ static int eval_expression(struct result *result,
 			continue;
 		}
 
-		if (eval_expression(&child_result, userctx, ops,
-			expr_node, child) < 0)
+		if (eval_expression(&child_result, userctx, ops, expr_node, child) < 0)
 			goto fail;
 
 		if (merge_results(userctx, ops, result, &child_result) < 0)
@@ -559,8 +563,7 @@ static int eval_expression(struct result *result,
 	}
 
 	if (open != NULL && close != NULL) {
-		if (ops->eval_parenthesis(&result->val, userctx, open, close,
-			result->val) < 0)
+		if (ops->eval_parenthesis(&result->val, userctx, open, close, result->val) < 0)
 			goto fail;
 	}
 
@@ -576,16 +579,19 @@ fail:
 	return -1;
 }
 
-int ec_node_expr_eval(void **user_result, const struct ec_node *node,
-	struct ec_pnode *parse, const struct ec_node_expr_eval_ops *ops,
-	void *userctx)
+int ec_node_expr_eval(
+	void **user_result,
+	const struct ec_node *node,
+	struct ec_pnode *parse,
+	const struct ec_node_expr_eval_ops *ops,
+	void *userctx
+)
 {
 	struct result result;
 
-	if (ops == NULL || ops->eval_var == NULL || ops->eval_pre_op == NULL ||
-			ops->eval_post_op == NULL || ops->eval_bin_op == NULL ||
-			ops->eval_parenthesis == NULL ||
-			ops->eval_free == NULL) {
+	if (ops == NULL || ops->eval_var == NULL || ops->eval_pre_op == NULL
+	    || ops->eval_post_op == NULL || ops->eval_bin_op == NULL
+	    || ops->eval_parenthesis == NULL || ops->eval_free == NULL) {
 		errno = EINVAL;
 		return -1;
 	}
@@ -607,5 +613,3 @@ int ec_node_expr_eval(void **user_result, const struct ec_node *node,
 
 	return 0;
 }
-
-/* the test case is in a separate file ecoli_node_expr_test.c */

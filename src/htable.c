@@ -2,14 +2,14 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/queue.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/queue.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <ecoli/htable.h>
 #include <ecoli/init.h>
@@ -38,8 +38,7 @@ struct ec_htable *ec_htable(void)
 }
 
 static struct ec_htable_elt_ref *
-ec_htable_lookup(const struct ec_htable *htable, const void *key,
-		size_t key_len)
+ec_htable_lookup(const struct ec_htable *htable, const void *key, size_t key_len)
 {
 	struct ec_htable_elt_ref *ref;
 	uint32_t h, mask = htable->table_size - 1;
@@ -54,7 +53,7 @@ ec_htable_lookup(const struct ec_htable *htable, const void *key,
 	}
 
 	h = ec_murmurhash3(key, key_len, ec_htable_seed);
-	TAILQ_FOREACH(ref, &htable->table[h & mask], hnext) {
+	TAILQ_FOREACH (ref, &htable->table[h & mask], hnext) {
 		if (ref->elt->key_len != key_len)
 			continue;
 		if (memcmp(ref->elt->key, key, key_len) == 0)
@@ -82,14 +81,12 @@ static void ec_htable_elt_ref_free(struct ec_htable_elt_ref *ref)
 	free(ref);
 }
 
-bool ec_htable_has_key(const struct ec_htable *htable, const void *key,
-		size_t key_len)
+bool ec_htable_has_key(const struct ec_htable *htable, const void *key, size_t key_len)
 {
 	return !!ec_htable_lookup(htable, key, key_len);
 }
 
-void *ec_htable_get(const struct ec_htable *htable, const void *key,
-		size_t key_len)
+void *ec_htable_get(const struct ec_htable *htable, const void *key, size_t key_len)
 {
 	struct ec_htable_elt_ref *ref;
 
@@ -137,7 +134,7 @@ static int ec_htable_table_resize(struct ec_htable *htable, size_t new_size)
 	for (i = 0; i < new_size; i++)
 		TAILQ_INIT(&new_table[i]);
 
-	TAILQ_FOREACH(ref, &htable->list, next) {
+	TAILQ_FOREACH (ref, &htable->list, next) {
 		i = ref->elt->hash & (htable->table_size - 1);
 		TAILQ_REMOVE(&htable->table[i], ref, hnext);
 		i = ref->elt->hash & (new_size - 1);
@@ -151,8 +148,7 @@ static int ec_htable_table_resize(struct ec_htable *htable, size_t new_size)
 	return 0;
 }
 
-static int
-__ec_htable_set(struct ec_htable *htable, struct ec_htable_elt_ref *ref)
+static int __ec_htable_set(struct ec_htable *htable, struct ec_htable_elt_ref *ref)
 {
 	size_t new_size;
 	uint32_t mask;
@@ -163,9 +159,9 @@ __ec_htable_set(struct ec_htable *htable, struct ec_htable_elt_ref *ref)
 
 	if (htable->len >= htable->table_size) {
 		if (htable->table_size != 0)
-			new_size =  htable->table_size << FACTOR;
+			new_size = htable->table_size << FACTOR;
 		else
-			new_size =  1 << FACTOR;
+			new_size = 1 << FACTOR;
 		ret = ec_htable_table_resize(htable, new_size);
 		if (ret < 0)
 			return ret;
@@ -179,8 +175,13 @@ __ec_htable_set(struct ec_htable *htable, struct ec_htable_elt_ref *ref)
 	return 0;
 }
 
-int ec_htable_set(struct ec_htable *htable, const void *key, size_t key_len,
-		void *val, ec_htable_elt_free_t free_cb)
+int ec_htable_set(
+	struct ec_htable *htable,
+	const void *key,
+	size_t key_len,
+	void *val,
+	ec_htable_elt_free_t free_cb
+)
 {
 	struct ec_htable_elt *elt = NULL;
 	struct ec_htable_elt_ref *ref = NULL;
@@ -248,8 +249,7 @@ size_t ec_htable_len(const struct ec_htable *htable)
 	return htable->len;
 }
 
-struct ec_htable_elt_ref *
-ec_htable_iter(const struct ec_htable *htable)
+struct ec_htable_elt_ref *ec_htable_iter(const struct ec_htable *htable)
 {
 	if (htable == NULL)
 		return NULL;
@@ -257,8 +257,7 @@ ec_htable_iter(const struct ec_htable *htable)
 	return TAILQ_FIRST(&htable->list);
 }
 
-struct ec_htable_elt_ref *
-ec_htable_iter_next(struct ec_htable_elt_ref *iter)
+struct ec_htable_elt_ref *ec_htable_iter_next(struct ec_htable_elt_ref *iter)
 {
 	if (iter == NULL)
 		return NULL;
@@ -266,8 +265,7 @@ ec_htable_iter_next(struct ec_htable_elt_ref *iter)
 	return TAILQ_NEXT(iter, next);
 }
 
-const void *
-ec_htable_iter_get_key(const struct ec_htable_elt_ref *iter)
+const void *ec_htable_iter_get_key(const struct ec_htable_elt_ref *iter)
 {
 	if (iter == NULL)
 		return NULL;
@@ -275,8 +273,7 @@ ec_htable_iter_get_key(const struct ec_htable_elt_ref *iter)
 	return iter->elt->key;
 }
 
-size_t
-ec_htable_iter_get_key_len(const struct ec_htable_elt_ref *iter)
+size_t ec_htable_iter_get_key_len(const struct ec_htable_elt_ref *iter)
 {
 	if (iter == NULL)
 		return 0;
@@ -284,8 +281,7 @@ ec_htable_iter_get_key_len(const struct ec_htable_elt_ref *iter)
 	return iter->elt->key_len;
 }
 
-void *
-ec_htable_iter_get_val(const struct ec_htable_elt_ref *iter)
+void *ec_htable_iter_get_val(const struct ec_htable_elt_ref *iter)
 {
 	if (iter == NULL)
 		return NULL;
@@ -312,7 +308,7 @@ struct ec_htable *ec_htable_dup(const struct ec_htable *htable)
 	if (dup == NULL)
 		return NULL;
 
-	TAILQ_FOREACH(ref, &htable->list, next) {
+	TAILQ_FOREACH (ref, &htable->list, next) {
 		dup_ref = calloc(1, sizeof(*ref));
 		if (dup_ref == NULL)
 			goto fail;

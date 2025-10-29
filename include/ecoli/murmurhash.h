@@ -36,8 +36,8 @@ static inline uint32_t ec_murmurhash3_add32(uint32_t h, uint32_t data)
 /** Intermediate mix */
 static inline uint32_t ec_murmurhash3_mix32(uint32_t h)
 {
-	h = ec_murmurhash_rotl32(h,13);
-	h = h * 5 +0xe6546b64;
+	h = ec_murmurhash_rotl32(h, 13);
+	h = h * 5 + 0xe6546b64;
 	return h;
 }
 

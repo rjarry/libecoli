@@ -25,9 +25,7 @@ int ec_test_check_parse(struct ec_node *tk, int expected, ...)
 	if (vec == NULL)
 		goto out;
 
-	for (s = va_arg(ap, const char *);
-	     s != EC_VA_END;
-	     s = va_arg(ap, const char *)) {
+	for (s = va_arg(ap, const char *); s != EC_VA_END; s = va_arg(ap, const char *)) {
 		if (s == NULL)
 			goto out;
 
@@ -46,9 +44,9 @@ int ec_test_check_parse(struct ec_node *tk, int expected, ...)
 	if (expected == match) {
 		ret = 0;
 	} else {
-		EC_LOG(EC_LOG_ERR,
-			"parse len (%d) does not match expected (%d)\n",
-			match, expected);
+		EC_LOG(
+			EC_LOG_ERR, "parse len (%d) does not match expected (%d)\n", match, expected
+		);
 	}
 
 	ec_pnode_free(p);
@@ -75,9 +73,7 @@ int ec_test_check_complete(struct ec_node *tk, enum ec_comp_type type, ...)
 	if (vec == NULL)
 		goto out;
 
-	for (s = va_arg(ap, const char *);
-	     s != EC_VA_END;
-	     s = va_arg(ap, const char *)) {
+	for (s = va_arg(ap, const char *); s != EC_VA_END; s = va_arg(ap, const char *)) {
 		if (s == NULL)
 			goto out;
 
@@ -92,9 +88,7 @@ int ec_test_check_complete(struct ec_node *tk, enum ec_comp_type type, ...)
 	}
 
 	/* for each expected completion, check it is there */
-	for (s = va_arg(ap, const char *);
-	     s != EC_VA_END;
-	     s = va_arg(ap, const char *)) {
+	for (s = va_arg(ap, const char *); s != EC_VA_END; s = va_arg(ap, const char *)) {
 		struct ec_comp_item *item;
 
 		if (s == NULL) {
@@ -105,15 +99,14 @@ int ec_test_check_complete(struct ec_node *tk, enum ec_comp_type type, ...)
 		count++;
 
 		/* only check matching completions */
-		EC_COMP_FOREACH(item, c, type) {
+		EC_COMP_FOREACH (item, c, type) {
 			const char *str = ec_comp_item_get_str(item);
 			if (str != NULL && strcmp(str, s) == 0)
 				break;
 		}
 
 		if (item == NULL) {
-			EC_LOG(EC_LOG_ERR,
-				"completion <%s> not in list\n", s);
+			EC_LOG(EC_LOG_ERR, "completion <%s> not in list\n", s);
 			ret = -1;
 		}
 	}
@@ -121,8 +114,9 @@ int ec_test_check_complete(struct ec_node *tk, enum ec_comp_type type, ...)
 	/* check if we have more completions (or less) than expected */
 	if (count != ec_comp_count(c, type)) {
 		EC_LOG(EC_LOG_ERR,
-			"nb_completion (%zu) does not match (%zu)\n",
-			count, ec_comp_count(c, type));
+		       "nb_completion (%zu) does not match (%zu)\n",
+		       count,
+		       ec_comp_count(c, type));
 		ec_comp_dump(stdout, c);
 		ret = -1;
 	}

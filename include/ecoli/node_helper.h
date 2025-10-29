@@ -37,9 +37,7 @@ struct ec_node;
  *   each entry must be freed with ec_node_free() and the table
  *   with free(). On error, NULL is returned and errno is set.
  */
-struct ec_node **
-ec_node_config_node_list_to_table(const struct ec_config *config,
-				size_t *len);
+struct ec_node **ec_node_config_node_list_to_table(const struct ec_config *config, size_t *len);
 
 /**
  * Build a list of config nodes from variable arguments.
@@ -59,7 +57,6 @@ ec_node_config_node_list_to_table(const struct ec_config *config,
  *   On error, NULL is returned (and errno is set), and the
  *   nodes are freed.
  */
-struct ec_config *
-ec_node_config_node_list_from_vargs(va_list ap);
+struct ec_config *ec_node_config_node_list_from_vargs(va_list ap);
 
 /** @} */
