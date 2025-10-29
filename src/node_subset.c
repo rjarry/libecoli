@@ -317,7 +317,7 @@ struct ec_node *__ec_node_subset(const char *id, ...)
 
 	node = ec_node_from_type(&ec_node_subset_type, id);
 	if (node == NULL)
-		fail = 1;;
+		fail = 1;
 
 	for (child = va_arg(ap, struct ec_node *);
 	     child != EC_VA_END;

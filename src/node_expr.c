@@ -297,7 +297,7 @@ int ec_node_expr_add_bin_op(struct ec_node *node, struct ec_node *op)
 	bin_ops = realloc(priv->bin_ops,
 		(priv->bin_ops_len + 1) * sizeof(*priv->bin_ops));
 	if (bin_ops == NULL)
-		goto fail;;
+		goto fail;
 
 	priv->bin_ops = bin_ops;
 	bin_ops[priv->bin_ops_len] = op;

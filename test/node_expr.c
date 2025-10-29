@@ -54,7 +54,7 @@ ec_node_expr_test_eval_pre_op(void **result, void *userctx, void *operand,
 	const struct ec_pnode *operator)
 {
 	const struct ec_strvec *vec;
-	struct my_eval_result *eval = operand;;
+	struct my_eval_result *eval = operand;
 
 	(void)userctx;
 
@@ -84,7 +84,7 @@ ec_node_expr_test_eval_post_op(void **result, void *userctx, void *operand,
 	const struct ec_pnode *operator)
 {
 	const struct ec_strvec *vec;
-	struct my_eval_result *eval = operand;;
+	struct my_eval_result *eval = operand;
 
 	(void)userctx;
 
@@ -114,8 +114,8 @@ ec_node_expr_test_eval_bin_op(void **result, void *userctx, void *operand1,
 
 {
 	const struct ec_strvec *vec;
-	struct my_eval_result *eval1 = operand1;;
-	struct my_eval_result *eval2 = operand2;;
+	struct my_eval_result *eval1 = operand1;
+	struct my_eval_result *eval2 = operand2;
 
 	(void)userctx;
 

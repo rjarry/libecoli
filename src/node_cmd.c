@@ -108,8 +108,8 @@ ec_node_cmd_eval_post_op(void **result, void *userctx, void *operand,
 	const struct ec_pnode *operator)
 {
 	const struct ec_strvec *vec;
-	struct ec_node *in = operand;;
-	struct ec_node *out = NULL;;
+	struct ec_node *in = operand;
+	struct ec_node *out = NULL;
 
 	(void)userctx;
 
@@ -231,8 +231,8 @@ ec_node_cmd_eval_parenthesis(void **result, void *userctx,
 	void *value)
 {
 	const struct ec_strvec *vec;
-	struct ec_node *in = value;;
-	struct ec_node *out = NULL;;
+	struct ec_node *in = value;
+	struct ec_node *out = NULL;
 
 	(void)userctx;
 	(void)close_paren;

@@ -529,7 +529,7 @@ eval_cmp(const struct ec_pnode *pstate, struct cond_result **in,
 			}
 		}
 	} else if (in[1]->type == STR) {
-		eq = !strcmp(in[1]->str, in[2]->str);;
+		eq = !strcmp(in[1]->str, in[2]->str);
 	} else if (in[1]->type == BOOLEAN) {
 		eq = in[1]->boolean == in[2]->boolean;
 	}
