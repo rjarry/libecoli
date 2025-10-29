@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright 2019, Olivier MATZ <zer0@droids-corp.org>
 
 set -e
 

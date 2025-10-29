@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright 2019, Olivier MATZ <zer0@droids-corp.org>
 
 # complete -F _parser_options dummy_command
 

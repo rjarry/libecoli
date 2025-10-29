@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright 2019, Olivier MATZ <zer0@droids-corp.org>
+
 option('yaml', type : 'feature', value : 'auto',
        description: 'Compile with yaml support using libyaml.')
 option('editline', type : 'feature', value : 'auto',

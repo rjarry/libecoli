@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright 2019, Olivier MATZ <zer0@droids-corp.org>
+
+---
 type: re_lex
 patterns:
 - pattern: "[_a-zA-Z][._a-zA-Z0-9]*"
