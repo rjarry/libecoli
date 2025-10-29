@@ -252,7 +252,7 @@ EC_TEST_MAIN()
 
 	testres |= ec_node_re_lex_add(lex_node, "[0-9]+", 1, NULL); /* vars */
 	testres |= ec_node_re_lex_add(lex_node, "[+*!^()]", 1, NULL); /* operators */
-	testres |= ec_node_re_lex_add(lex_node, "[ 	]+", 0, NULL); /* spaces */
+	testres |= ec_node_re_lex_add(lex_node, "[ \t]+", 0, NULL); /* spaces */
 
 	/* valid expressions */
 	testres |= EC_TEST_CHECK_PARSE(lex_node, 1, "!1");

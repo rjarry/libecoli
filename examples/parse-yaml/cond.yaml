@@ -15,7 +15,7 @@ patterns:
   attr: a_close
 - pattern: ","
   keep: true
-- pattern: "[ 	]+"
+- pattern: "[ \t]+"
   keep: false
 child:
   &term

@@ -38,7 +38,7 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK(ret == 0, "cannot add regexp");
 	ret = ec_node_re_lex_add(node, "\\+", 1, NULL);
 	testres |= EC_TEST_CHECK(ret == 0, "cannot add regexp");
-	ret = ec_node_re_lex_add(node, "[ 	]+", 0, NULL);
+	ret = ec_node_re_lex_add(node, "[ \t]+", 0, NULL);
 	testres |= EC_TEST_CHECK(ret == 0, "cannot add regexp");
 	if (ret != 0) {
 		EC_LOG(EC_LOG_ERR, "cannot add regexp to node\n");

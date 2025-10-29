@@ -167,7 +167,7 @@ static struct ec_node *ec_node_cond_build_parser(void)
 	ret = ec_node_re_lex_add(lex, ",", 1, NULL);
 	if (ret < 0)
 		goto fail;
-	ret = ec_node_re_lex_add(lex, "[ 	]", 0, NULL);
+	ret = ec_node_re_lex_add(lex, "[ \t]", 0, NULL);
 	if (ret < 0)
 		goto fail;
 
