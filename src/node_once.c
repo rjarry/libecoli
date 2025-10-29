@@ -50,7 +50,7 @@ static int ec_node_once_parse(
 	struct ec_node_once *priv = ec_node_priv(node);
 	unsigned int count;
 
-	/* count the number of occurences of the node: if already parsed,
+	/* count the number of occurrences of the node: if already parsed,
 	 * do not match
 	 */
 	count = count_node(ec_pnode_get_root(state), priv->child);
@@ -71,7 +71,7 @@ static int ec_node_once_complete(
 	unsigned int count;
 	int ret;
 
-	/* count the number of occurences of the node: if already parsed,
+	/* count the number of occurrences of the node: if already parsed,
 	 * do not match
 	 */
 	count = count_node(ec_pnode_get_root(parse), priv->child);

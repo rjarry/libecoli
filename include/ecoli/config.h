@@ -350,7 +350,7 @@ struct ec_config *ec_config_list_first(struct ec_config *list);
  * Get next element in list.
  *
  * @param list
- *   The list configuration beeing iterated.
+ *   The list configuration being iterated.
  * @param config
  *   The current configuration element.
  * @return

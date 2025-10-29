@@ -409,7 +409,7 @@ parse_ec_node(struct enode_table *table, const yaml_document_t *document, const 
 				goto fail;
 			}
 			if (value->type != YAML_MAPPING_NODE) {
-				fprintf(stderr, "Attrs must be a maping\n");
+				fprintf(stderr, "Attrs must be a mapping\n");
 				goto fail;
 			}
 			attrs = value;

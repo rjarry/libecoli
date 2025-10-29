@@ -43,7 +43,7 @@ struct ec_node {
 	struct {
 		enum ec_node_free_state state; /**< State of loop detection. */
 		unsigned int refcnt; /**< Number of reachable references
-					 *   starting from node beeing freed. */
+					 *   starting from node being freed. */
 	} free; /**< Freeing state: used for loop detection */
 };
 

@@ -227,7 +227,7 @@ struct ec_comp_group *ec_comp_get_cur_group(const struct ec_comp *comp);
 struct ec_dict *ec_comp_get_attrs(const struct ec_comp *comp);
 
 /**
- * Add an item in competion list.
+ * Add an item in completion list.
  *
  * This function can be called by a node during the completion process,
  * for each completion item that should be added to the list. This is
@@ -440,7 +440,7 @@ const struct ec_dict *ec_comp_group_get_attrs(const struct ec_comp_group *grp);
  * @param strvec
  *   The input string vector.
  * @return
- *   0 on succes, or -1 on error (errno is set).
+ *   0 on success, or -1 on error (errno is set).
  */
 int ec_complete_unknown(
 	const struct ec_node *node,

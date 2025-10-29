@@ -351,7 +351,7 @@ const struct ec_pnode *ec_pnode_find(const struct ec_pnode *root, const char *id
 /**
  * Find the next node matching an identifier.
  *
- * After a succesful call to ec_pnode_find() or ec_pnode_find_next(), it
+ * After a successful call to ec_pnode_find() or ec_pnode_find_next(), it
  * is possible to get the next node that has the specified id. There are
  * 2 options:
  * - continue the depth-first search where it was interrupted.

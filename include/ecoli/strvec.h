@@ -201,7 +201,7 @@ const char *ec_strvec_val(const struct ec_strvec *strvec, size_t idx);
  * @param idx
  *   The index of the string to get.
  * @return
- *   The read-only attributes (dictionnary) of the string at specified
+ *   The read-only attributes (dictionary) of the string at specified
  *   index, or NULL if there is no attribute.
  */
 const struct ec_dict *ec_strvec_get_attrs(const struct ec_strvec *strvec, size_t idx);

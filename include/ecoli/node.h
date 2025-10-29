@@ -239,7 +239,7 @@ typedef char *(*ec_node_desc_t)(const struct ec_node *);
  * and ec_node_from_type() helpers, that allocate new nodes, should be
  * used instead.
  *
- * If not NULL, this function is called when a node is instanciated, to
+ * If not NULL, this function is called when a node is instantiated, to
  * initialize the private area of a node. In any case, the private area
  * is first zeroed.
  *
@@ -313,7 +313,7 @@ struct ec_node_type {
 	ec_complete_t complete; /**< Get completion items. */
 	ec_node_desc_t desc; /**< Get short description. */
 	ec_node_init_priv_t init_priv; /**< Initialize private area. */
-	ec_node_free_priv_t free_priv; /**< Free node resourses. */
+	ec_node_free_priv_t free_priv; /**< Free node resources. */
 	/** Get children count. */
 	ec_node_get_children_count_t get_children_count;
 	ec_node_get_child_t get_child; /**< Get the i-th child. */
