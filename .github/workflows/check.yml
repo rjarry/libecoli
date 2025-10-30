@@ -50,3 +50,19 @@ jobs:
       - run: make tests
         if: ${{ ! github.event.pull_request.commits }}
       - run: make coverage
+
+  lint:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - run: dnf install -y gawk make clang-tools-extra git codespell
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # force fetch all history
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
+      - run: git config --global --add safe.directory $PWD
+      - run: git rebase -x "git --no-pager log --oneline -1 && make lint" "HEAD~${{ github.event.pull_request.commits }}"
+        if: ${{ github.event.pull_request.commits }}
+      - run: make lint
+        if: ${{ ! github.event.pull_request.commits }}
