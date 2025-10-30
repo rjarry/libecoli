@@ -40,5 +40,13 @@ jobs:
             ninja-build \
             pkg-config
       - uses: actions/checkout@v4
-      - run: make
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # force fetch all history
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
+      - run: git config --global --add safe.directory $PWD
+      - run: git rebase -x "git --no-pager log --oneline -1 && make tests" "HEAD~${{ github.event.pull_request.commits }}"
+        if: ${{ github.event.pull_request.commits }}
+      - run: make tests
+        if: ${{ ! github.event.pull_request.commits }}
       - run: make coverage
