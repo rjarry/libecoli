@@ -787,15 +787,15 @@ fail:
 }
 
 struct ec_pnode *
-ec_editline_parse(struct ec_editline *editline, const struct ec_node *node)
+ec_editline_parse(struct ec_editline *editline)
 {
-	char *line = NULL;
 	struct ec_pnode *parse = NULL;
+	const struct ec_node *node;
+	char *line = NULL;
 
-	/* XXX add sh_lex automatically? This node is required, parse and
-	 * complete are based on it. */
-
-	ec_editline_set_node(editline, node);
+	node = ec_editline_get_node(editline);
+	if (node == NULL)
+		goto fail;
 
 	line = ec_editline_gets(editline);
 	if (line == NULL)

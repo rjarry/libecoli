@@ -182,7 +182,12 @@ interact(struct ec_node *node)
 		goto fail;
 	}
 
-	parse = ec_editline_parse(editline, shlex);
+	if (ec_editline_set_node(editline, shlex) < 0) {
+		fprintf(stderr, "Failed to set editline ec_node\n");
+		goto fail;
+	}
+
+	parse = ec_editline_parse(editline);
 	if (parse == NULL)
 		goto fail;
 

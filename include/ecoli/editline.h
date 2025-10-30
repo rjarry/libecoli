@@ -363,14 +363,11 @@ char *ec_editline_gets(struct ec_editline *editline);
  *
  * @param editline
  *   The pointer to the ec_editline structure.
- * @param node
- *   The grammar node to use.
  * @return
  *   An allocated ec_pnode containing the parse result. It must be freed by the
  *   using using ec_pnode_free(). Return NULL on error.
  */
-struct ec_pnode *ec_editline_parse(struct ec_editline *editline,
-				   const struct ec_node *node);
+struct ec_pnode *ec_editline_parse(struct ec_editline *editline);
 
 /**
  * Default completion callback used by editline.
