@@ -42,7 +42,7 @@ static int __ec_parse_child(
 	struct ec_pnode *child = NULL;
 	int ret;
 
-	// XXX limit max number of recursions to avoid segfault
+	/* XXX limit max number of recursions to avoid segfault */
 
 	if (ec_node_type(node)->parse == NULL) {
 		errno = ENOTSUP;
@@ -280,7 +280,7 @@ static void __ec_pnode_dump(FILE *out, const struct ec_pnode *pnode, size_t inde
 	free(desc);
 }
 
-// XXX dump in other formats? yaml? json?
+/* XXX dump in other formats? yaml? json? */
 void ec_pnode_dump(FILE *out, const struct ec_pnode *pnode)
 {
 	fprintf(out, "------------------- parse dump:\n");

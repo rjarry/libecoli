@@ -157,7 +157,6 @@ void ec_htable_dump(FILE *out, const struct ec_htable *htable);
  *
  * The typical usage is as below:
  *
- *	// dump elements
  *	for (iter = ec_htable_iter(htable);
  *	     iter != NULL;
  *	     iter = ec_htable_iter_next(iter)) {

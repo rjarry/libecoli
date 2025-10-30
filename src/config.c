@@ -358,7 +358,7 @@ ssize_t ec_config_count(const struct ec_config *config)
 			n++;
 		return n;
 	case EC_CONFIG_TYPE_DICT:
-		// XXX todo
+		/* TODO */
 	default:
 		errno = EINVAL;
 		return -1;

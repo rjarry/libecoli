@@ -25,7 +25,7 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK_PARSE(node, -1, "foo", "foo", "foo", "foo");
 	ec_node_free(node);
 
-	// XXX test completion
+	/* XXX test completion */
 
 	return testres;
 }

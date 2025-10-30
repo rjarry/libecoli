@@ -287,7 +287,7 @@ static struct ec_config *parse_ec_config_list(
 
 	for (item = ynode->data.sequence.items.start; item < ynode->data.sequence.items.top;
 	     item++) {
-		value = document->nodes.start + (*item) - 1; // XXX -1 ?
+		value = document->nodes.start + (*item) - 1; /* XXX -1 ? */
 		subconfig = parse_ec_config(table, schema, document, value);
 		if (subconfig == NULL)
 			goto fail;
@@ -329,7 +329,7 @@ static struct ec_config *parse_ec_config_dict(
 	}
 
 	for (pair = ynode->data.mapping.pairs.start; pair < ynode->data.mapping.pairs.top; pair++) {
-		key = document->nodes.start + pair->key - 1; // XXX -1 ?
+		key = document->nodes.start + pair->key - 1; /* XXX -1 ? */
 		value = document->nodes.start + pair->value - 1;
 		key_str = (const char *)key->data.scalar.value;
 
@@ -384,7 +384,7 @@ parse_ec_node(struct enode_table *table, const yaml_document_t *document, const 
 	}
 
 	for (pair = ynode->data.mapping.pairs.start; pair < ynode->data.mapping.pairs.top; pair++) {
-		key = document->nodes.start + pair->key - 1; // XXX -1 ?
+		key = document->nodes.start + pair->key - 1; /* XXX -1 ? */
 		value = document->nodes.start + pair->value - 1;
 		key_str = (const char *)key->data.scalar.value;
 		value_str = (const char *)value->data.scalar.value;
@@ -547,7 +547,7 @@ struct ec_node *ec_yaml_import(const char *filename)
 	}
 
 	if (yaml_document_get_root_node(&document) == NULL) {
-		fprintf(stderr, "Incomplete document\n"); //XXX check err
+		fprintf(stderr, "Incomplete document\n"); /* XXX check err */
 		goto fail;
 	}
 

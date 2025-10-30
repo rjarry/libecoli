@@ -610,7 +610,7 @@ eval_condition(const struct ec_pnode *cond, const struct ec_pnode *pstate)
 	const char *id;
 	size_t n_arg = 0;
 
-	// XXX fix cast (x3)
+	/* XXX fix cast (x3) */
 	func = ec_pnode_find((void *)cond, "id_function");
 	if (func != NULL) {
 		EC_PNODE_FOREACH_CHILD (iter, func) {
@@ -725,8 +725,8 @@ static int ec_node_cond_complete(
 {
 	struct ec_node_cond *priv = ec_node_priv(node);
 
-	// XXX eval condition
-	// XXX before or after completing ? configurable ?
+	/* XXX eval condition */
+	/* XXX before or after completing ? configurable ? */
 
 	return ec_complete_child(priv->child, comp, strvec);
 }

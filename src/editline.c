@@ -326,7 +326,7 @@ int ec_editline_set_history(struct ec_editline *editline, size_t hist_size, cons
 		editline->hist_file = strdup(hist_file);
 		if (editline->hist_file == NULL)
 			goto fail;
-		// ignore errors
+		/* ignore errors */
 		history(editline->history, &editline->histev, H_LOAD, editline->hist_file);
 	}
 	if (el_set(el, EL_HIST, history, editline->history))

@@ -99,7 +99,7 @@ struct ec_node *ec_node_from_type(const struct ec_node_type *type, const char *i
 	node->type = type;
 	node->refcnt = 1;
 
-	// XXX check that id matches [_a-zA-Z][:-_0-9a-zA-Z]*
+	/* XXX check that id matches '[_a-zA-Z][:-_0-9a-zA-Z]*' */
 	node->id = strdup(id);
 	if (node->id == NULL)
 		goto fail;

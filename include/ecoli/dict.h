@@ -135,7 +135,6 @@ void ec_dict_dump(FILE *out, const struct ec_dict *dict);
  *
  * The typical usage is as below:
  *
- *	// dump elements
  *	for (iter = ec_dict_iter(dict);
  *	     iter != NULL;
  *	     iter = ec_dict_iter_next(iter)) {
