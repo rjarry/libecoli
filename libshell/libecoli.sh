@@ -34,7 +34,7 @@ ec_pnode_iter_next()
 	local seq=${1#ec_node}
 	seq=$((seq+1))
 	local next=ec_node${seq}
-	if [ "$(ec_pnode_get_id $next)" != "" ]; then
+	if [ "$(ec_pnode_get_type $next)" != "" ]; then
 		ec_echo $next
 	fi
 }
@@ -44,6 +44,13 @@ ec_pnode_get_id()
 {
 	local id=${1}_id
 	ec_echo $(eval 'ec_echo ${'$id'}')
+}
+
+# $1: node sequence number (ex: ec_node4)
+ec_pnode_get_type()
+{
+	local type=${1}_type
+	ec_echo $(eval 'ec_echo ${'$type'}')
 }
 
 # $1: node sequence number (ex: ec_node4)
