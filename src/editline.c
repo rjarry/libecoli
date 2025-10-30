@@ -189,7 +189,7 @@ fail:
 
 struct ec_editline *
 ec_editline(const char *name, FILE *f_in, FILE *f_out, FILE *f_err,
-	unsigned int flags)
+	    enum ec_editline_init_flags flags)
 {
 	struct ec_editline *editline = NULL;
 	EditLine *el;

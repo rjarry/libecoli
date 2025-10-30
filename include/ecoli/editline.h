@@ -36,51 +36,56 @@ struct ec_editline_help {
 #define EC_EDITLINE_HISTORY_SIZE 128
 
 /**
- * Ask the terminal to not send signals (STOP, SUSPEND, XXX). The
- * `ctrl-c`, `ctrl-z` will be interpreted as standard characters. An
- * action can be associated to these characters with:
- *
- *	static int cb(EditLine *editline, int c) {
- *	{
- *		see editline documentation for details
- *	}
- *
- *	if (el_set(el, EL_ADDFN, "ed-foobar", "Help string about foobar", cb))
- *		handle_error;
- *	if (el_set(el, EL_BIND, "^C", "ed-break", NULL))
- *		handle_error;
- *
- * The default behavior (without this flag) is to let the signal pass: ctrl-c
- * will stop program and ctrl-z will suspend it.
+ * Flags passed at ec_editline initialization.
  */
-#define EC_EDITLINE_DISABLE_SIGNALS 0x01
+enum ec_editline_init_flags {
+	/**
+	 * Ask the terminal to not send signals (STOP, SUSPEND, XXX). The
+	 * `ctrl-c`, `ctrl-z` will be interpreted as standard characters. An
+	 * action can be associated to these characters with:
+	 *
+	 *	static int cb(EditLine *editline, int c) {
+	 *	{
+	 *		see editline documentation for details
+	 *	}
+	 *
+	 *	if (el_set(el, EL_ADDFN, "ed-foobar", "Help string about foobar", cb))
+	 *		handle_error;
+	 *	if (el_set(el, EL_BIND, "^C", "ed-break", NULL))
+	 *		handle_error;
+	 *
+	 * The default behavior (without this flag) is to let the signal pass: ctrl-c
+	 * will stop program and ctrl-z will suspend it.
+	 */
+	EC_EDITLINE_DISABLE_SIGNALS = 1 << 0,
 
-/**
- * Disable history. The default behavior creates an history with
- * EC_EDITLINE_HISTORY_SIZE entries. To change this value, use
- * ec_editline_set_history().
- */
-#define EC_EDITLINE_DISABLE_HISTORY 0x02
+	/**
+	 * Disable history. The default behavior creates an history with
+	 * EC_EDITLINE_HISTORY_SIZE entries. To change this value, use
+	 * ec_editline_set_history().
+	 */
+	EC_EDITLINE_DISABLE_HISTORY = 1 << 1,
 
-/**
- * Disable completion. The default behavior is to complete when
- * `?` or `<tab>` is hit. You can register your own callback with:
- *
- *	if (el_set(el, EL_ADDFN, "ed-complete", "Complete buffer", callback))
- *		handle_error;
- *	if (el_set(el, EL_BIND, "^I", "ed-complete", NULL))
- *		handle_error;
- *
- * The default used callback is ec_editline_complete().
- */
-#define EC_EDITLINE_DISABLE_COMPLETION 0x04
+	/**
+	 * Disable completion. The default behavior is to complete when
+	 * `?` or `<tab>` is hit. You can register your own callback with:
+	 *
+	 *	if (el_set(el, EL_ADDFN, "ed-complete", "Complete buffer", callback))
+	 *		handle_error;
+	 *	if (el_set(el, EL_BIND, "^I", "ed-complete", NULL))
+	 *		handle_error;
+	 *
+	 * The default used callback is ec_editline_complete().
+	 */
+	EC_EDITLINE_DISABLE_COMPLETION = 1 << 2,
 
-/**
- * Use editline own signal handler for the following signals when reading
- * command input: SIGCONT, SIGHUP, SIGINT, SIGQUIT, SIGSTOP, SIGTERM, SIGTSTP,
- * and SIGWINCH. Otherwise, the current signal handlers will be used.
- */
-#define EC_EDITLINE_DEFAULT_SIGHANDLER 0x08
+	/**
+	 * Use editline own signal handler for the following signals when reading
+	 * command input: SIGCONT, SIGHUP, SIGINT, SIGQUIT, SIGSTOP, SIGTERM, SIGTSTP,
+	 * and SIGWINCH. Otherwise, the current signal handlers will be used.
+	 */
+	EC_EDITLINE_DEFAULT_SIGHANDLER = 1 << 3,
+};
 
 /**
  * Create an editline instance with default behavior.
@@ -101,12 +106,12 @@ struct ec_editline_help {
  * @param f_err
  *   The error stream to use.
  * @param flags
- *   Flags to customize initialization.
+ *   Flags to customize initialization. See @ec_editline_init_flags.
  * @return
  *   The allocated ec_editline structure, or NULL on error.
  */
 struct ec_editline *ec_editline(const char *name, FILE *f_in, FILE *f_out,
-				FILE *f_err, unsigned int flags);
+				FILE *f_err, enum ec_editline_init_flags flags);
 
 /**
  * Free an editline structure allocated with ec_editline().
