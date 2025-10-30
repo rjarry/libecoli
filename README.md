@@ -1,6 +1,6 @@
 # libecoli
 
-![logo.svg](https://raw.githubusercontent.com/rjarry/libecoli/master/doc/logo.svg)
+![logo.svg](/doc/logo.svg)
 
 libecoli stands for **E**xtensible **CO**mmand **LI**ne library.
 
@@ -23,7 +23,7 @@ This library provides helpers to build interactive command line interfaces.
 
 ## Architecture
 
-See [architecture.md](https://github.com/rjarry/libecoli/blob/master/doc/architecture.md).
+See [architecture.md](/doc/architecture.md).
 
 ## License
 
@@ -39,6 +39,10 @@ project (https://spdx.org/):
 
 The SPDX tag should be placed in the first line of the file when possible, or
 on the second line (e.g.: shell scripts).
+
+## Contributing
+
+Anyone can contribute to libecoli. See [`CONTRIBUTING.md`](/CONTRIBUTING.md).
 
 ## Projects that use libecoli
 
