@@ -15,6 +15,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdbool.h>
 
 typedef void (*ec_htable_elt_free_t)(void *);
@@ -127,6 +128,16 @@ size_t ec_htable_len(const struct ec_htable *htable);
  *   The duplicated hash table, or NULL on error (errno is set).
  */
 struct ec_htable *ec_htable_dup(const struct ec_htable *htable);
+
+/**
+ * Force a seed for the hash function.
+ * This function must be called *before* ec_init().
+ * By default, a random value is determined during ec_init().
+ *
+ * @param seed
+ *   The seed value.
+ */
+void ec_htable_force_seed(uint32_t seed);
 
 /**
  * Dump a hash table.

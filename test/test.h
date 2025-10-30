@@ -17,6 +17,7 @@
 #define EC_TEST_MAIN()							\
 	EC_LOG_TYPE_REGISTER(__file__);					\
 	static void __attribute__((constructor, used)) __init(void) {	\
+		ec_htable_force_seed(42);				\
 		ec_init();						\
 	}								\
 	static void __attribute__((destructor, used)) __exit(void) {	\

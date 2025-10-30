@@ -22,6 +22,7 @@
 
 EC_LOG_TYPE_REGISTER(htable);
 
+static bool seed_forced;
 static uint32_t ec_htable_seed;
 
 struct ec_htable *ec_htable(void)
@@ -330,12 +331,19 @@ fail:
 	return NULL;
 }
 
+void ec_htable_force_seed(uint32_t seed)
+{
+	ec_htable_seed = seed;
+	seed_forced = true;
+}
+
 static int ec_htable_init_func(void)
 {
 	int fd;
 	ssize_t ret;
 
-	return 0;//XXX for test reproduceability
+	if (seed_forced)
+		return 0;
 
 	fd = open("/dev/urandom", 0);
 	if (fd == -1) {
