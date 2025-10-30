@@ -116,13 +116,13 @@ ec_editline_print_helps(struct ec_editline *editline,
 }
 
 void
-ec_editline_free_helps(struct ec_editline_help *helps, size_t len)
+ec_editline_free_helps(struct ec_editline_help *helps, size_t n)
 {
 	size_t i;
 
 	if (helps == NULL)
 		return;
-	for (i = 0; i < len; i++) {
+	for (i = 0; i < n; i++) {
 		free(helps[i].desc);
 		free(helps[i].help);
 	}
@@ -188,7 +188,7 @@ fail:
 }
 
 struct ec_editline *
-ec_editline(const char *name, FILE *f_in, FILE *f_out, FILE *f_err,
+ec_editline(const char *prog, FILE *f_in, FILE *f_out, FILE *f_err,
 	    enum ec_editline_init_flags flags)
 {
 	struct ec_editline *editline = NULL;
@@ -203,7 +203,7 @@ ec_editline(const char *name, FILE *f_in, FILE *f_out, FILE *f_err,
 	if (editline == NULL)
 		goto fail;
 
-	el = el_init(name, f_in, f_out, f_err);
+	el = el_init(prog, f_in, f_out, f_err);
 	if (el == NULL)
 		goto fail;
 	editline->el = el;
@@ -678,20 +678,20 @@ fail:
 
 ssize_t
 ec_editline_get_suggestions(const struct ec_editline *editline,
-			    struct ec_editline_help **suggestions,
-			    char **full_line, int *pos) {
+			    struct ec_editline_help **helps_out,
+			    char **full_line, int *char_idx) {
 	struct ec_pnode *p = NULL;
 	struct ec_comp *c = NULL;
 	ssize_t count = -1;
 	char *line = NULL;
 	size_t len, i;
 
-	if (editline == NULL || suggestions == NULL) {
+	if (editline == NULL || helps_out == NULL) {
 		errno = EINVAL;
 		goto out;
 	}
 
-	*suggestions = NULL;
+	*helps_out = NULL;
 
 	if ((line = ec_editline_curline(editline, false)) == NULL)
 		goto out;
@@ -713,10 +713,10 @@ ec_editline_get_suggestions(const struct ec_editline *editline,
 		if ((c = ec_complete(editline->node, line)) == NULL)
 			goto out;
 		if (ec_pnode_matches(p) || ec_comp_count(c, EC_COMP_ALL) > 0) {
-			if (pos != NULL)
-				*pos = strlen(line);
+			if (char_idx != NULL)
+				*char_idx = strlen(line);
 			count = ec_editline_get_helps(
-				editline, line, line, suggestions);
+				editline, line, line, helps_out);
 			goto out;
 		}
 		ec_pnode_free(p);

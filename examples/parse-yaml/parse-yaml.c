@@ -176,7 +176,7 @@ interact(struct ec_node *node)
 		goto fail;
 	}
 
-	editline = ec_editline("ecoli", stdin, stdout, stderr, 0);
+	editline = ec_editline("parse-yaml", stdin, stdout, stderr, 0);
 	if (editline == NULL) {
 		fprintf(stderr, "Failed to initialize editline\n");
 		goto fail;

@@ -96,7 +96,7 @@ enum ec_editline_init_flags {
  * After that, the user must call ec_editline_set_node() to attach the grammar
  * to the editline.
  *
- * @param name
+ * @param prog
  *   The name of the invoking program, used when reading the editrc(5) file
  *   to determine which settings to use.
  * @param f_in
@@ -110,7 +110,7 @@ enum ec_editline_init_flags {
  * @return
  *   The allocated ec_editline structure, or NULL on error.
  */
-struct ec_editline *ec_editline(const char *name, FILE *f_in, FILE *f_out,
+struct ec_editline *ec_editline(const char *prog, FILE *f_in, FILE *f_out,
 				FILE *f_err, enum ec_editline_init_flags flags);
 
 /**
@@ -263,30 +263,30 @@ int ec_editline_print_helps(struct ec_editline *editline,
  *
  * @param helps
  *   The helps array.
- * @param len
+ * @param n
  *   The array size.
  */
-void ec_editline_free_helps(struct ec_editline_help *helps, size_t len);
+void ec_editline_free_helps(struct ec_editline_help *helps, size_t n);
 
 /**
  * Get suggestions after a parsing error for the current line.
  *
  * @param editline
  *   The pointer to the ec_editline structure.
- * @param suggestions
+ * @param helps_out
  *   The pointer where the helps array will be returned.
  * @param full_line
  *   A pointer where the full line string will be stored. It must be freed by
  *   the user.
- * @param pos
+ * @param char_idx
  *   A pointer to an integer where the index of the error in the line string
  *   is returned.
  * @return
  *   The size of the array on success (>= 0), or -1 on error.
  */
 ssize_t ec_editline_get_suggestions(const struct ec_editline *editline,
-				    struct ec_editline_help **suggestions,
-				    char **full_line, int *pos);
+				    struct ec_editline_help **helps_out,
+				    char **full_line, int *char_idx);
 
 /**
  * Set editline prompt.
