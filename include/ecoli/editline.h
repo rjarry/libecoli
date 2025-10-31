@@ -88,6 +88,18 @@ enum ec_editline_init_flags {
 };
 
 /**
+ * Type of callback invoked by ec_editline_interact() on successful parsing.
+ */
+typedef int (*ec_editline_command_cb_t)(const struct ec_pnode *);
+
+/**
+ * Type of callback invoked by ec_editline_interact() to check if loop should
+ * exit (when the function return true), or continue (when the function return
+ * false).
+ */
+typedef int (*ec_editline_check_exit_cb_t)(void *opaque);
+
+/**
  * Create an editline instance with default behavior.
  *
  * It allocates and initializes an ec_editline structure, calls editline's
@@ -383,6 +395,30 @@ char *ec_editline_gets(struct ec_editline *editline);
  *   using using ec_pnode_free(). Return NULL on error.
  */
 struct ec_pnode *ec_editline_parse(struct ec_editline *editline);
+
+/**
+ * Interact with the user until exit.
+ *
+ * Run the command line, parsing and completing commands on demand. When a
+ * command is parsed successfully, invoke the callback attached to the grammar
+ * node as a "cb" attribute. The callback type must be ec_editline_command_cb_t.
+ *
+ * On EOF, or if check_exit() function returns true, exit from the interactive
+ * loop.
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @param check_exit_cb
+ *   Optional function pointer executed before each loop iteration to check if
+ *   loop should be exited (when the function return true).
+ * @param opaque
+ *   User pointer, passed as-is to check_exit_cb().
+ * @return
+ *   0 if interactive loop exited gracefully, or -1 on error.
+ */
+int ec_editline_interact(struct ec_editline *el,
+			 ec_editline_check_exit_cb_t check_exit_cb,
+			 void *opaque);
 
 /**
  * Default completion callback used by editline.

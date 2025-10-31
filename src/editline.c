@@ -909,3 +909,109 @@ fail:
 
 	return NULL;
 }
+
+static ec_editline_command_cb_t get_callback(struct ec_pnode *parse)
+{
+	struct ec_pnode *iter;
+	ec_editline_command_cb_t cb;
+
+	for (iter = parse; iter != NULL;
+	     iter = EC_PNODE_ITER_NEXT(parse, iter, 1)) {
+		cb = ec_dict_get(ec_node_attrs(ec_pnode_get_node(iter)), "cb");
+		if (cb != NULL)
+			return cb;
+	}
+
+	return NULL;
+}
+
+int
+ec_editline_interact(struct ec_editline *editline,
+		     ec_editline_check_exit_cb_t check_exit_cb,
+		     void *opaque)
+{
+	struct ec_editline_help *helps = NULL;
+	struct ec_strvec *line_vec = NULL;
+	struct ec_pnode *parse = NULL;
+	ec_editline_command_cb_t cb;
+	const struct ec_node *node;
+	char *line = NULL;
+	size_t char_idx;
+	ssize_t n;
+	FILE *err;
+
+	if (el_get(editline->el, EL_GETFP, 2, &err))
+		return -1;
+
+	node = ec_editline_get_node(editline);
+	if (node == NULL)
+		goto fail;
+
+	while (check_exit_cb == NULL || !check_exit_cb(opaque)) {
+		line = ec_editline_gets(editline);
+		if (line == NULL) {
+			fprintf(err, "\nExit using ctrl-d\n");
+			goto fail;
+		}
+
+		line_vec = ec_strvec_sh_lex_str(line, EC_STRVEC_STRICT, NULL);
+		if (line_vec == NULL) {
+			if (errno == EBADMSG) {
+				fprintf(err, "Unterminated quote\n");
+				goto again;
+			}
+			fprintf(err, "Failed to split line\n");
+			goto fail;
+		}
+
+		if (ec_strvec_len(line_vec) == 0)
+			goto again;
+
+		parse = ec_parse(node, line);
+		if (parse == NULL) {
+			fprintf(err, "Failed to parse command\n");
+			goto fail;
+		}
+
+		if (!ec_pnode_matches(parse)) {
+			n = ec_editline_get_error_helps(editline, &helps,
+							&char_idx);
+			if (n < 0 ||
+			    ec_editline_print_error_helps(editline, helps,
+							  n, char_idx) < 0)
+				fprintf(err, "Invalid command\n");
+			if (n >= 0)
+				ec_editline_free_helps(helps, n);
+			helps = NULL;
+			goto again;
+		}
+
+		cb = get_callback(parse);
+		if (cb == NULL) {
+			fprintf(err, "Callback function missing\n");
+			goto fail;
+		}
+
+		if (cb(parse) < 0) {
+			fprintf(err, "Command function returned an error\n");
+			goto again;
+		}
+
+again:
+		free(line);
+		line = NULL;
+		ec_pnode_free(parse);
+		parse = NULL;
+		ec_strvec_free(line_vec);
+		line_vec = NULL;
+	}
+
+	return 0;
+
+fail:
+	free(line);
+	ec_pnode_free(parse);
+	ec_strvec_free(line_vec);
+
+	return -1;
+}
