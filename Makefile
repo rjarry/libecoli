@@ -5,6 +5,7 @@ BUILDDIR ?= build
 BUILDTYPE ?= debugoptimized
 SANITIZE ?= none
 COVERAGE ?= false
+DESTDIR ?=
 V ?= 0
 ifeq ($V,1)
 ninja_opts = --verbose
@@ -27,6 +28,11 @@ debug: all
 .PHONY: tests
 tests: $(BUILDDIR)/build.ninja
 	$Q meson test -C $(BUILDDIR) --print-errorlogs $(if $(filter 1,$V),--verbose)
+
+.PHONY: install
+install: build
+	$Q meson install -C $(BUILDDIR) $(ninja_opts) \
+		$(if $(DESTDIR),--destdir $(DESTDIR))
 
 .PHONY: coverage
 coverage: tests
@@ -111,6 +117,7 @@ help:
 	$Q echo 'Available targets:'
 	$Q echo
 	$Q echo '  build         Configure and build with default options (default target)'
+	$Q echo '  install       Install with default options'
 	$Q echo '  debug         Configure and build with -O0 and -fsantize=address'
 	$Q echo '  clean         Clean build directory'
 	$Q echo '  tag-release   Create a release commit and signed tag'
@@ -121,6 +128,7 @@ help:
 	$Q echo
 	$Q echo '  BUILDDIR            Build directory (default: $(BUILDDIR))'
 	$Q echo '  BUILDTYPE           Optimization level (default: $(BUILDTYPE))'
+	$Q echo '  DESTDIR             The installation destination directory'
 	$Q echo '  COVERAGE            Enable coverage data in binaries (default: $(COVERAGE))'
 	$Q echo '  SANITIZE            Value of -fsanitize (default: $(SANITIZE))'
 	$Q echo '  MESON_EXTRA_OPTS    Additional options for meson setup'
