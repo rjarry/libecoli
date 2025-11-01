@@ -21,8 +21,6 @@
  * lists the possible completions. The completions are grouped into
  * ec_comp_group. All completions items of a group shares the same parsing
  * state and are issued by the same node.
- *
- * @}
  */
 
 #pragma once
@@ -508,3 +506,5 @@ struct ec_comp_item *ec_comp_iter_next(struct ec_comp_item *item, enum ec_comp_t
 #define EC_COMP_FOREACH(item, comp, type)                                                          \
 	for (item = ec_comp_iter_first(comp, type); item != NULL;                                  \
 	     item = ec_comp_iter_next(item, type))
+
+/** @} */
