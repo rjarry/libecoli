@@ -18,5 +18,5 @@ ecoli_parse_yaml = executable(
 	dependencies: [yaml_dep, edit_dep])
 
 install_data(
-	'parse-yaml.sh',
+	'ecoli-parse-yaml.sh',
 	install_dir : get_option('bindir'))
