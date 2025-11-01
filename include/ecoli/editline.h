@@ -4,6 +4,7 @@
 
 /**
  * @defgroup ecoli_editline Editline
+ * @{
  *
  * @brief Helpers for editline
  *
@@ -486,3 +487,5 @@ int ec_editline_set_help(struct ec_node *node, const char *help);
  *   0 on success, or -1 on error.
  */
 int ec_editline_set_callback(struct ec_node *node, ec_editline_command_cb_t cb);
+
+/** @} */
