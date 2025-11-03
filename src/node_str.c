@@ -13,6 +13,7 @@
 #include <ecoli/node.h>
 #include <ecoli/node_str.h>
 #include <ecoli/parse.h>
+#include <ecoli/string.h>
 #include <ecoli/strvec.h>
 
 EC_LOG_TYPE_REGISTER(node_str);
@@ -57,21 +58,13 @@ static int ec_node_str_complete(
 	struct ec_node_str *priv = ec_node_priv(node);
 	const struct ec_comp_item *item;
 	const char *str;
-	size_t n = 0;
 
 	if (ec_strvec_len(strvec) != 1)
 		return 0;
 
-	/* XXX startswith ? */
 	str = ec_strvec_val(strvec, 0);
-	for (n = 0; n < priv->len; n++) {
-		if (str[n] != priv->string[n])
-			break;
-	}
-
-	/* no completion */
-	if (str[n] != '\0')
-		return EC_PARSE_NOMATCH;
+	if (!ec_str_startswith(priv->string, str))
+		return 0;
 
 	item = ec_comp_add_item(comp, node, EC_COMP_FULL, str, priv->string);
 	if (item == NULL)
