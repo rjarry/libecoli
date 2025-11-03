@@ -16,6 +16,7 @@ libecoli_sources += files(
 	'node_cmd.c',
 	'node_cond.c',
 	'node_dynamic.c',
+	'node_dynlist.c',
 	'node_empty.c',
 	'node_expr.c',
 	'node_file.c',

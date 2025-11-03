@@ -18,6 +18,7 @@ libecoli_headers = files(
 	'ecoli/node_cmd.h',
 	'ecoli/node_cond.h',
 	'ecoli/node_dynamic.h',
+	'ecoli/node_dynlist.h',
 	'ecoli/node_empty.h',
 	'ecoli/node_expr.h',
 	'ecoli/node_file.h',

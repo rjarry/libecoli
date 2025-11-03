@@ -36,6 +36,7 @@
 #include <ecoli/node_cmd.h>
 #include <ecoli/node_cond.h>
 #include <ecoli/node_dynamic.h>
+#include <ecoli/node_dynlist.h>
 #include <ecoli/node_empty.h>
 #include <ecoli/node_expr.h>
 #include <ecoli/node_file.h>
