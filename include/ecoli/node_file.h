@@ -14,11 +14,6 @@
 
 #include <ecoli/node.h>
 
-struct ec_node *ec_node_file(const char *id, const char *file);
-
-/* file is duplicated */
-int ec_node_file_set_str(struct ec_node *node, const char *file);
-
 /** @internal below functions pointers are only useful for test */
 struct ec_node_file_ops {
 	int (*lstat)(const char *pathname, struct stat *buf);
