@@ -654,7 +654,7 @@ int ec_editline_complete(EditLine *el, int c)
 			fprintf(err, "completion failure: cannot insert\n");
 			goto fail;
 		}
-		if (comp_count == 1) {
+		if (comp_count == 1 && ec_comp_count(cmpl, EC_COMP_FULL) == 1) {
 			if (el_insertstr(el, " ") < 0) {
 				fprintf(err, "completion failure: cannot insert space\n");
 				goto fail;
