@@ -2,5 +2,6 @@
 # Copyright 2018, Olivier MATZ <zer0@droids-corp.org>
 
 subdir('simple-editline')
+subdir('pool-editline')
 subdir('readline')
 subdir('parse-yaml')
