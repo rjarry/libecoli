@@ -415,7 +415,8 @@ static int get_node_help(const struct ec_comp_item *item, struct ec_editline_hel
 	const struct ec_pnode *pstate;
 	const struct ec_node *node;
 	const char *node_help = NULL;
-	char *node_desc = NULL;
+	const char *node_desc = NULL;
+	char *desc_to_free = NULL;
 
 	help->desc = NULL;
 	help->help = NULL;
@@ -427,28 +428,34 @@ static int get_node_help(const struct ec_comp_item *item, struct ec_editline_hel
 		node = ec_pnode_get_node(pstate);
 		if (node_help == NULL)
 			node_help = ec_dict_get(ec_node_attrs(node), EC_EDITLINE_HELP_ATTR);
+		if (node_desc == NULL)
+			node_desc = ec_dict_get(ec_node_attrs(node), EC_EDITLINE_DESC_ATTR);
 		if (node_desc == NULL) {
 			node_desc = ec_node_desc(node);
 			if (node_desc == NULL)
 				goto fail;
+			desc_to_free = (char *)node_desc;
 		}
+		if (node_desc == NULL)
+			goto fail;
 	}
 
 	if (node_desc == NULL)
 		goto fail;
 	if (node_help == NULL)
 		node_help = "";
-
-	help->desc = node_desc;
+	help->desc = strdup(node_desc);
 	help->help = strdup(node_help);
-	if (help->help == NULL)
+	if (help->help == NULL || help->desc == NULL)
 		goto fail;
 
+	free(desc_to_free);
 	return 0;
 
 fail:
-	free(node_desc);
+	free(desc_to_free);
 	free(help->help);
+	free(help->desc);
 	help->desc = NULL;
 	help->help = NULL;
 	return -1;
@@ -1005,4 +1012,14 @@ int ec_editline_set_help(struct ec_node *node, const char *help)
 int ec_editline_set_callback(struct ec_node *node, ec_editline_command_cb_t cb)
 {
 	return ec_dict_set(ec_node_attrs(node), EC_EDITLINE_CB_ATTR, cb, NULL);
+}
+
+int ec_editline_set_desc(struct ec_node *node, const char *desc)
+{
+	char *copy = strdup(desc);
+
+	if (copy == NULL)
+		return -1;
+
+	return ec_dict_set(ec_node_attrs(node), EC_EDITLINE_DESC_ATTR, copy, free);
 }

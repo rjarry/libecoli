@@ -47,6 +47,11 @@ struct ec_editline_help {
 #define EC_EDITLINE_CB_ATTR "cb"
 
 /**
+ * The key of the node attribute storing the short description.
+ */
+#define EC_EDITLINE_DESC_ATTR "desc"
+
+/**
  * Flags passed at ec_editline initialization.
  */
 enum ec_editline_init_flags {
@@ -487,5 +492,22 @@ int ec_editline_set_help(struct ec_node *node, const char *help);
  *   0 on success, or -1 on error.
  */
 int ec_editline_set_callback(struct ec_node *node, ec_editline_command_cb_t cb);
+
+/**
+ * Set short description of a grammar node.
+ *
+ * Set the node attribute EC_EDITLINE_DESC_ATTR on the node, containing the
+ * given string. It is used by the ec_editline functions to display the short
+ * description of the contextual help, overriding the value provided by
+ * ec_node_desc().
+ *
+ * @param node
+ *   The ec_node on which to add the desc attribute.
+ * @param desc
+ *   The short description string.
+ * @return
+ *   0 on success, or -1 on error.
+ */
+int ec_editline_set_desc(struct ec_node *node, const char *desc);
 
 /** @} */
