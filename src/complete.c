@@ -299,21 +299,21 @@ ec_comp_item(enum ec_comp_type type, const char *start, const char *full)
 	if (attrs == NULL)
 		goto fail;
 
-	if (start != NULL) {
+	if (start == NULL && full != NULL)
+		goto fail;
+	if (start != NULL && full == NULL)
+		goto fail;
+
+	if (start != NULL && full != NULL) {
+		if (!ec_str_startswith(full, start))
+			goto fail;
+
 		start_cp = strdup(start);
 		if (start_cp == NULL)
 			goto fail;
-
-		if (full == NULL)
+		comp_cp = strdup(&full[strlen(start)]);
+		if (comp_cp == NULL)
 			goto fail;
-
-		if (ec_str_startswith(full, start)) {
-			comp_cp = strdup(&full[strlen(start)]);
-			if (comp_cp == NULL)
-				goto fail;
-		}
-	}
-	if (full != NULL) {
 		full_cp = strdup(full);
 		if (full_cp == NULL)
 			goto fail;
