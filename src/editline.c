@@ -623,17 +623,28 @@ int ec_editline_complete(EditLine *el, int c)
 	if (c == '?') {
 		struct ec_editline_help *helps = NULL;
 		ssize_t count = 0;
+		size_t char_idx;
 
 		count = ec_editline_get_helps(editline, line, &helps);
-
 		fprintf(out, "\n");
-		if (ec_editline_print_helps(editline, helps, count) < 0) {
+		if (count != 0 && ec_editline_print_helps(editline, helps, count) < 0) {
 			fprintf(err, "completion failure: cannot show help\n");
 			ec_editline_free_helps(helps, count);
 			goto fail;
 		}
-
 		ec_editline_free_helps(helps, count);
+
+		if (count == 0) {
+			count = ec_editline_get_error_helps(editline, &helps, &char_idx);
+			if (count != 0
+			    && ec_editline_print_error_helps(editline, helps, count, char_idx)
+				    < 0) {
+				fprintf(err, "completion failure: cannot show help\n");
+				ec_editline_free_helps(helps, count);
+				goto fail;
+			}
+			ec_editline_free_helps(helps, count);
+		}
 		ret = CC_REDISPLAY;
 	} else if (append == NULL || (strcmp(append, "") == 0 && comp_count != 1)) {
 		char **matches = NULL;
@@ -824,6 +835,8 @@ int ec_editline_print_error_helps(
 		goto fail;
 
 	fprintf(out, "  %s", line);
+	if (line[strlen(line)] != '\n')
+		fprintf(out, "\n");
 	fprintf(out, "  %*s^\n", (int)char_idx, "");
 	fprintf(out, "Expected:\n");
 	if (ec_editline_print_helps(editline, helps, n) < 0)
