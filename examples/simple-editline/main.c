@@ -62,6 +62,7 @@ static struct ec_node *create_commands(void)
 {
 	struct ec_node *cmdlist = NULL, *cmd = NULL;
 	struct ec_node *names = NULL;
+	int ret;
 
 	/* the top node containing the list of commands */
 	cmdlist = ec_node("or", EC_NO_ID);
@@ -97,7 +98,9 @@ static struct ec_node *create_commands(void)
 		goto fail;
 	if (ec_editline_set_help(ec_node_find(cmd, ID_COUNT), "an integer (0-10)") < 0)
 		goto fail;
-	if (ec_node_or_add(cmdlist, cmd) < 0)
+	ret = ec_node_or_add(cmdlist, cmd);
+	cmd = NULL; /* already freed, even on error */
+	if (ret < 0)
 		goto fail;
 
 	/* the bye command */
@@ -106,7 +109,9 @@ static struct ec_node *create_commands(void)
 		goto fail;
 	if (ec_editline_set_help(cmd, "say bye") < 0)
 		goto fail;
-	if (ec_node_or_add(cmdlist, cmd) < 0)
+	ret = ec_node_or_add(cmdlist, cmd);
+	cmd = NULL; /* already freed, even on error */
+	if (ret < 0)
 		goto fail;
 
 	/* the exit command */
@@ -115,7 +120,9 @@ static struct ec_node *create_commands(void)
 		goto fail;
 	if (ec_editline_set_help(cmd, "exit program") < 0)
 		goto fail;
-	if (ec_node_or_add(cmdlist, cmd) < 0)
+	ret = ec_node_or_add(cmdlist, cmd);
+	cmd = NULL; /* already freed, even on error */
+	if (ret < 0)
 		goto fail;
 
 	/* the lexer, added above the command list */
@@ -131,6 +138,7 @@ fail:
 	fprintf(stderr, "cannot initialize nodes\n");
 	ec_node_free(names);
 	ec_node_free(cmdlist);
+	ec_node_free(cmd);
 	return NULL;
 }
 
