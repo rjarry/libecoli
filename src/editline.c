@@ -105,7 +105,7 @@ int ec_editline_print_helps(
 		return -1;
 
 	for (i = 0; i < len; i++) {
-		if (fprintf(out, "%-20s %s\n", helps[i].desc, helps[i].help) < 0)
+		if (fprintf(out, "  %-20s %s\n", helps[i].desc, helps[i].help) < 0)
 			return -1;
 	}
 
