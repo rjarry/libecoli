@@ -3,5 +3,6 @@
 
 subdir('simple-editline')
 subdir('pool-editline')
+subdir('extension-editline')
 subdir('readline')
 subdir('parse-yaml')
