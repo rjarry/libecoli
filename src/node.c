@@ -296,15 +296,18 @@ int ec_node_get_child(
 int ec_node_set_config(struct ec_node *node, struct ec_config *config)
 {
 	if (node->type->schema == NULL) {
-		errno = EINVAL;
+		errno = ENOTSUP;
 		goto fail;
 	}
 	if (ec_config_validate(config, node->type->schema) < 0)
 		goto fail;
-	if (node->type->set_config != NULL) {
-		if (node->type->set_config(node, config) < 0)
-			goto fail;
+	if (node->type->set_config == NULL) {
+		errno = ENOTSUP;
+		goto fail;
 	}
+
+	if (node->type->set_config(node, config) < 0)
+		goto fail;
 
 	ec_config_free(node->config);
 	node->config = config;
