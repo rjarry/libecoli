@@ -177,8 +177,6 @@ static int show_help(int ignore, int invoking_key)
 		count++;
 	}
 
-	free(item);
-	ec_comp_free(c);
 	/* ensure not more than 1 entry per line */
 	rl_get_screen_size(NULL, &cols);
 	rl_display_match_list(helps, count + match, cols);
