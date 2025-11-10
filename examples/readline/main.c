@@ -52,7 +52,7 @@ static char *my_completion_entry(const char *s, int state)
 	}
 
 	item_str = ec_comp_item_get_str(item);
-	if (ec_comp_count(c, EC_COMP_FULL) == 1) {
+	if (ec_comp_count(c, EC_COMP_FULL | EC_COMP_PARTIAL) == 1) {
 		/* don't add the trailing space for partial completions */
 		if (state == 0) {
 			item_type = ec_comp_item_get_type(item);
