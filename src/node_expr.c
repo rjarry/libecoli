@@ -384,7 +384,8 @@ fail:
 int ec_node_expr_add_parenthesis(struct ec_node *node, struct ec_node *open, struct ec_node *close)
 {
 	struct ec_node_expr *priv = ec_node_priv(node);
-	struct ec_node **open_ops, **close_ops;
+	struct ec_node **close_ops = NULL;
+	struct ec_node **open_ops = NULL;
 
 	if (ec_node_check_type(node, &ec_node_expr_type) < 0)
 		goto fail;
@@ -394,17 +395,21 @@ int ec_node_expr_add_parenthesis(struct ec_node *node, struct ec_node *open, str
 		goto fail;
 	}
 
-	open_ops = realloc(priv->open_ops, (priv->paren_len + 1) * sizeof(*priv->open_ops));
+	open_ops = malloc((priv->paren_len + 1) * sizeof(*priv->open_ops));
 	if (open_ops == NULL)
 		goto fail;
-	close_ops = realloc(priv->close_ops, (priv->paren_len + 1) * sizeof(*priv->close_ops));
+	close_ops = malloc((priv->paren_len + 1) * sizeof(*priv->close_ops));
 	if (close_ops == NULL)
 		goto fail;
 
-	priv->open_ops = open_ops;
-	priv->close_ops = close_ops;
+	memcpy(open_ops, priv->open_ops, priv->paren_len * sizeof(*priv->open_ops));
+	memcpy(close_ops, priv->close_ops, priv->paren_len * sizeof(*priv->close_ops));
 	open_ops[priv->paren_len] = open;
 	close_ops[priv->paren_len] = close;
+	free(priv->open_ops);
+	free(priv->close_ops);
+	priv->open_ops = open_ops;
+	priv->close_ops = close_ops;
 	priv->paren_len++;
 	ec_node_expr_build(priv);
 
@@ -413,6 +418,8 @@ int ec_node_expr_add_parenthesis(struct ec_node *node, struct ec_node *open, str
 fail:
 	ec_node_free(open);
 	ec_node_free(close);
+	free(close_ops);
+	free(open_ops);
 	return -1;
 }
 
