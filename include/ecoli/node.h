@@ -377,28 +377,111 @@ const struct ec_config_schema *ec_node_type_schema(const struct ec_node_type *ty
 const char *ec_node_type_name(const struct ec_node_type *type);
 
 /**
- * create a new node when the type is known, typically called from the node
- * code */
+ * Create a new node from a known type is known
+ *
+ * This function is typically called from the node constructor.
+ *
+ * @param type
+ *   The type of the node to create.
+ * @param id
+ *   The node identifier.
+ * @return
+ *   The new node on success, or NULL on error.
+ */
 struct ec_node *ec_node_from_type(const struct ec_node_type *type, const char *id);
 
 /**
- * Create a new node from type name.
+ * Create a new node from its type name.
+ *
+ * This function is typically called from user code, for node types that do not provide a specific
+ * constructor.
+ *
+ * @param typename
+ *   The type name of the node to create.
+ * @param id
+ *   The node identifier.
+ * @return
+ *   The new node on success, or NULL on error.
  */
 struct ec_node *ec_node(const char *typename, const char *id);
 
+/**
+ * Clone a grammar node.
+ *
+ * This function takes a reference to the node. If ec_node_free() is later called on this node, it
+ * will decrease only the reference. The free is effective when the reference count reaches 0. The
+ * reference counter is initialized to 1 at node creation.
+ *
+ * @param node
+ *   The node to clone.
+ * @return
+ *   The pointer to the cloned node, always equal to the parameter. It returns NULL if the parameter
+ *   was NULL: in this case, nothing is done.
+ */
 struct ec_node *ec_node_clone(struct ec_node *node);
+
+/**
+ * Decrement node reference counter and free the node if it is the last reference.
+ *
+ * @param node
+ *   The grammar node to free.
+ */
 void ec_node_free(struct ec_node *node);
 
-/* set configuration of a node
- * after a call to this function, the config is
- * owned by the node and must not be used by the caller
- * on error, the config is freed. */
+/**
+ * Set node configuration.
+ *
+ * For a node that supports generic configuration, set its configuration.
+ *
+ * After a call to this function, the config is owned by the node and must not be used by the caller
+ * anymore.
+ *
+ * @param node
+ *   The grammar node to configure.
+ * @param config
+ *   The configuration to apply on the node.
+ * @return
+ *   0 on success, or a negative value on error (in this case the config passed as parameter is
+ *   freed).
+ */
 int ec_node_set_config(struct ec_node *node, struct ec_config *config);
 
-/* get the current node configuration. Return NULL if no configuration. */
+/**
+ * Get the current node configuration.
+ *
+ * For a node that supports generic configuration, get its configuration.
+ *
+ * @param node
+ *   The grammar node.
+ * @return
+ *   The generic node configuration on success, or NULL on error.
+ */
 const struct ec_config *ec_node_get_config(struct ec_node *node);
 
+/**
+ * Return the number of children for a node.
+ *
+ * @param node
+ *   The grammar node.
+ * @return
+ *   The number of children.
+ */
 size_t ec_node_get_children_count(const struct ec_node *node);
+
+/**
+ * Get the n-th child of a node.
+ *
+ * @param node
+ *   The grammar node.
+ * @param i
+ *   The index of the child node, that must be lower than the number of children.
+ * @param child
+ *   The pointer where the child node pointer will be stored on success.
+ * @param refs
+ *   The pointer where the number of references owned by the node to the child is stored.
+ * @return
+ *   The number of children.
+ */
 int ec_node_get_child(
 	const struct ec_node *node,
 	size_t i,
@@ -406,19 +489,94 @@ int ec_node_get_child(
 	unsigned int *refs
 );
 
-/* XXX add more accessors */
+/**
+ * Get the type of a node.
+ *
+ * @param node
+ *   The grammar node.
+ * @return
+ *   The type structure of this node.
+ */
 const struct ec_node_type *ec_node_type(const struct ec_node *node);
+
+/**
+ * Get the attributes dict of the node.
+ *
+ * A user can add any attribute to a node.
+ *
+ * @param node
+ *   The grammar node.
+ * @return
+ *   The attribute dictionary of this node.
+ */
 struct ec_dict *ec_node_attrs(const struct ec_node *node);
+
+/**
+ * Get node identifier.
+ *
+ * @param node
+ *   The grammar node.
+ * @return
+ *   The node identifier string.
+ */
 const char *ec_node_id(const struct ec_node *node);
 
+/**
+ * Get node short description.
+ *
+ * @param node
+ *   The grammar node.
+ * @return
+ *   An allocated string containing the node short description that must be freed by the
+ *   caller. Return NULL on error.
+ */
 char *ec_node_desc(const struct ec_node *node);
 
+/**
+ * Dump a grammar tree.
+ *
+ * @param out
+ *   The stream where the dump is sent.
+ * @param node
+ *   The grammar tree to dump.
+ */
 void ec_node_dump(FILE *out, const struct ec_node *node);
+
+/**
+ * Find a node from its identifier string.
+ *
+ * Browse the tree using pre-order depth traversal, and return the first node that matches the given
+ * identifier.
+ *
+ * @param node
+ *   The grammar tree.
+ * @param node
+ *   The identifier to match.
+ * @return
+ *   A node matching the identifier.
+ */
 struct ec_node *ec_node_find(struct ec_node *node, const char *id);
 
-/* check the type of a node */
+/**
+ * Check the type of a node.
+ *
+ * @param node
+ *   The grammar node.
+ * @param type
+ *   The pointer to the type structure.
+ * @return
+ *   0 if the node is of specified type, else -1.
+ */
 int ec_node_check_type(const struct ec_node *node, const struct ec_node_type *type);
 
+/**
+ * Get the type name of a grammar node.
+ *
+ * @param node
+ *   The grammar node.
+ * @return
+ *   The type name of the node.
+ */
 const char *ec_node_get_type_name(const struct ec_node *node);
 
 /**
