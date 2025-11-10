@@ -933,8 +933,8 @@ int ec_editline_interact(
 	struct ec_pnode *parse = NULL;
 	ec_editline_command_cb_t cb;
 	const struct ec_node *node;
+	size_t char_idx = 0;
 	char *line = NULL;
-	size_t char_idx;
 	ssize_t n;
 	FILE *err;
 
