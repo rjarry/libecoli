@@ -30,6 +30,11 @@ static int ec_node_bypass_parse(
 {
 	struct ec_node_bypass *priv = ec_node_priv(node);
 
+	if (priv->child == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
+
 	return ec_parse_child(priv->child, pstate, strvec);
 }
 
@@ -40,6 +45,11 @@ static int ec_node_bypass_complete(
 )
 {
 	struct ec_node_bypass *priv = ec_node_priv(node);
+
+	if (priv->child == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
 
 	return ec_complete_child(priv->child, comp, strvec);
 }

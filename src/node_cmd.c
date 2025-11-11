@@ -396,6 +396,11 @@ static int ec_node_cmd_parse(
 {
 	struct ec_node_cmd *priv = ec_node_priv(node);
 
+	if (priv->cmd == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
+
 	return ec_parse_child(priv->cmd, pstate, strvec);
 }
 
@@ -406,6 +411,11 @@ static int ec_node_cmd_complete(
 )
 {
 	struct ec_node_cmd *priv = ec_node_priv(node);
+
+	if (priv->cmd == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
 
 	return ec_complete_child(priv->cmd, comp, strvec);
 }

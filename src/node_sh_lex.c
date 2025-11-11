@@ -38,6 +38,11 @@ static int ec_node_sh_lex_parse(
 	const char *str;
 	int ret;
 
+	if (priv->child == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
+
 	if (ec_strvec_len(strvec) == 0) {
 		new_vec = ec_strvec();
 	} else {
@@ -95,6 +100,11 @@ static int ec_node_sh_lex_complete(
 	const char *str, *last;
 	char missing_quote = '\0';
 	int ret;
+
+	if (priv->child == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
 
 	if (ec_strvec_len(strvec) != 1)
 		return 0;

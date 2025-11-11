@@ -35,7 +35,7 @@ static int ec_node_str_parse(
 	(void)pstate;
 
 	if (priv->string == NULL) {
-		errno = EINVAL;
+		errno = ENOENT;
 		return -1;
 	}
 
@@ -58,6 +58,11 @@ static int ec_node_str_complete(
 	struct ec_node_str *priv = ec_node_priv(node);
 	const struct ec_comp_item *item;
 	const char *str;
+
+	if (priv->string == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
 
 	if (ec_strvec_len(strvec) != 1)
 		return 0;

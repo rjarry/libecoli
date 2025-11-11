@@ -50,6 +50,11 @@ static int ec_node_once_parse(
 	struct ec_node_once *priv = ec_node_priv(node);
 	unsigned int count;
 
+	if (priv->child == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
+
 	/* count the number of occurrences of the node: if already parsed,
 	 * do not match
 	 */
@@ -70,6 +75,11 @@ static int ec_node_once_complete(
 	struct ec_pnode *parse = ec_comp_get_cur_pstate(comp);
 	unsigned int count;
 	int ret;
+
+	if (priv->child == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
 
 	/* count the number of occurrences of the node: if already parsed,
 	 * do not match

@@ -37,6 +37,11 @@ static int ec_node_many_parse(
 	size_t off = 0, count;
 	int ret;
 
+	if (priv->child == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
+
 	for (count = 0; priv->max == 0 || count < priv->max; count++) {
 		childvec = ec_strvec_ndup(strvec, off, ec_strvec_len(strvec) - off);
 		if (childvec == NULL)
@@ -149,6 +154,11 @@ static int ec_node_many_complete(
 )
 {
 	struct ec_node_many *priv = ec_node_priv(node);
+
+	if (priv->child == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
 
 	return __ec_node_many_complete(priv, priv->max, comp, strvec);
 }

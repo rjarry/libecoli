@@ -31,6 +31,11 @@ static int ec_node_option_parse(
 	struct ec_node_option *priv = ec_node_priv(node);
 	int ret;
 
+	if (priv->child == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
+
 	ret = ec_parse_child(priv->child, pstate, strvec);
 	if (ret < 0)
 		return ret;
@@ -48,6 +53,11 @@ static int ec_node_option_complete(
 )
 {
 	struct ec_node_option *priv = ec_node_priv(node);
+
+	if (priv->child == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
 
 	return ec_complete_child(priv->child, comp, strvec);
 }

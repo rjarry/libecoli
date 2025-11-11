@@ -121,7 +121,7 @@ static int ec_node_re_lex_parse(
 	const char *str;
 	int ret;
 
-	if (priv->child == NULL) {
+	if (priv->child == NULL || priv->len == 0) {
 		errno = EINVAL;
 		goto fail;
 	}

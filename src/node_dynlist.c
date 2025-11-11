@@ -44,6 +44,11 @@ static int ec_node_dynlist_parse(
 	size_t i;
 	int ret;
 
+	if (priv->get == NULL || priv->re_str == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
+
 	if (ec_strvec_len(strvec) == 0)
 		return EC_PARSE_NOMATCH;
 
@@ -101,6 +106,11 @@ static int ec_node_dynlist_complete(
 	const char *str;
 	size_t len;
 	size_t i;
+
+	if (priv->get == NULL || priv->re_str == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
 
 	if (ec_strvec_len(strvec) != 1)
 		return 0;

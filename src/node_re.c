@@ -35,6 +35,11 @@ static int ec_node_re_parse(
 
 	(void)pstate;
 
+	if (priv->re_str == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
+
 	if (ec_strvec_len(strvec) == 0)
 		return EC_PARSE_NOMATCH;
 

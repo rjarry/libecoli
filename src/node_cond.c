@@ -699,6 +699,11 @@ static int ec_node_cond_parse(
 	struct ec_pnode *child;
 	int ret, valid;
 
+	if (priv->child == NULL || priv->parsed_cond == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
+
 	ret = ec_parse_child(priv->child, pstate, strvec);
 	if (ret <= 0)
 		return ret;
@@ -724,6 +729,11 @@ static int ec_node_cond_complete(
 )
 {
 	struct ec_node_cond *priv = ec_node_priv(node);
+
+	if (priv->child == NULL || priv->parsed_cond == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
 
 	/* XXX eval condition */
 	/* XXX before or after completing ? configurable ? */

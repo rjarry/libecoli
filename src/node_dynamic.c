@@ -37,6 +37,11 @@ static int ec_node_dynamic_parse(
 	char key[64];
 	int ret = -1;
 
+	if (priv->build == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
+
 	child = priv->build(parse, priv->opaque);
 	if (child == NULL)
 		goto fail;
@@ -69,6 +74,11 @@ static int ec_node_dynamic_complete(
 	void (*node_free)(struct ec_node *) = ec_node_free;
 	char key[64];
 	int ret = -1;
+
+	if (priv->build == NULL) {
+		errno = ENOENT;
+		return -1;
+	}
 
 	parse = ec_comp_get_cur_pstate(comp);
 	child = priv->build(parse, priv->opaque);
