@@ -528,25 +528,45 @@ ec_config_list_validate(const struct ec_config_list *list, const struct ec_confi
 static int
 ec_config_dict_validate(const struct ec_dict *dict, const struct ec_config_schema *schema)
 {
-	const struct ec_config *value;
 	struct ec_dict_elt_ref *iter = NULL;
 	const struct ec_config_schema *sch;
+	const struct ec_config *value;
 	const char *key;
+	size_t i;
 
-	for (iter = ec_dict_iter(dict); iter != NULL; iter = ec_dict_iter_next(iter)) {
-		key = ec_dict_iter_get_key(iter);
-		value = ec_dict_iter_get_val(iter);
-		sch = ec_config_schema_lookup(schema, key);
-		if (sch == NULL || sch->type != value->type) {
+	for (i = 0; schema[i].type != EC_CONFIG_TYPE_NONE; i++) {
+		key = schema[i].key;
+		sch = &schema[i];
+
+		value = ec_dict_get(dict, key);
+		if (value == NULL && (sch->flags & EC_CONFIG_F_MANDATORY)) {
 			errno = EBADMSG;
 			goto fail;
 		}
+
+		if (value == NULL)
+			continue;
+
+		if (sch->type != value->type) {
+			errno = EBADMSG;
+			goto fail;
+		}
+
 		if (value->type == EC_CONFIG_TYPE_LIST) {
 			if (ec_config_list_validate(&value->list, sch->subschema) < 0)
 				goto fail;
 		} else if (value->type == EC_CONFIG_TYPE_DICT) {
 			if (ec_config_dict_validate(value->dict, sch->subschema) < 0)
 				goto fail;
+		}
+	}
+
+	for (iter = ec_dict_iter(dict); iter != NULL; iter = ec_dict_iter_next(iter)) {
+		key = ec_dict_iter_get_key(iter);
+		sch = ec_config_schema_lookup(schema, key);
+		if (sch == NULL) {
+			errno = EBADMSG;
+			goto fail;
 		}
 	}
 

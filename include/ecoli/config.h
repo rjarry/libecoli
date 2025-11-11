@@ -34,6 +34,13 @@ enum ec_config_type {
 };
 
 /**
+ *  Flags related to a configuration schema.
+ */
+enum ec_config_flags {
+	EC_CONFIG_F_MANDATORY = 1 << 0,
+};
+
+/**
  * Structure describing the format of a configuration value.
  *
  * This structure is used in a const array which is referenced by a
@@ -44,7 +51,8 @@ struct ec_config_schema {
 	const char *key; /**< The key string (NULL for list elts). */
 	const char *desc; /**< A description of the value. */
 	enum ec_config_type type; /**< Type of the value */
-	/* XXX flags: mandatory */
+	enum ec_config_flags flags; /**< Flags, see @ec_config_flags */
+
 	/* XXX default */
 
 	/** If type is dict or list, the schema of the dict or list
