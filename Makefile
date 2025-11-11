@@ -23,7 +23,7 @@ build: $(BUILDDIR)/build.ninja
 debug: BUILDTYPE = debug
 debug: SANITIZE = address
 debug: COVERAGE = true
-debug: all
+debug: build
 
 .PHONY: tests
 tests: $(BUILDDIR)/build.ninja
