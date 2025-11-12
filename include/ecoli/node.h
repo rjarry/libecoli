@@ -107,11 +107,6 @@ struct ec_config_schema;
 	}
 
 /**
- * A list of node types.
- */
-TAILQ_HEAD(ec_node_type_list, ec_node_type);
-
-/**
  * Function type used to configure a node.
  *
  * The function pointer is not called directly, the helper
@@ -318,6 +313,17 @@ struct ec_node_type {
 	ec_node_get_children_count_t get_children_count;
 	ec_node_get_child_t get_child; /**< Get the i-th child. */
 };
+
+/**
+ * A list of node types.
+ */
+TAILQ_HEAD(ec_node_type_list, ec_node_type);
+
+/**
+ * The list of registered node types. Must not be modified by user, except at initialization using
+ * the EC_NODE_TYPE_REGISTER() or EC_NODE_TYPE_REGISTER_OVERRIDE() macros.
+ */
+extern struct ec_node_type_list node_type_list;
 
 /**
  * Register a node type.

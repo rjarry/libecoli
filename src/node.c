@@ -48,7 +48,7 @@ struct ec_node {
 	} free; /**< Freeing state: used for loop detection */
 };
 
-static struct ec_node_type_list node_type_list = TAILQ_HEAD_INITIALIZER(node_type_list);
+struct ec_node_type_list node_type_list = TAILQ_HEAD_INITIALIZER(node_type_list);
 
 static int __ec_node_get_child(
 	const struct ec_node *node,
