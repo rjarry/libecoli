@@ -435,7 +435,6 @@ ec_config_list_cmp(const struct ec_config_list *list1, const struct ec_config_li
 	return 0;
 }
 
-/* XXX -> ec_dict_cmp() */
 static int ec_config_dict_cmp(const struct ec_dict *d1, const struct ec_dict *d2)
 {
 	const struct ec_config *v1, *v2;

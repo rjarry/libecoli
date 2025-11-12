@@ -53,8 +53,6 @@ struct ec_config_schema {
 	enum ec_config_type type; /**< Type of the value */
 	enum ec_config_flags flags; /**< Flags, see @ec_config_flags */
 
-	/* XXX default */
-
 	/** If type is dict or list, the schema of the dict or list
 	 * elements. Else must be NULL. */
 	const struct ec_config_schema *subschema;

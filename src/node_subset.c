@@ -281,7 +281,7 @@ int ec_node_subset_add(struct ec_node *node, struct ec_node *child)
 	struct ec_node_subset *priv = ec_node_priv(node);
 	struct ec_node **table;
 
-	assert(node != NULL); /* XXX specific assert for it, like in libyang */
+	assert(node != NULL);
 
 	if (child == NULL) {
 		errno = EINVAL;

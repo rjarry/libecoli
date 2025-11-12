@@ -165,8 +165,6 @@ int ec_node_or_add(struct ec_node *node, struct ec_node *child)
 
 	assert(node != NULL);
 
-	/* XXX factorize this code in a helper */
-
 	if (ec_node_check_type(node, &ec_node_or_type) < 0)
 		goto fail;
 

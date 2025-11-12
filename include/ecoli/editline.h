@@ -56,7 +56,7 @@ struct ec_editline_help {
  */
 enum ec_editline_init_flags {
 	/**
-	 * Ask the terminal to not send signals (STOP, SUSPEND, XXX). The
+	 * Ask the terminal to not send signals (STOP, SUSPEND, ...). The
 	 * `ctrl-c`, `ctrl-z` will be interpreted as standard characters. An
 	 * action can be associated to these characters with:
 	 *
