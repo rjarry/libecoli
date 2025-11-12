@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/queue.h>
 #include <syslog.h>
 
 #include <ecoli/log.h>
@@ -18,14 +19,11 @@ EC_LOG_TYPE_REGISTER(log);
 ec_log_t ec_log_fct = ec_log_default_cb;
 void *ec_log_opaque;
 
-struct ec_log_type {
-	char *name;
-	enum ec_log_level level;
-};
-
-static struct ec_log_type *log_types;
 static size_t log_types_len;
 static enum ec_log_level global_level = EC_LOG_WARNING;
+
+TAILQ_HEAD(ec_log_type_list, ec_log_type);
+static struct ec_log_type_list log_type_list = TAILQ_HEAD_INITIALIZER(log_type_list);
 
 int ec_log_level_set(enum ec_log_level level)
 {
@@ -69,50 +67,41 @@ int ec_log_fct_register(ec_log_t usr_log, void *opaque)
 
 int ec_log_lookup(const char *name)
 {
-	size_t i;
+	struct ec_log_type *type;
 
-	for (i = 0; i < log_types_len; i++) {
-		if (log_types[i].name == NULL)
-			continue;
-		if (strcmp(name, log_types[i].name) == 0)
-			return i;
+	TAILQ_FOREACH (type, &log_type_list, next) {
+		if (type->name != NULL && strcmp(name, type->name) == 0)
+			return type->id;
 	}
 
 	return -1;
 }
 
-int ec_log_type_register(const char *name)
+int ec_log_type_register(struct ec_log_type *type)
 {
-	struct ec_log_type *new_types;
-	char *copy;
 	int id;
 
-	id = ec_log_lookup(name);
+	id = ec_log_lookup(type->name);
 	if (id >= 0)
 		return id;
 
-	/* XXX not that good to allocate in constructor */
-	new_types = realloc(log_types, sizeof(*new_types) * (log_types_len + 1));
-	if (new_types == NULL)
-		return -1; /* errno is set */
-	log_types = new_types;
+	TAILQ_INSERT_HEAD(&log_type_list, type, next);
+	type->level = EC_LOG_DEBUG;
+	type->id = log_types_len++;
 
-	copy = strdup(name);
-	if (copy == NULL)
-		return -1; /* errno is set */
-
-	id = log_types_len++;
-	log_types[id].name = copy;
-	log_types[id].level = EC_LOG_DEBUG;
-
-	return id;
+	return type->id;
 }
 
-const char *ec_log_name(int type)
+const char *ec_log_name(int type_id)
 {
-	if (type < 0 || (unsigned int)type >= log_types_len)
-		return "unknown";
-	return log_types[type].name;
+	struct ec_log_type *type;
+
+	TAILQ_FOREACH (type, &log_type_list, next) {
+		if (type->id == type_id && type->name != NULL)
+			return type->name;
+	}
+
+	return "unknown";
 }
 
 int ec_vlog(int type, enum ec_log_level level, const char *format, va_list ap)
