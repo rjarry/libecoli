@@ -104,7 +104,7 @@ EC_TEST_MAIN()
 		goto fail;
 	}
 
-	ec_config_schema_dump(stdout, sch_baseconfig);
+	ec_config_schema_dump(stdout, sch_baseconfig, "test");
 
 	config = ec_config_dict();
 	if (config == NULL)

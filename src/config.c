@@ -179,35 +179,51 @@ int ec_config_schema_validate(const struct ec_config_schema *schema)
 
 static void __ec_config_schema_dump(FILE *out, const struct ec_config_schema *schema, size_t indent)
 {
+	const struct ec_config_schema *sch;
+	char *wrapped_desc = NULL;
+	char *desc = NULL;
 	size_t i;
 
 	for (i = 0; schema[i].type != EC_CONFIG_TYPE_NONE; i++) {
+		sch = &schema[i];
+
 		fprintf(out,
-			"%*s"
-			"%s%s%stype=%s desc='%s'\n",
+			"%*s%s %s%s {\n",
 			(int)indent * 4,
 			"",
-			schema[i].key ? "key=" : "",
-			schema[i].key ?: "",
-			schema[i].key ? " " : "",
-			ec_config_type_str(schema[i].type),
-			schema[i].desc);
-		if (schema[i].subschema == NULL)
-			continue;
-		__ec_config_schema_dump(out, schema[i].subschema, indent + 1);
+			ec_config_type_str(sch->type),
+			sch->key ?: "",
+			sch->key ? " " : "");
+		indent += 1;
+		wrapped_desc = NULL;
+		desc = ec_str_quote(sch->desc, 0);
+		if (desc != NULL)
+			wrapped_desc = ec_str_wrap(desc, 100, 12 + 4 * indent);
+		fprintf(out, "%*sdescription %s;\n", (int)indent * 4, "", wrapped_desc);
+		free(desc);
+		free(wrapped_desc);
+		if (sch->flags & EC_CONFIG_F_MANDATORY)
+			fprintf(out, "%*smandatory true;\n", (int)indent * 4, "");
+
+		if (sch->subschema != NULL) {
+			fprintf(out, "\n");
+			__ec_config_schema_dump(out, sch->subschema, indent);
+		}
+		indent -= 1;
+		fprintf(out, "%*s}\n", (int)indent * 4, "");
 	}
 }
 
-void ec_config_schema_dump(FILE *out, const struct ec_config_schema *schema)
+void ec_config_schema_dump(FILE *out, const struct ec_config_schema *schema, const char *name)
 {
-	fprintf(out, "------------------- schema dump:\n");
-
 	if (schema == NULL) {
 		fprintf(out, "no schema\n");
 		return;
 	}
 
-	__ec_config_schema_dump(out, schema, 0);
+	fprintf(out, "schema %s {\n", name ?: "unknown-name");
+	__ec_config_schema_dump(out, schema, 1);
+	fprintf(out, "}\n");
 }
 
 enum ec_config_type ec_config_get_type(const struct ec_config *config)

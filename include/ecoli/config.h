@@ -104,8 +104,10 @@ int ec_config_schema_validate(const struct ec_config_schema *schema);
  * @param schema
  *   Pointer to the first element of the schema array. The array
  *   must be terminated by a sentinel entry (type == EC_CONFIG_TYPE_NONE).
+ * @param name
+ *   The name of the schema.
  */
-void ec_config_schema_dump(FILE *out, const struct ec_config_schema *schema);
+void ec_config_schema_dump(FILE *out, const struct ec_config_schema *schema, const char *name);
 
 /**
  * Find a schema entry matching the key.
