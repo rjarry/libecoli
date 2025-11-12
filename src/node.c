@@ -499,3 +499,8 @@ void *ec_node_priv(const struct ec_node *node)
 		return NULL;
 	return (void *)(node + 1);
 }
+
+void ec_node_schema_dump(FILE *out, const struct ec_node *node)
+{
+	ec_config_schema_dump(out, node->type->schema, node->type->name);
+}

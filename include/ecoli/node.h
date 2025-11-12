@@ -589,4 +589,14 @@ const char *ec_node_get_type_name(const struct ec_node *node);
  */
 void *ec_node_priv(const struct ec_node *node);
 
+/**
+ * Dump the node configuration schema.
+ *
+ * @param out
+ *   The stream where the dump is sent.
+ * @param node
+ *   The grammar node.
+ */
+void ec_node_schema_dump(FILE *out, const struct ec_node *node);
+
 /** @} */
