@@ -477,17 +477,10 @@ size_t ec_node_get_children_count(const struct ec_node *node);
  *   The index of the child node, that must be lower than the number of children.
  * @param child
  *   The pointer where the child node pointer will be stored on success.
- * @param refs
- *   The pointer where the number of references owned by the node to the child is stored.
  * @return
  *   The number of children.
  */
-int ec_node_get_child(
-	const struct ec_node *node,
-	size_t i,
-	struct ec_node **child,
-	unsigned int *refs
-);
+int ec_node_get_child(const struct ec_node *node, size_t i, struct ec_node **child);
 
 /**
  * Get the type of a node.

@@ -710,7 +710,6 @@ ssize_t ec_editline_get_error_helps(
 	struct ec_node *cmdlist;
 	char *line_copy = NULL;
 	size_t parsed_vec_len;
-	unsigned int refs;
 	char *line = NULL;
 	int ret = 0;
 	size_t len;
@@ -738,7 +737,7 @@ ssize_t ec_editline_get_error_helps(
 	line_copy[strlen(line)] = ' ';
 	line_copy[strlen(line) + 1] = '\0';
 
-	if (ec_node_get_child(node, 0, &cmdlist, &refs) < 0)
+	if (ec_node_get_child(node, 0, &cmdlist) < 0)
 		goto fail;
 
 	line_vec = ec_strvec_sh_lex_str(line, EC_STRVEC_STRICT, NULL);

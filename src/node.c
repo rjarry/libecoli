@@ -50,6 +50,13 @@ struct ec_node {
 
 static struct ec_node_type_list node_type_list = TAILQ_HEAD_INITIALIZER(node_type_list);
 
+static int __ec_node_get_child(
+	const struct ec_node *node,
+	size_t i,
+	struct ec_node **child,
+	unsigned int *refs
+);
+
 const struct ec_node_type *ec_node_type_lookup(const char *name)
 {
 	struct ec_node_type *type;
@@ -175,7 +182,7 @@ static void count_references(struct ec_node *node, unsigned int refs)
 	node->free.state = EC_NODE_FREE_STATE_TRAVERSED;
 	n = ec_node_get_children_count(node);
 	for (i = 0; i < n; i++) {
-		ret = ec_node_get_child(node, i, &child, &refs);
+		ret = __ec_node_get_child(node, i, &child, &refs);
 		assert(ret == 0);
 		count_references(child, refs);
 	}
@@ -184,7 +191,6 @@ static void count_references(struct ec_node *node, unsigned int refs)
 static void mark_freeable(struct ec_node *node, enum ec_node_free_state mark)
 {
 	struct ec_node *child;
-	unsigned int refs;
 	size_t i, n;
 	int ret;
 
@@ -198,7 +204,7 @@ static void mark_freeable(struct ec_node *node, enum ec_node_free_state mark)
 
 	n = ec_node_get_children_count(node);
 	for (i = 0; i < n; i++) {
-		ret = ec_node_get_child(node, i, &child, &refs);
+		ret = ec_node_get_child(node, i, &child);
 		assert(ret == 0);
 		mark_freeable(child, mark);
 	}
@@ -207,7 +213,6 @@ static void mark_freeable(struct ec_node *node, enum ec_node_free_state mark)
 static void reset_mark(struct ec_node *node)
 {
 	struct ec_node *child;
-	unsigned int refs;
 	size_t i, n;
 	int ret;
 
@@ -219,7 +224,7 @@ static void reset_mark(struct ec_node *node)
 
 	n = ec_node_get_children_count(node);
 	for (i = 0; i < n; i++) {
-		ret = ec_node_get_child(node, i, &child, &refs);
+		ret = ec_node_get_child(node, i, &child);
 		assert(ret == 0);
 		reset_mark(child);
 	}
@@ -292,7 +297,7 @@ size_t ec_node_get_children_count(const struct ec_node *node)
 	return node->type->get_children_count(node);
 }
 
-int ec_node_get_child(
+static int __ec_node_get_child(
 	const struct ec_node *node,
 	size_t i,
 	struct ec_node **child,
@@ -304,6 +309,13 @@ int ec_node_get_child(
 	if (node->type->get_child == NULL)
 		return -1;
 	return node->type->get_child(node, i, child, refs);
+}
+
+int ec_node_get_child(const struct ec_node *node, size_t i, struct ec_node **child)
+{
+	unsigned int refs = 0;
+
+	return __ec_node_get_child(node, i, child, &refs);
 }
 
 int ec_node_set_config(struct ec_node *node, struct ec_config *config)
@@ -341,7 +353,6 @@ struct ec_node *ec_node_find(struct ec_node *node, const char *id)
 {
 	struct ec_node *child, *retnode;
 	const char *node_id = ec_node_id(node);
-	unsigned int refs;
 	size_t i, n;
 	int ret;
 
@@ -350,7 +361,7 @@ struct ec_node *ec_node_find(struct ec_node *node, const char *id)
 
 	n = ec_node_get_children_count(node);
 	for (i = 0; i < n; i++) {
-		ret = ec_node_get_child(node, i, &child, &refs);
+		ret = ec_node_get_child(node, i, &child);
 		assert(ret == 0);
 		retnode = ec_node_find(child, id);
 		if (retnode != NULL)
@@ -380,7 +391,6 @@ __ec_node_dump(FILE *out, const struct ec_node *node, size_t indent, struct ec_d
 {
 	const char *id, *typename;
 	struct ec_node *child;
-	unsigned int refs;
 	char buf[32];
 	size_t i, n;
 	char *desc;
@@ -421,7 +431,7 @@ __ec_node_dump(FILE *out, const struct ec_node *node, size_t indent, struct ec_d
 
 	n = ec_node_get_children_count(node);
 	for (i = 0; i < n; i++) {
-		ret = ec_node_get_child(node, i, &child, &refs);
+		ret = ec_node_get_child(node, i, &child);
 		assert(ret == 0);
 		__ec_node_dump(out, child, indent + 1, dict);
 	}

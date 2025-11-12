@@ -16,7 +16,6 @@ EC_TEST_MAIN()
 	struct ec_node *expr2 = NULL, *val = NULL, *op = NULL, *seq = NULL;
 	const struct ec_node_type *type;
 	struct ec_node *child;
-	unsigned int refs;
 	FILE *f = NULL;
 	char *buf = NULL;
 	char *desc = NULL;
@@ -59,19 +58,19 @@ EC_TEST_MAIN()
 	desc = NULL;
 
 	testres |= EC_TEST_CHECK(ec_node_get_children_count(node) == 2, "bad children count\n");
-	ret = ec_node_get_child(node, 0, &child, &refs);
+	ret = ec_node_get_child(node, 0, &child);
 	testres |= EC_TEST_CHECK(
 		ret == 0 && child != NULL && !strcmp(ec_node_type(child)->name, "str")
 			&& !strcmp(ec_node_id(child), "id_x"),
 		"bad child 0"
 	);
-	ret = ec_node_get_child(node, 1, &child, &refs);
+	ret = ec_node_get_child(node, 1, &child);
 	testres |= EC_TEST_CHECK(
 		ret == 0 && child != NULL && !strcmp(ec_node_type(child)->name, "str")
 			&& !strcmp(ec_node_id(child), "id_y"),
 		"bad child 1"
 	);
-	ret = ec_node_get_child(node, 2, &child, &refs);
+	ret = ec_node_get_child(node, 2, &child);
 	testres |= EC_TEST_CHECK(ret != 0, "ret should be != 0");
 	testres |= EC_TEST_CHECK(child == NULL, "child 2 should be NULL");
 
