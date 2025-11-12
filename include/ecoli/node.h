@@ -384,7 +384,7 @@ const char *ec_node_type_name(const struct ec_node_type *type);
  * @param type
  *   The type of the node to create.
  * @param id
- *   The node identifier.
+ *   The node identifier (must match [-_a-zA-Z][-_0-9a-zA-Z]).
  * @return
  *   The new node on success, or NULL on error.
  */
@@ -399,7 +399,7 @@ struct ec_node *ec_node_from_type(const struct ec_node_type *type, const char *i
  * @param typename
  *   The type name of the node to create.
  * @param id
- *   The node identifier.
+ *   The node identifier (must match [-_a-zA-Z][-_0-9a-zA-Z]).
  * @return
  *   The new node on success, or NULL on error.
  */
