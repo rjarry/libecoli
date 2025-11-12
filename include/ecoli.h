@@ -28,6 +28,7 @@
 #include <ecoli/editline.h>
 #include <ecoli/htable.h>
 #include <ecoli/init.h>
+#include <ecoli/interact.h>
 #include <ecoli/log.h>
 #include <ecoli/murmurhash.h>
 #include <ecoli/node.h>

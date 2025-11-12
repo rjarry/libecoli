@@ -25,18 +25,18 @@ static struct ec_node *with_help(struct ec_node *node, const char *help)
 {
 	if (node == NULL)
 		return NULL;
-	if (ec_editline_set_help(node, help) < 0) {
+	if (ec_interact_set_help(node, help) < 0) {
 		ec_node_free(node);
 		return NULL;
 	}
 	return node;
 }
 
-static struct ec_node *with_cb(struct ec_node *node, ec_editline_command_cb_t cb)
+static struct ec_node *with_cb(struct ec_node *node, ec_interact_command_cb_t cb)
 {
 	if (node == NULL)
 		return NULL;
-	if (ec_editline_set_callback(node, cb) < 0) {
+	if (ec_interact_set_callback(node, cb) < 0) {
 		ec_node_free(node);
 		return NULL;
 	}
@@ -47,7 +47,7 @@ static struct ec_node *with_desc(struct ec_node *node, const char *desc)
 {
 	if (node == NULL)
 		return NULL;
-	if (ec_editline_set_desc(node, desc) < 0) {
+	if (ec_interact_set_desc(node, desc) < 0) {
 		ec_node_free(node);
 		return NULL;
 	}
@@ -357,9 +357,9 @@ static struct ec_node *create_commands(void)
 
 	/* the exit command */
 	cmd = ec_node_str(EC_NO_ID, "exit");
-	if (ec_editline_set_callback(cmd, exit_cb) < 0)
+	if (ec_interact_set_callback(cmd, exit_cb) < 0)
 		goto fail;
-	if (ec_editline_set_help(cmd, "Exit program") < 0)
+	if (ec_interact_set_help(cmd, "Exit program") < 0)
 		goto fail;
 	if (ec_node_or_add(cmdlist, cmd) < 0)
 		goto fail;

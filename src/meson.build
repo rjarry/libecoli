@@ -8,6 +8,7 @@ libecoli_sources += files(
 	'dict.c',
 	'htable.c',
 	'init.c',
+	'interact.c',
 	'log.c',
 	'murmurhash.c',
 	'node.c',
