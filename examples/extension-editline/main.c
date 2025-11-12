@@ -77,12 +77,12 @@ static struct ec_node *create_commands(void)
 	);
 	if (cmd == NULL)
 		goto fail;
-	if (ec_editline_set_callback(cmd, convert_cb) < 0)
+	if (ec_interact_set_callback(cmd, convert_cb) < 0)
 		goto fail;
-	if (ec_editline_set_help(cmd, "Convert a tuple of boolean into its integer representation")
+	if (ec_interact_set_help(cmd, "Convert a tuple of boolean into its integer representation")
 	    < 0)
 		goto fail;
-	if (ec_editline_set_help(
+	if (ec_interact_set_help(
 		    ec_node_find(cmd, ID_BOOL_TUPLE),
 		    "A tuple of booleans. Example: \"(true,false,true)\""
 	    )
@@ -95,9 +95,9 @@ static struct ec_node *create_commands(void)
 
 	/* the exit command */
 	cmd = ec_node_str(EC_NO_ID, "exit");
-	if (ec_editline_set_callback(cmd, exit_cb) < 0)
+	if (ec_interact_set_callback(cmd, exit_cb) < 0)
 		goto fail;
-	if (ec_editline_set_help(cmd, "exit program") < 0)
+	if (ec_interact_set_help(cmd, "exit program") < 0)
 		goto fail;
 	ret = ec_node_or_add(cmdlist, cmd);
 	cmd = NULL; /* already freed, even on error */

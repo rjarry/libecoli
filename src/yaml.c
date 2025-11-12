@@ -13,6 +13,7 @@
 #include <ecoli/config.h>
 #include <ecoli/dict.h>
 #include <ecoli/editline.h>
+#include <ecoli/interact.h>
 #include <ecoli/node.h>
 #include <ecoli/yaml.h>
 
@@ -473,7 +474,7 @@ parse_ec_node(struct enode_table *table, const yaml_document_t *document, const 
 	config = NULL; /* freed */
 
 	if (help != NULL) {
-		if (ec_dict_set(ec_node_attrs(enode), EC_EDITLINE_HELP_ATTR, help, free) < 0) {
+		if (ec_dict_set(ec_node_attrs(enode), EC_INTERACT_HELP_ATTR, help, free) < 0) {
 			fprintf(stderr, "Failed to set help\n");
 			help = NULL;
 			goto fail;
