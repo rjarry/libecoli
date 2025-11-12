@@ -502,7 +502,8 @@ const struct ec_node_type *ec_node_type(const struct ec_node *node);
 /**
  * Get the attributes dict of the node.
  *
- * A user can add any attribute to a node.
+ * A user can add any attribute to a node. The attributes keys starting with an underscore are
+ * reserved.
  *
  * @param node
  *   The grammar node.

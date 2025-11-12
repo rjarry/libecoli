@@ -39,17 +39,17 @@ struct ec_editline_help {
 /**
  * The key of the node attribute storing the contextual help.
  */
-#define EC_EDITLINE_HELP_ATTR "help"
+#define EC_EDITLINE_HELP_ATTR "_help"
 
 /**
  * The key of the node attribute storing the command callback.
  */
-#define EC_EDITLINE_CB_ATTR "cb"
+#define EC_EDITLINE_CB_ATTR "_cb"
 
 /**
  * The key of the node attribute storing the short description.
  */
-#define EC_EDITLINE_DESC_ATTR "desc"
+#define EC_EDITLINE_DESC_ATTR "_desc"
 
 /**
  * Flags passed at ec_editline initialization.
@@ -167,7 +167,7 @@ EditLine *ec_editline_get_el(struct ec_editline *editline);
  *
  * This node must be an sh_lex node, with its grammar subtree. It will be used
  * for completion and contextual help. The contextual help description is
- * attached as a string to nodes using a node attribute "help".
+ * attached as a string to nodes using a node attribute EC_EDITLINE_HELP_ATTR.
  *
  * @param editline
  *   The pointer to the ec_editline structure.

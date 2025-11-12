@@ -914,7 +914,7 @@ static ec_editline_command_cb_t get_callback(struct ec_pnode *parse)
 	ec_editline_command_cb_t cb;
 
 	for (iter = parse; iter != NULL; iter = EC_PNODE_ITER_NEXT(parse, iter, 1)) {
-		cb = ec_dict_get(ec_node_attrs(ec_pnode_get_node(iter)), "cb");
+		cb = ec_dict_get(ec_node_attrs(ec_pnode_get_node(iter)), EC_EDITLINE_CB_ATTR);
 		if (cb != NULL)
 			return cb;
 	}
