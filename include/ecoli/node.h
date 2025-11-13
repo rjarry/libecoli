@@ -462,7 +462,7 @@ int ec_node_set_config(struct ec_node *node, struct ec_config *config);
  * @return
  *   The generic node configuration on success, or NULL on error.
  */
-const struct ec_config *ec_node_get_config(struct ec_node *node);
+const struct ec_config *ec_node_get_config(const struct ec_node *node);
 
 /**
  * Return the number of children for a node.

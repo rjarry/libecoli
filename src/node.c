@@ -344,7 +344,7 @@ fail:
 	return -1;
 }
 
-const struct ec_config *ec_node_get_config(struct ec_node *node)
+const struct ec_config *ec_node_get_config(const struct ec_node *node)
 {
 	return node->config;
 }
