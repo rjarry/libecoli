@@ -165,3 +165,112 @@ char *ec_str_quote(const char *str, char quote)
 
 	return out;
 }
+
+struct wrap_state {
+	size_t line_no; /* current line number */
+	size_t line_length; /* current line length */
+	size_t start_off; /* start offset for first line (implies padding for other lines) */
+	size_t max_cols; /* wrap text at max_cols */
+	bool new_para; /* true if a new paragraph is needed */
+	char *output; /* output buffer */
+	size_t len; /* current buffer length */
+	size_t size; /* current buffer size */
+};
+
+static int append_token(struct wrap_state *state, const char *token, size_t token_len)
+{
+	size_t written = state->line_length - state->start_off;
+	int ret;
+
+	/* allocate a larger buffer if needed (the "5" below is a margin above the worst case) */
+	if (state->output == NULL || state->size - state->len < token_len + state->start_off + 5) {
+		size_t new_size;
+		char *tmp;
+
+		new_size = state->size == 0 ? 256 : state->size * 2;
+		tmp = malloc(new_size);
+		if (tmp == NULL)
+			return -1;
+		memcpy(tmp, state->output, state->len);
+		free(state->output);
+		state->output = tmp;
+		state->size = new_size;
+	}
+
+	/* add new line */
+	if (state->line_length + token_len + 1 > state->max_cols && written > 0) {
+		ret = sprintf(
+			&state->output[state->len],
+			"\n%s%*s",
+			state->new_para ? "\n" : "",
+			(int)state->start_off,
+			""
+		);
+		if (ret < 0)
+			return -1;
+
+		state->len += ret;
+		state->line_length = state->start_off;
+		state->line_no++;
+		state->new_para = false;
+		written = 0;
+	}
+
+	/* add token */
+	ret = sprintf(
+		&state->output[state->len], "%s%.*s", written > 0 ? " " : "", (int)token_len, token
+	);
+	if (ret < 0)
+		return -1;
+
+	state->len += ret;
+	state->line_length += token_len + !!(written > 0);
+
+	return 0;
+}
+
+char *ec_str_wrap(const char *str, size_t max_cols, size_t start_off)
+{
+	struct wrap_state state = {
+		.line_no = 0,
+		.line_length = start_off,
+		.start_off = start_off,
+		.max_cols = max_cols,
+		.new_para = false,
+		.output = NULL,
+	};
+	const char *start;
+	size_t len;
+	size_t cr;
+
+	while (*str != '\0') {
+		cr = 0;
+
+		while (isspace(*str)) {
+			if (*str == '\n')
+				cr++;
+			str++;
+		}
+
+		if (state.line_no != 0 && cr >= 2)
+			state.new_para = true;
+
+		start = str;
+
+		while (!isspace(*str) && *str != '\0')
+			str++;
+		len = str - start;
+
+		if (len > 0 && append_token(&state, start, len) < 0)
+			goto fail;
+	}
+
+	if (state.output == NULL)
+		return strdup("");
+
+	return state.output;
+
+fail:
+	free(state.output);
+	return NULL;
+}

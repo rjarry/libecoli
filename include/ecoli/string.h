@@ -80,4 +80,18 @@ int ec_str_parse_ullint(
  */
 char *ec_str_quote(const char *str, char quote);
 
+/**
+ * Wrap a text to a maximum number of columns.
+ *
+ * @param str
+ *   The input text.
+ * @param max_cols
+ *   The maximum number of columns.
+ * @param start_off
+ *   The number of already consumed columns on the first line, filled with padding in other lines.
+ * @return
+ *   An allocated string containing the wrapped text. It must be freed by the user using free().
+ */
+char *ec_str_wrap(const char *str, size_t max_cols, size_t start_off);
+
 /** @} */

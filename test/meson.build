@@ -35,6 +35,7 @@ libecoli_tests = files(
 	'node_str.c',
 	'node_subset.c',
 	'parse.c',
+	'string.c',
 	'strvec.c',
 	'vec.c',
 )
