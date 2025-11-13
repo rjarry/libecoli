@@ -114,18 +114,42 @@ int ec_editline_print_helps(
 	size_t len
 )
 {
+	char *wrapped_help = NULL;
+	unsigned int width = 80, height = 25;
 	size_t i;
 	FILE *out;
 
 	if (el_get(editline->el, EL_GETFP, 1, &out))
 		return -1;
 
+	ec_editline_term_size(editline, &width, &height);
+	if (width > 100)
+		width = 100;
+	if (width < 50)
+		width = 50;
+
 	for (i = 0; i < len; i++) {
-		if (fprintf(out, "  %-20s %s\n", helps[i].desc, helps[i].help) < 0)
-			return -1;
+		wrapped_help = ec_str_wrap(helps[i].help, width, 23);
+		if (wrapped_help == NULL)
+			goto fail;
+		if (strlen(helps[i].desc) > 20) {
+			if (fprintf(out, "  %s\n", helps[i].desc) < 0)
+				goto fail;
+			if (fprintf(out, "  %-20s %s\n", "", wrapped_help) < 0)
+				goto fail;
+		} else {
+			if (fprintf(out, "  %-20s %s\n", helps[i].desc, wrapped_help) < 0)
+				goto fail;
+		}
+		free(wrapped_help);
+		wrapped_help = NULL;
 	}
 
 	return 0;
+
+fail:
+	free(wrapped_help);
+	return -1;
 }
 
 void ec_editline_free_helps(struct ec_editline_help *helps, size_t n)
