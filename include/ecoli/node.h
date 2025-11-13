@@ -109,11 +109,16 @@ struct ec_config_schema;
 /**
  * Function type used to configure a node.
  *
- * The function pointer is not called directly, the helper
- * ec_node_set_config() should be used instead.
+ * The function pointer is not called directly, the helper ec_node_set_config() should be used
+ * instead.
  *
- * The configuration passed to this function pointer is valid,
- * i.e. ec_config_validate() returned 0 on it.
+ * The configuration passed to this function pointer is valid, i.e. ec_config_validate() returned 0
+ * on it.
+ *
+ * This function provided by a node type is supposed to do additional checks to the configuration
+ * and store private, if needed. If it returns 0, ec_node_set_config() stores the generic
+ * configuration in the node. The function can just return 0 if nothing needs to be stored in
+ * private data.
  *
  * @param node
  *   The node to configure.
