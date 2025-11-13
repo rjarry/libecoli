@@ -163,6 +163,25 @@ void ec_editline_free(struct ec_editline *editline);
 EditLine *ec_editline_get_el(struct ec_editline *editline);
 
 /**
+ * Get terminal width and height.
+ *
+ * @param editline
+ *   The pointer to the ec_editline structure.
+ * @params width
+ *   The pointer where the number of columns is stored on success.
+ * @params height
+ *   The pointer where the number of rows is stored on success.
+ * @return
+ *   0 on success, or -1 on error (in this case the value pointed by width and height are not
+ *   modified).
+ */
+int ec_editline_term_size(
+	const struct ec_editline *editline,
+	unsigned int *width,
+	unsigned int *height
+);
+
+/**
  * Attach an ecoli node to the editline structure.
  *
  * This node must be an sh_lex node, with its grammar subtree. It will be used

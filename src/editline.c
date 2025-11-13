@@ -35,11 +35,30 @@ static int strcasecmp_cb(const void *p1, const void *p2)
 	return strcasecmp(*(char *const *)p1, *(char *const *)p2);
 }
 
+int ec_editline_term_size(
+	const struct ec_editline *editline,
+	unsigned int *width,
+	unsigned int *height
+)
+{
+	unsigned int _width, _height;
+
+	if (el_get(editline->el, EL_GETTC, "co", &_width, (void *)0))
+		return -1;
+	if (el_get(editline->el, EL_GETTC, "li", &_height, (void *)0))
+		return -1;
+
+	*width = _width;
+	*height = _height;
+
+	return 0;
+}
+
 /* Show the matches as a multi-columns list */
 int ec_editline_print_cols(struct ec_editline *editline, char const *const *matches, size_t n)
 {
 	size_t max_strlen = 0, len, i, j, ncols;
-	int width, height;
+	unsigned int width = 80, height = 25;
 	const char *space;
 	char **matches_copy = NULL;
 	FILE *f;
@@ -51,10 +70,7 @@ int ec_editline_print_cols(struct ec_editline *editline, char const *const *matc
 	if (n == 0)
 		return 0;
 
-	if (el_get(editline->el, EL_GETTC, "li", &height, (void *)0))
-		return -1;
-	if (el_get(editline->el, EL_GETTC, "co", &width, (void *)0))
-		return -1;
+	ec_editline_term_size(editline, &width, &height);
 
 	/* duplicate the matches table, and sort it */
 	matches_copy = calloc(n, sizeof(const char *));
