@@ -10,4 +10,5 @@ ecoli_extension_editline = executable(
 	'ecoli-extension-editline',
 	extension_editline_sources,
 	include_directories : inc,
-	link_with : libecoli)
+	link_with : libecoli,
+	dependencies: [edit_dep])

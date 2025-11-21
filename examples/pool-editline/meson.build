@@ -10,4 +10,5 @@ ecoli_pool_editline = executable(
 	'ecoli-pool-editline',
 	pool_editline_sources,
 	include_directories : inc,
-	link_with : libecoli)
+	link_with : libecoli,
+	dependencies: [edit_dep])
