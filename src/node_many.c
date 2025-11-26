@@ -57,8 +57,8 @@ static int ec_node_many_parse(
 		if (ret == EC_PARSE_NOMATCH)
 			break;
 
-		/* it matches an empty strvec, no need to continue */
-		if (ret == 0) {
+		/* it matches an empty strvec, break if priv->max == 0 to avoid an infinite loop */
+		if (ret == 0 && priv->max == 0) {
 			child_parse = ec_pnode_get_last_child(pstate);
 			ec_pnode_unlink_child(child_parse);
 			ec_pnode_free(child_parse);
