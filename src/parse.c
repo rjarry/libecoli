@@ -421,7 +421,7 @@ const struct ec_pnode *ec_pnode_find(const struct ec_pnode *root, const char *id
 	return ec_pnode_find_next(root, NULL, id, 1);
 }
 
-struct ec_dict *ec_pnode_get_attrs(struct ec_pnode *pnode)
+struct ec_dict *ec_pnode_get_attrs(const struct ec_pnode *pnode)
 {
 	if (pnode == NULL)
 		return NULL;
