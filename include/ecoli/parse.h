@@ -321,7 +321,7 @@ void ec_pnode_del_last_child(struct ec_pnode *pnode);
  * @return
  *   The dictionary containing the attributes.
  */
-struct ec_dict *ec_pnode_get_attrs(struct ec_pnode *pnode);
+struct ec_dict *ec_pnode_get_attrs(const struct ec_pnode *pnode);
 
 /**
  * Dump a parsing tree.
