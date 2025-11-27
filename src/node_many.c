@@ -80,87 +80,73 @@ fail:
 	return -1;
 }
 
-static int __ec_node_many_complete(
-	struct ec_node_many *priv,
-	unsigned int max,
-	struct ec_comp *comp,
-	const struct ec_strvec *strvec
-)
-{
-	struct ec_pnode *parse = ec_comp_get_cur_pstate(comp);
-	struct ec_strvec *childvec = NULL;
-	unsigned int i;
-	int ret;
-
-	/* first, try to complete with the child node */
-	ret = ec_complete_child(priv->child, comp, strvec);
-	if (ret < 0)
-		goto fail;
-
-	/* we're done, we reached the max number of nodes */
-	if (max == 1)
-		return 0;
-
-	/* if there is a maximum, decrease it before recursion */
-	if (max != 0)
-		max--;
-
-	/* then, if the node matches the beginning of the strvec, try to
-	 * complete the rest */
-	for (i = 0; i < ec_strvec_len(strvec); i++) {
-		childvec = ec_strvec_ndup(strvec, 0, i);
-		if (childvec == NULL)
-			goto fail;
-
-		ret = ec_parse_child(priv->child, parse, childvec);
-		if (ret < 0)
-			goto fail;
-
-		ec_strvec_free(childvec);
-		childvec = NULL;
-
-		if ((unsigned int)ret != i) {
-			if (ret != EC_PARSE_NOMATCH)
-				ec_pnode_del_last_child(parse);
-			continue;
-		}
-
-		childvec = ec_strvec_ndup(strvec, i, ec_strvec_len(strvec) - i);
-		if (childvec == NULL) {
-			ec_pnode_del_last_child(parse);
-			goto fail;
-		}
-
-		ret = __ec_node_many_complete(priv, max, comp, childvec);
-		ec_pnode_del_last_child(parse);
-		ec_strvec_free(childvec);
-		childvec = NULL;
-
-		if (ret < 0)
-			goto fail;
-	}
-
-	return 0;
-
-fail:
-	ec_strvec_free(childvec);
-	return -1;
-}
-
 static int ec_node_many_complete(
 	const struct ec_node *node,
 	struct ec_comp *comp,
 	const struct ec_strvec *strvec
 )
 {
+	struct ec_pnode *parse = ec_comp_get_cur_pstate(comp);
 	struct ec_node_many *priv = ec_node_priv(node);
+	struct ec_strvec *childvec = NULL;
+	struct ec_strvec *tmpvec = NULL;
+	unsigned int children = 0;
+	unsigned int i;
+	int ret;
 
 	if (priv->child == NULL) {
 		errno = ENOENT;
 		return -1;
 	}
 
-	return __ec_node_many_complete(priv, priv->max, comp, strvec);
+	childvec = ec_strvec_dup(strvec);
+	if (childvec == NULL)
+		goto fail;
+
+	while (1) {
+		ret = ec_complete_child(priv->child, comp, childvec);
+		if (ret < 0)
+			goto fail;
+
+		/* we're done, we reached the max number of nodes */
+		if (children + 1 == priv->max)
+			break;
+
+		ret = ec_parse_child(priv->child, parse, childvec);
+		if (ret < 0)
+			goto fail;
+
+		if (ret == EC_PARSE_NOMATCH)
+			break;
+
+		children++;
+
+		/* avoid infinite loop if parsing does not consume a token */
+		if (priv->max == 0 && ret == 0)
+			break;
+
+		tmpvec = ec_strvec_ndup(childvec, ret, ec_strvec_len(childvec) - ret);
+		if (tmpvec == NULL)
+			goto fail;
+
+		ec_strvec_free(childvec);
+		childvec = tmpvec;
+		tmpvec = NULL;
+	}
+	ret = 0;
+
+end:
+	for (i = 0; i < children; i++)
+		ec_pnode_del_last_child(parse);
+
+	ec_strvec_free(childvec);
+	ec_strvec_free(tmpvec);
+
+	return ret;
+
+fail:
+	ret = -1;
+	goto end;
 }
 
 static void ec_node_many_free_priv(struct ec_node *node)
