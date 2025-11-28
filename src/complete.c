@@ -701,30 +701,27 @@ __ec_comp_iter_next(const struct ec_comp *comp, struct ec_comp_item *item, enum 
 	struct ec_comp_group *cur_grp;
 	struct ec_comp_item *cur_match;
 
-	/* first call */
 	if (item == NULL) {
-		TAILQ_FOREACH (cur_grp, &comp->groups, next) {
-			TAILQ_FOREACH (cur_match, &cur_grp->items, next) {
-				if (cur_match->type & type)
-					return cur_match;
-			}
-		}
-		return NULL;
+		/* first call */
+		cur_grp = TAILQ_FIRST(&comp->groups);
+		cur_match = NULL;
+	} else {
+		cur_grp = item->grp;
+		cur_match = TAILQ_NEXT(item, next);
+		if (cur_match == NULL)
+			cur_grp = TAILQ_NEXT(cur_grp, next);
 	}
 
-	cur_grp = item->grp;
-	cur_match = TAILQ_NEXT(item, next);
-	while (cur_match != NULL) {
-		if (cur_match->type & type)
-			return cur_match;
-		cur_match = TAILQ_NEXT(cur_match, next);
-	}
-	cur_grp = TAILQ_NEXT(cur_grp, next);
 	while (cur_grp != NULL) {
-		TAILQ_FOREACH (cur_match, &cur_grp->items, next) {
+		if (cur_match == NULL)
+			cur_match = TAILQ_FIRST(&cur_grp->items);
+
+		while (cur_match != NULL) {
 			if (cur_match->type & type)
 				return cur_match;
+			cur_match = TAILQ_NEXT(cur_match, next);
 		}
+		cur_grp = TAILQ_NEXT(cur_grp, next);
 	}
 
 	return NULL;
