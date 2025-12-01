@@ -196,7 +196,7 @@ static void __ec_config_schema_dump(FILE *out, const struct ec_config_schema *sc
 			sch->key ? " " : "");
 		indent += 1;
 		wrapped_desc = NULL;
-		desc = ec_str_quote(sch->desc, 0);
+		desc = ec_str_quote(sch->desc, 0, true);
 		if (desc != NULL)
 			wrapped_desc = ec_str_wrap(desc, 100, 12 + 4 * indent);
 		fprintf(out, "%*sdescription %s;\n", (int)indent * 4, "", wrapped_desc);

@@ -75,10 +75,12 @@ int ec_str_parse_ullint(
  * @param quote
  *   The quote character to use: usually " or ' but can be anything. If 0,
  *   select between " or ' automatically.
+ * @param force
+ *   If true, always add quotes, else add them only if the string contains spaces or quotes.
  * @return
  *   An allocated string, that must be freed by the caller using free().
  */
-char *ec_str_quote(const char *str, char quote);
+char *ec_str_quote(const char *str, char quote, bool force);
 
 /**
  * Wrap a text to a maximum number of columns.

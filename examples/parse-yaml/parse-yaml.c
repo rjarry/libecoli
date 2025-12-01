@@ -107,18 +107,18 @@ static int __dump_as_shell(FILE *f, const struct ec_pnode *parse, size_t *seq)
 	(*seq)++;
 	cur_seq = *seq;
 
-	quoted = ec_str_quote(ec_node_id(node), '\'');
+	quoted = ec_str_quote(ec_node_id(node), '\'', true);
 	fprintf(f, "ec_node%zu_id=%s\n", cur_seq, quoted);
 	free(quoted);
 
-	quoted = ec_str_quote(ec_node_type_name(ec_node_type(node)), '\'');
+	quoted = ec_str_quote(ec_node_type_name(ec_node_type(node)), '\'', true);
 	fprintf(f, "ec_node%zu_type=%s\n", cur_seq, quoted);
 	free(quoted);
 
 	len = ec_strvec_len(ec_pnode_get_strvec(parse));
 	fprintf(f, "ec_node%zu_strvec_len=%zu\n", cur_seq, len);
 	for (i = 0; i < len; i++) {
-		quoted = ec_str_quote(ec_strvec_val(ec_pnode_get_strvec(parse), i), '\'');
+		quoted = ec_str_quote(ec_strvec_val(ec_pnode_get_strvec(parse), i), '\'', true);
 		fprintf(f, "ec_node%zu_str%zu=%s\n", cur_seq, i, quoted);
 		free(quoted);
 	}
