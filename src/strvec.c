@@ -521,7 +521,7 @@ void ec_strvec_dump(FILE *out, const struct ec_strvec *strvec)
 
 	fprintf(out, "strvec (len=%zu) [", strvec->len);
 	for (i = 0; i < ec_strvec_len(strvec); i++) {
-		char *elt = ec_str_quote(strvec->vec[i]->str, 0);
+		char *elt = ec_str_quote(strvec->vec[i]->str, 0, true);
 		const char *comma;
 
 		if (i == 0)
