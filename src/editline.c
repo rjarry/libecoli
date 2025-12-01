@@ -480,20 +480,6 @@ fail:
 	return NULL;
 }
 
-static ec_interact_command_cb_t get_callback(struct ec_pnode *parse)
-{
-	struct ec_pnode *iter;
-	ec_interact_command_cb_t cb;
-
-	for (iter = parse; iter != NULL; iter = EC_PNODE_ITER_NEXT(parse, iter, 1)) {
-		cb = ec_dict_get(ec_node_attrs(ec_pnode_get_node(iter)), EC_INTERACT_CB_ATTR);
-		if (cb != NULL)
-			return cb;
-	}
-
-	return NULL;
-}
-
 int ec_editline_interact(
 	struct ec_editline *editline,
 	ec_editline_check_exit_cb_t check_exit_cb,
@@ -566,7 +552,7 @@ int ec_editline_interact(
 			goto again;
 		}
 
-		cb = get_callback(parse);
+		cb = ec_interact_get_callback(parse);
 		if (cb == NULL) {
 			fprintf(err, "Callback function missing\n");
 			goto fail;

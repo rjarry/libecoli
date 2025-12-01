@@ -475,3 +475,17 @@ int ec_interact_set_desc(struct ec_node *node, const char *desc)
 
 	return ec_dict_set(ec_node_attrs(node), EC_INTERACT_DESC_ATTR, copy, free);
 }
+
+ec_interact_command_cb_t ec_interact_get_callback(struct ec_pnode *parse)
+{
+	struct ec_pnode *iter;
+	ec_interact_command_cb_t cb;
+
+	for (iter = parse; iter != NULL; iter = EC_PNODE_ITER_NEXT(parse, iter, 1)) {
+		cb = ec_dict_get(ec_node_attrs(ec_pnode_get_node(iter)), EC_INTERACT_CB_ATTR);
+		if (cb != NULL)
+			return cb;
+	}
+
+	return NULL;
+}

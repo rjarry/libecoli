@@ -246,4 +246,18 @@ int ec_interact_set_callback(struct ec_node *node, ec_interact_command_cb_t cb);
  */
 int ec_interact_set_desc(struct ec_node *node, const char *desc);
 
+/**
+ * Get callback attached to a parse tree.
+ *
+ * This function browses the parse tree and try to find an attribute EC_INTERACT_CB_ATTR attached to
+ * a grammar node referenced in the tree. Return the value of this attribute, which is a function
+ * pointer.
+ *
+ * @param parse
+ *   The parsed tree.
+ * @return
+ *   The function pointer used as command callback.
+ */
+ec_interact_command_cb_t ec_interact_get_callback(struct ec_pnode *parse);
+
 /** @} */
