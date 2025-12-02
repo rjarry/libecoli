@@ -377,6 +377,18 @@ const struct ec_pnode *ec_pnode_find_next(
 );
 
 /**
+ * Count node occurrences in a parse subtree.
+ *
+ * @param root
+ *   The node of the parsing tree where the search starts.
+ * @param id
+ *   The node identifier string to match.
+ * @return
+ *   The number of nodes matching the identifier.
+ */
+unsigned int ec_pnode_count(const struct ec_pnode *root, const char *id);
+
+/**
  * Iterate among parse tree
  *
  * Use it with:
