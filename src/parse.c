@@ -421,6 +421,22 @@ const struct ec_pnode *ec_pnode_find(const struct ec_pnode *root, const char *id
 	return ec_pnode_find_next(root, NULL, id, 1);
 }
 
+unsigned int ec_pnode_count(const struct ec_pnode *root, const char *id)
+{
+	const struct ec_pnode *iter;
+	unsigned int count = 0;
+
+	if (root == NULL)
+		return 0;
+
+	for (iter = root; iter != NULL; iter = EC_PNODE_ITER_NEXT(root, iter, 1)) {
+		if (iter->node != NULL && !strcmp(ec_node_id(iter->node), id))
+			count++;
+	}
+
+	return count;
+}
+
 struct ec_dict *ec_pnode_get_attrs(const struct ec_pnode *pnode)
 {
 	if (pnode == NULL)
