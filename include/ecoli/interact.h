@@ -16,6 +16,8 @@
 
 #include <histedit.h>
 
+#include "complete.h"
+
 struct ec_node;
 struct ec_pnode;
 struct ec_comp;
@@ -55,10 +57,16 @@ typedef int (*ec_interact_command_cb_t)(const struct ec_pnode *);
  *   The completions, as returned by ec_complete().
  * @param matches_out
  *   The pointer where the matches array will be returned.
+ * @param type_mask
+ *   The mask of completion types to return (ex: EC_COMP_FULL | EC_COMP_PARTIAL)
  * @return
  *   The size of the array on success (>= 0), or -1 on error.
  */
-ssize_t ec_interact_get_completions(const struct ec_comp *cmpl, char ***matches_out);
+ssize_t ec_interact_get_completions(
+	const struct ec_comp *cmpl,
+	char ***matches_out,
+	enum ec_comp_type type_mask
+);
 
 /**
  * Free the array of completion matches.
