@@ -131,13 +131,17 @@ void ec_interact_free_completions(char **matches, size_t len)
 	free(matches);
 }
 
-ssize_t ec_interact_get_completions(const struct ec_comp *cmpl, char ***matches_out)
+ssize_t ec_interact_get_completions(
+	const struct ec_comp *cmpl,
+	char ***matches_out,
+	enum ec_comp_type type_mask
+)
 {
 	struct ec_comp_item *item;
 	char **matches = NULL;
 	size_t count = 0;
 
-	EC_COMP_FOREACH (item, cmpl, EC_COMP_FULL | EC_COMP_PARTIAL) {
+	EC_COMP_FOREACH (item, cmpl, type_mask) {
 		char **tmp;
 
 		tmp = realloc(matches, (count + 1) * sizeof(char *));

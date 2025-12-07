@@ -378,7 +378,7 @@ int ec_editline_complete(EditLine *el, int c)
 		char **matches = NULL;
 		ssize_t count = 0;
 
-		count = ec_interact_get_completions(cmpl, &matches);
+		count = ec_interact_get_completions(cmpl, &matches, EC_COMP_FULL | EC_COMP_PARTIAL);
 		if (count < 0) {
 			fprintf(err, "completion failure: cannot get completions\n");
 			goto fail;
