@@ -492,6 +492,11 @@ const char *ec_comp_item_get_completion(const struct ec_comp_item *item)
 	return item->completion;
 }
 
+const char *ec_comp_item_get_current(const struct ec_comp_item *item)
+{
+	return item->current;
+}
+
 enum ec_comp_type ec_comp_item_get_type(const struct ec_comp_item *item)
 {
 	return item->type;

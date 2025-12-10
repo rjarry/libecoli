@@ -303,6 +303,16 @@ const char *ec_comp_item_get_display(const struct ec_comp_item *item);
 const char *ec_comp_item_get_completion(const struct ec_comp_item *item);
 
 /**
+ * Get the current string value (before completion) of a completion item.
+ *
+ * @param item
+ *   The completion item.
+ * @return
+ *   The current string of this item.
+ */
+const char *ec_comp_item_get_current(const struct ec_comp_item *item);
+
+/**
  * Get the group of a completion item.
  *
  * The completion group corresponds to the list of items that share
