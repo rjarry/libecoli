@@ -351,6 +351,10 @@ int ec_editline_complete(EditLine *el, int c)
 		size_t char_idx;
 
 		count = ec_interact_get_helps(editline->node, line, &helps);
+		if (count < 0) {
+			fprintf(err, "completion failure: failed to get helps\n");
+			goto fail;
+		}
 		fprintf(out, "\n");
 		if (count != 0 && ec_interact_print_helps(out, width, helps, count) < 0) {
 			fprintf(err, "completion failure: cannot show help\n");
@@ -363,6 +367,10 @@ int ec_editline_complete(EditLine *el, int c)
 			count = ec_interact_get_error_helps(
 				editline->node, line, &helps, &char_idx
 			);
+			if (count < 0) {
+				fprintf(err, "completion failure: failed to get error helps\n");
+				goto fail;
+			}
 			if (count != 0
 			    && ec_interact_print_error_helps(
 				       out, width, line, helps, count, char_idx
