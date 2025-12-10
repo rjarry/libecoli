@@ -248,7 +248,7 @@ struct ec_dict *ec_comp_get_attrs(const struct ec_comp *comp);
  *   The node issuing the completion item.
  * @param type
  *   The type of the item.
- * @param start
+ * @param current
  *   The incomplete string being completed.
  * @param full
  *   The string fully completed.
@@ -262,7 +262,7 @@ struct ec_comp_item *ec_comp_add_item(
 	struct ec_comp *comp,
 	const struct ec_node *node,
 	enum ec_comp_type type,
-	const char *start,
+	const char *current,
 	const char *full
 );
 

@@ -26,7 +26,7 @@ struct ec_comp_item {
 	TAILQ_ENTRY(ec_comp_item) next;
 	enum ec_comp_type type;
 	struct ec_comp_group *grp;
-	char *start; /**< The initial token */
+	char *current; /**< The initial token */
 	char *full; /**< The full token after completion */
 	char *completion; /**< Chars that are added, NULL if not applicable */
 	char *display; /**< What should be displayed by help/completers */
@@ -274,11 +274,11 @@ fail:
 }
 
 static struct ec_comp_item *
-ec_comp_item(enum ec_comp_type type, const char *start, const char *full)
+ec_comp_item(enum ec_comp_type type, const char *current, const char *full)
 {
 	struct ec_comp_item *item = NULL;
 	struct ec_dict *attrs = NULL;
-	char *comp_cp = NULL, *start_cp = NULL;
+	char *comp_cp = NULL, *current_cp = NULL;
 	char *full_cp = NULL, *display_cp = NULL;
 
 	if (type == EC_COMP_UNKNOWN && full != NULL) {
@@ -298,19 +298,19 @@ ec_comp_item(enum ec_comp_type type, const char *start, const char *full)
 	if (attrs == NULL)
 		goto fail;
 
-	if (start == NULL && full != NULL)
+	if (current == NULL && full != NULL)
 		goto fail;
-	if (start != NULL && full == NULL)
+	if (current != NULL && full == NULL)
 		goto fail;
 
-	if (start != NULL && full != NULL) {
-		if (!ec_str_startswith(full, start))
+	if (current != NULL && full != NULL) {
+		if (!ec_str_startswith(full, current))
 			goto fail;
 
-		start_cp = strdup(start);
-		if (start_cp == NULL)
+		current_cp = strdup(current);
+		if (current_cp == NULL)
 			goto fail;
-		comp_cp = strdup(&full[strlen(start)]);
+		comp_cp = strdup(&full[strlen(current)]);
 		if (comp_cp == NULL)
 			goto fail;
 		full_cp = strdup(full);
@@ -322,7 +322,7 @@ ec_comp_item(enum ec_comp_type type, const char *start, const char *full)
 	}
 
 	item->type = type;
-	item->start = start_cp;
+	item->current = current_cp;
 	item->full = full_cp;
 	item->completion = comp_cp;
 	item->display = display_cp;
@@ -333,7 +333,7 @@ ec_comp_item(enum ec_comp_type type, const char *start, const char *full)
 fail:
 	ec_dict_free(attrs);
 	free(comp_cp);
-	free(start_cp);
+	free(current_cp);
 	free(full_cp);
 	free(display_cp);
 	free(item);
@@ -513,7 +513,7 @@ static void ec_comp_item_free(struct ec_comp_item *item)
 		return;
 
 	free(item->full);
-	free(item->start);
+	free(item->current);
 	free(item->completion);
 	free(item->display);
 	ec_dict_free(item->attrs);
@@ -524,14 +524,14 @@ struct ec_comp_item *ec_comp_add_item(
 	struct ec_comp *comp,
 	const struct ec_node *node,
 	enum ec_comp_type type,
-	const char *start,
+	const char *current,
 	const char *full
 )
 {
 	struct ec_comp_item *item = NULL;
 	int ret;
 
-	item = ec_comp_item(type, start, full);
+	item = ec_comp_item(type, current, full);
 	if (item == NULL)
 		return NULL;
 
