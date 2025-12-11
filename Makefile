@@ -82,7 +82,7 @@ lint:
 	@echo '[comments]'
 	$Q $(c_src) | xargs devtools/check-comments
 	@echo '[codespell]'
-	$Q codespell *
+	$Q $(all_files) | xargs codespell
 
 .PHONY: format
 format:
