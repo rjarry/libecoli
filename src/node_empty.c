@@ -31,4 +31,9 @@ static struct ec_node_type ec_node_empty_type = {
 	.size = sizeof(struct ec_node_empty),
 };
 
+struct ec_node *ec_node_empty(const char *id)
+{
+	return ec_node_from_type(&ec_node_empty_type, id);
+}
+
 EC_NODE_TYPE_REGISTER(ec_node_empty_type);

@@ -44,9 +44,10 @@ int ec_test_check_parse(struct ec_node *tk, int expected, ...)
 	if (expected == match) {
 		ret = 0;
 	} else {
-		EC_LOG(
-			EC_LOG_ERR, "parse len (%d) does not match expected (%d)\n", match, expected
-		);
+		EC_LOG(EC_LOG_ERR,
+		       "returned parse len (%d) does not match expected (%d)\n",
+		       match,
+		       expected);
 	}
 
 	ec_pnode_free(p);
@@ -114,9 +115,9 @@ int ec_test_check_complete(struct ec_node *tk, enum ec_comp_type type, ...)
 	/* check if we have more completions (or less) than expected */
 	if (count != ec_comp_count(c, type)) {
 		EC_LOG(EC_LOG_ERR,
-		       "nb_completion (%zu) does not match (%zu)\n",
-		       count,
-		       ec_comp_count(c, type));
+		       "returned nb_completion (%zu) does not match expected (%zu)\n",
+		       ec_comp_count(c, type),
+		       count);
 		ec_comp_dump(stdout, c);
 		ret = -1;
 	}

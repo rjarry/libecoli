@@ -112,12 +112,21 @@ int ec_str_parse_ullint(
 	return 0;
 }
 
-char *ec_str_quote(const char *str, char quote)
+char *ec_str_quote(const char *str, char quote, bool force)
 {
 	size_t len = 3; /* start/end quotes + \0 */
 	const char *s;
 	char *out, *o;
 	char c;
+
+	if (!force) {
+		for (s = str; *s != '\0'; s++) {
+			if (isspace(*s) || !isprint(*s) || *s == '"' || *s == '\'' || *s == quote)
+				break;
+		}
+		if (*s == '\0')
+			return strdup(str);
+	}
 
 	if (quote == 0) {
 		if (strchr(str, '"') == NULL)

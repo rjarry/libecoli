@@ -109,9 +109,11 @@ struct ec_node *ec_node_any(const char *id, const char *attr)
 	if (config == NULL)
 		goto fail;
 
-	ret = ec_config_dict_set(config, "attr", ec_config_string(attr));
-	if (ret < 0)
-		goto fail;
+	if (attr != NULL) {
+		ret = ec_config_dict_set(config, "attr", ec_config_string(attr));
+		if (ret < 0)
+			goto fail;
+	}
 
 	ret = ec_node_set_config(node, config);
 	config = NULL;
