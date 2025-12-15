@@ -4,6 +4,7 @@
 
 #include <assert.h>
 #include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -333,6 +334,62 @@ fail:
 const struct ec_config *ec_node_get_config(const struct ec_node *node)
 {
 	return node->config;
+}
+
+struct ec_node_find_state {
+	const struct ec_node *prev;
+	const char *id;
+	bool found_prev;
+	struct ec_node *result;
+};
+
+/* Search for the next node with given ID in depth-first order */
+static void find_next_recursive(struct ec_node *node, struct ec_node_find_state *state)
+{
+	struct ec_node *child;
+	size_t i, n;
+	int ret;
+
+	if (state->result != NULL)
+		return;
+
+	if (state->found_prev) {
+		if (!strcmp(ec_node_id(node), state->id)) {
+			state->result = node;
+			return;
+		}
+	} else if (node == state->prev) {
+		state->found_prev = true;
+	}
+
+	n = ec_node_get_children_count(node);
+	for (i = 0; i < n && state->result == NULL; i++) {
+		ret = ec_node_get_child(node, i, &child);
+		assert(ret == 0);
+		find_next_recursive(child, state);
+	}
+}
+
+struct ec_node *ec_node_find_next(struct ec_node *root, const struct ec_node *prev, const char *id)
+{
+	struct ec_node_find_state state = {
+		.prev = prev,
+		.id = id,
+		.found_prev = (prev == NULL),
+		.result = NULL,
+	};
+
+	if (root == NULL || id == NULL) {
+		errno = EINVAL;
+		return NULL;
+	}
+
+	find_next_recursive(root, &state);
+
+	if (state.result == NULL)
+		errno = ENOENT;
+
+	return state.result;
 }
 
 struct ec_node *ec_node_find(struct ec_node *node, const char *id)

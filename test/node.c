@@ -86,6 +86,22 @@ EC_TEST_MAIN()
 	child = ec_node_find(node, "id_dezdex");
 	testres |= EC_TEST_CHECK(child == NULL, "child with wrong id should be NULL");
 
+	/* Test ec_node_find_next */
+	child = ec_node_find_next(node, NULL, "id_x");
+	testres |= EC_TEST_CHECK(
+		child != NULL && !strcmp(ec_node_id(child), "id_x"),
+		"ec_node_find_next should find id_x"
+	);
+
+	child = ec_node_find_next(node, child, "id_y");
+	testres |= EC_TEST_CHECK(
+		child != NULL && !strcmp(ec_node_id(child), "id_y"),
+		"ec_node_find_next should find id_y after id_x"
+	);
+
+	child = ec_node_find_next(node, child, "id_x");
+	testres |= EC_TEST_CHECK(child == NULL, "ec_node_find_next should not find id_x again");
+
 	ret = ec_dict_set(ec_node_attrs(node), "key", "val", NULL);
 	testres |= EC_TEST_CHECK(ret == 0, "cannot set node attribute\n");
 
