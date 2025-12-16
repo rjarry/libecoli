@@ -3,7 +3,6 @@
  */
 
 #include <assert.h>
-#include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -93,24 +92,11 @@ void ec_node_type_dump(FILE *out)
 struct ec_node *ec_node_from_type(const struct ec_node_type *type, const char *id)
 {
 	struct ec_node *node = NULL;
-	size_t i;
 
 	EC_LOG(EC_LOG_DEBUG, "create node type=%s id=%s\n", type->name, id);
 	if (id == NULL) {
 		errno = EINVAL;
 		goto fail;
-	}
-
-	/* check that id matches '[-_a-zA-Z][-_0-9a-zA-Z]*' */
-	if (!isupper(id[0]) && !islower(id[0]) && !strchr("-_", id[0])) {
-		errno = EINVAL;
-		goto fail;
-	}
-	for (i = 1; i < strlen(id); i++) {
-		if (!isupper(id[i]) && !islower(id[i]) && !isdigit(id[i]) && !strchr("-_", id[i])) {
-			errno = EINVAL;
-			goto fail;
-		}
 	}
 
 	node = calloc(1, sizeof(*node) + type->size);
