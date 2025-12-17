@@ -68,7 +68,7 @@ static int ec_node_file_parse(
  */
 static int split_path(const char *path, char **dname_p, char **bname_p)
 {
-	char *last_slash;
+	const char *last_slash;
 	size_t dirlen;
 	char *dname, *bname;
 
