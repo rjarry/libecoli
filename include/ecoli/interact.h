@@ -100,8 +100,9 @@ int ec_interact_print_cols(FILE *out, unsigned int width, char const *const *mat
  * @param cmpl
  *   The completion object containing all the completion items.
  * @return
- *   An allocated string to be appended to the current line (must be freed by
- *   the caller using free()). Return NULL on error.
+ *   An allocated string to be appended to the current line (must be freed by the caller using
+ *   free()). This string can be empty if there is no completion or if completions start with a
+ *   different letter. Return NULL on error.
  */
 char *ec_interact_append_chars(const struct ec_comp *cmpl);
 
