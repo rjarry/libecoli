@@ -182,6 +182,9 @@ char *ec_interact_append_chars(const struct ec_comp *cmpl)
 		}
 	}
 
+	if (ret == NULL)
+		ret = strdup("");
+
 	return ret;
 
 fail:
