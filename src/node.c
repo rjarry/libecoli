@@ -338,24 +338,21 @@ const struct ec_config *ec_node_get_config(const struct ec_node *node)
 
 struct ec_node *ec_node_find(struct ec_node *node, const char *id)
 {
-	struct ec_node *child, *retnode;
-	const char *node_id = ec_node_id(node);
-	size_t i, n;
-	int ret;
+	struct ec_node_iter *iter_root, *iter;
+	struct ec_node *iter_node;
 
-	if (id != NULL && node_id != NULL && !strcmp(node_id, id))
-		return node;
-
-	n = ec_node_get_children_count(node);
-	for (i = 0; i < n; i++) {
-		ret = ec_node_get_child(node, i, &child);
-		assert(ret == 0);
-		retnode = ec_node_find(child, id);
-		if (retnode != NULL)
-			return retnode;
+	iter_root = ec_node_iter(node);
+	for (iter = iter_root; iter != NULL; iter = ec_node_iter_next(iter_root, iter, true)) {
+		iter_node = ec_node_iter_get_node(iter);
+		if (!strcmp(ec_node_id(iter_node), id))
+			break;
 	}
+	ec_node_iter_free(iter_root);
 
-	return NULL;
+	if (iter == NULL)
+		return NULL;
+
+	return iter_node;
 }
 
 TAILQ_HEAD(ec_node_iter_list, ec_node_iter);

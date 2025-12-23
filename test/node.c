@@ -143,6 +143,9 @@ EC_TEST_MAIN()
 	count = test_iter(expr);
 	testres |= EC_TEST_CHECK(count == 5, "invalid node count (%u instead if %u)", count, 5);
 
+	child = ec_node_find(expr, "id_dezdex");
+	testres |= EC_TEST_CHECK(child == NULL, "child with wrong id should be NULL");
+
 	testres |= EC_TEST_CHECK_PARSE(expr, 1, "1");
 	testres |= EC_TEST_CHECK_PARSE(expr, 3, "!", "!", "1");
 	testres |= EC_TEST_CHECK_PARSE(expr, -1, "!", "!", "!");
