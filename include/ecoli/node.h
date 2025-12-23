@@ -61,6 +61,9 @@
 /** Grammar tree node. */
 struct ec_node;
 
+/** An iterator on a grammar tree */
+struct ec_node_iter;
+
 struct ec_pnode;
 struct ec_comp;
 struct ec_strvec;
@@ -581,6 +584,83 @@ struct ec_node *ec_node_find(struct ec_node *node, const char *id);
  *   The next node matching the identifier, or NULL if not found.
  */
 struct ec_node *ec_node_find_next(struct ec_node *root, const struct ec_node *prev, const char *id);
+
+/**
+ * Create an iterator on a grammar tree.
+ *
+ * A grammar tree is actually not really a tree, it is an oriented graph where loop can exist. For
+ * this reason, it is not possible to iterate the grammar graph without storing somewhere the list
+ * of browsed nodes in order to break loops.
+ *
+ * Another property of grammar graphs is that the same node can appear several times at different
+ * places in the graph, having a different parent. These kind of nodes will be iterated only once.
+ *
+ * The typical use is:
+ *
+ *	struct ec_node_iter *iter_root, *iter;
+ *	iter_root = ec_node_iter(node);
+ *	if (iter_root == NULL)
+ *		goto fail;
+ *	for (iter = iter_root; iter != NULL; iter = ec_node_iter_next(iter_root, iter, true)) {
+ *		do_something_with(ec_node_iter_get_node(iter));
+ *	}
+ *	ec_node_iter_free(iter_root);
+ *
+ * Technically, this function builds a tree from the the grammar graph. Each node of this tree
+ * references a node of the grammar graph.
+ *
+ * @param node
+ *   The grammar graph to iterate
+ * @return
+ *   The grammar graph iterator on success, that must be freed using ec_node_iter_free(). Return
+ *   NULL on error.
+ */
+struct ec_node_iter *ec_node_iter(struct ec_node *node);
+
+/**
+ * Iterate to the next node.
+ *
+ * See @ec_node_iter().
+ *
+ * @param root
+ *   The iterator returned by ec_node_iter().
+ * @param iter
+ *   The current node in the iterator.
+ * @param iter_children
+ *   True to iterate the children of "iter", false to skip them.
+ * @return
+ *   The next node of the iterator, or NULL if iteration is finished.
+ */
+struct ec_node_iter *
+ec_node_iter_next(struct ec_node_iter *root, struct ec_node_iter *iter, bool iter_children);
+
+/**
+ * Free a grammar graph iterator.
+ *
+ * @param iter
+ *   The iterator returned by ec_node_iter() to free.
+ */
+void ec_node_iter_free(struct ec_node_iter *iter);
+
+/**
+ * Get the grammar node referenced by the iterator node.
+ *
+ * @param iter
+ *   The iterator node.
+ * @return
+ *   The associated grammar node.
+ */
+struct ec_node *ec_node_iter_get_node(struct ec_node_iter *iter);
+
+/**
+ * Get the parent of an iterator node.
+ *
+ * @param iter
+ *   The iterator node.
+ * @return
+ *   The parent of the iterator node in the iterator tree. Return NULL if it's the root.
+ */
+struct ec_node_iter *ec_node_iter_get_parent(struct ec_node_iter *iter);
 
 /**
  * Check the type of a node.

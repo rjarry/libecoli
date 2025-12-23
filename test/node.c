@@ -10,12 +10,27 @@
 
 #include "test.h"
 
+static unsigned int test_iter(struct ec_node *node)
+{
+	struct ec_node_iter *iter_root, *iter;
+	unsigned int count = 0;
+
+	iter_root = ec_node_iter(node);
+	for (iter = iter_root; iter != NULL; iter = ec_node_iter_next(iter_root, iter, true)) {
+		count++;
+	}
+	ec_node_iter_free(iter_root);
+
+	return count;
+}
+
 EC_TEST_MAIN()
 {
 	struct ec_node *node = NULL, *expr = NULL;
 	struct ec_node *expr2 = NULL, *val = NULL, *op = NULL, *seq = NULL;
 	const struct ec_node_type *type;
 	struct ec_node *child;
+	unsigned int count;
 	FILE *f = NULL;
 	char *buf = NULL;
 	char *desc = NULL;
@@ -83,6 +98,10 @@ EC_TEST_MAIN()
 	);
 	free(desc);
 	desc = NULL;
+
+	count = test_iter(node);
+	testres |= EC_TEST_CHECK(count == 3, "invalid node count (%u instead if %u)", count, 3);
+
 	child = ec_node_find(node, "id_dezdex");
 	testres |= EC_TEST_CHECK(child == NULL, "child with wrong id should be NULL");
 
@@ -137,6 +156,9 @@ EC_TEST_MAIN()
 	ec_node_free(val);
 	val = NULL;
 
+	count = test_iter(expr);
+	testres |= EC_TEST_CHECK(count == 5, "invalid node count (%u instead if %u)", count, 5);
+
 	testres |= EC_TEST_CHECK_PARSE(expr, 1, "1");
 	testres |= EC_TEST_CHECK_PARSE(expr, 3, "!", "!", "1");
 	testres |= EC_TEST_CHECK_PARSE(expr, -1, "!", "!", "!");
@@ -163,6 +185,9 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK_PARSE(expr, 1, "1");
 	testres |= EC_TEST_CHECK_PARSE(expr, 3, "!", "!", "1");
 	testres |= EC_TEST_CHECK_PARSE(expr, -1, "!", "!", "!");
+
+	count = test_iter(expr);
+	testres |= EC_TEST_CHECK(count == 5, "invalid node count (%u instead if %u)", count, 5);
 
 	ec_node_free(expr2);
 	expr2 = NULL;

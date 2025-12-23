@@ -11,6 +11,7 @@
 
 #include <ecoli/config.h>
 #include <ecoli/dict.h>
+#include <ecoli/htable.h>
 #include <ecoli/log.h>
 #include <ecoli/node.h>
 #include <ecoli/node_int.h>
@@ -412,6 +413,127 @@ struct ec_node *ec_node_find(struct ec_node *node, const char *id)
 	}
 
 	return NULL;
+}
+
+TAILQ_HEAD(ec_node_iter_list, ec_node_iter);
+
+struct ec_node_iter {
+	TAILQ_ENTRY(ec_node_iter) next;
+	struct ec_node_iter_list children;
+	struct ec_node *node;
+	struct ec_node_iter *parent;
+};
+
+void ec_node_iter_free(struct ec_node_iter *iter)
+{
+	struct ec_node_iter *child = NULL;
+
+	if (iter == NULL)
+		return;
+
+	while (!TAILQ_EMPTY(&iter->children)) {
+		child = TAILQ_FIRST(&iter->children);
+		TAILQ_REMOVE(&iter->children, child, next);
+		child->parent = NULL;
+		ec_node_iter_free(child);
+	}
+	free(iter);
+}
+
+struct ec_node_iter *
+ec_node_iter_next(struct ec_node_iter *root, struct ec_node_iter *iter, bool iter_children)
+{
+	struct ec_node_iter *child, *parent, *next;
+
+	if (iter_children) {
+		child = TAILQ_FIRST(&iter->children);
+		if (child != NULL)
+			return child;
+	}
+	parent = iter->parent;
+	while (parent != NULL && iter != root) {
+		next = TAILQ_NEXT(iter, next);
+		if (next != NULL)
+			return next;
+		iter = parent;
+		parent = iter->parent;
+	}
+	return NULL;
+}
+
+static int __ec_node_iter(struct ec_node_iter *iter, struct ec_htable *seen_nodes)
+{
+	struct ec_node_iter *child = NULL;
+	struct ec_node *child_node;
+	size_t n, i;
+	int ret;
+
+	n = ec_node_get_children_count(iter->node);
+	for (i = 0; i < n; i++) {
+		ret = ec_node_get_child(iter->node, i, &child_node);
+		assert(ret == 0);
+		if (ec_htable_has_key(seen_nodes, child_node, sizeof(*child_node)))
+			continue;
+
+		if (ec_htable_set(seen_nodes, child_node, sizeof(*child_node), NULL, NULL) < 0)
+			return -1;
+
+		child = calloc(1, sizeof(*child));
+		if (child == NULL)
+			return -1;
+
+		TAILQ_INSERT_TAIL(&iter->children, child, next);
+		child->parent = iter;
+		child->node = child_node;
+		TAILQ_INIT(&child->children);
+
+		if (__ec_node_iter(child, seen_nodes) < 0)
+			return -1;
+	}
+
+	return 0;
+}
+
+struct ec_node_iter *ec_node_iter(struct ec_node *node)
+{
+	struct ec_htable *seen_nodes = NULL;
+	struct ec_node_iter *iter = NULL;
+
+	seen_nodes = ec_htable();
+	if (seen_nodes == NULL)
+		goto fail;
+
+	iter = calloc(1, sizeof(*iter));
+	if (iter == NULL)
+		goto fail;
+	TAILQ_INIT(&iter->children);
+	iter->node = node;
+
+	if (__ec_node_iter(iter, seen_nodes) < 0)
+		goto fail;
+
+	ec_htable_free(seen_nodes);
+
+	return iter;
+
+fail:
+	ec_htable_free(seen_nodes);
+	ec_node_iter_free(iter);
+	return NULL;
+}
+
+struct ec_node *ec_node_iter_get_node(struct ec_node_iter *iter)
+{
+	if (iter == NULL)
+		return NULL;
+	return iter->node;
+}
+
+struct ec_node_iter *ec_node_iter_get_parent(struct ec_node_iter *iter)
+{
+	if (iter == NULL)
+		return NULL;
+	return iter->parent;
 }
 
 const struct ec_node_type *ec_node_type(const struct ec_node *node)
