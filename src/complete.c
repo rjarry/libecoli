@@ -413,8 +413,6 @@ fail:
 static int
 ec_comp_item_add(struct ec_comp *comp, const struct ec_node *node, struct ec_comp_item *item)
 {
-	struct ec_comp_item *i;
-
 	if (comp == NULL || item == NULL) {
 		errno = EINVAL;
 		return -1;
@@ -436,42 +434,17 @@ ec_comp_item_add(struct ec_comp *comp, const struct ec_node *node, struct ec_com
 	}
 
 	if (comp->cur_group == NULL) {
-		struct ec_comp_group *grp, *g;
+		struct ec_comp_group *grp;
 
 		grp = ec_comp_group(comp, node, comp->cur_pstate);
 		if (grp == NULL)
 			return -1;
-
-		TAILQ_FOREACH (g, &comp->groups, next) {
-			i = TAILQ_FIRST(&g->items);
-			if (i == NULL)
-				continue;
-			if (i->full != NULL && item->full != NULL
-			    && strcmp(i->full, item->full) > 0)
-				break;
-			if (i->completion != NULL && item->completion != NULL
-			    && strcmp(i->completion, item->completion) > 0)
-				break;
-		}
-		if (g == NULL)
-			TAILQ_INSERT_TAIL(&comp->groups, grp, next);
-		else
-			TAILQ_INSERT_BEFORE(g, grp, next);
-
+		TAILQ_INSERT_TAIL(&comp->groups, grp, next);
 		comp->cur_group = grp;
 	}
 
 	comp->count++;
-
-	TAILQ_FOREACH (i, &comp->cur_group->items, next) {
-		if (i->full != NULL && item->full != NULL && strcmp(i->full, item->full) > 0)
-			break;
-	}
-	if (i == NULL)
-		TAILQ_INSERT_TAIL(&comp->cur_group->items, item, next);
-	else
-		TAILQ_INSERT_BEFORE(i, item, next);
-
+	TAILQ_INSERT_TAIL(&comp->cur_group->items, item, next);
 	item->grp = comp->cur_group;
 
 	return 0;
