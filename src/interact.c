@@ -20,33 +20,19 @@
 #include <ecoli/strvec.h>
 #include <ecoli/utils.h>
 
-/* used by qsort below */
-static int strcasecmp_cb(const void *p1, const void *p2)
-{
-	return strcasecmp(*(char *const *)p1, *(char *const *)p2);
-}
-
 /* Show the matches as a multi-columns list */
 int ec_interact_print_cols(FILE *out, unsigned int width, char const *const *matches, size_t n)
 {
 	size_t max_strlen = 0, len, i, j, ncols;
 	const char *space;
-	char **matches_copy = NULL;
 
 	fprintf(out, "\n");
 	if (n == 0)
 		return 0;
 
-	/* duplicate the matches table, and sort it */
-	matches_copy = calloc(n, sizeof(const char *));
-	if (matches_copy == NULL)
-		return -1;
-	memcpy(matches_copy, matches, sizeof(const char *) * n);
-	qsort(matches_copy, n, sizeof(char *), strcasecmp_cb);
-
 	/* get max string length */
 	for (i = 0; i < n; i++) {
-		len = strlen(matches_copy[i]);
+		len = strlen(matches[i]);
 		if (len > max_strlen)
 			max_strlen = len;
 	}
@@ -68,7 +54,6 @@ int ec_interact_print_cols(FILE *out, unsigned int width, char const *const *mat
 		fprintf(out, "\n");
 	}
 
-	free(matches_copy);
 	return 0;
 }
 
@@ -131,6 +116,14 @@ void ec_interact_free_completions(char **matches, size_t len)
 	free(matches);
 }
 
+static int comp_strcasecmp_cb(const void *p1, const void *p2)
+{
+	char *const *s1 = p1;
+	char *const *s2 = p2;
+
+	return strcasecmp(*s1, *s2);
+}
+
 ssize_t ec_interact_get_completions(
 	const struct ec_comp *cmpl,
 	char ***matches_out,
@@ -153,6 +146,8 @@ ssize_t ec_interact_get_completions(
 			goto fail;
 		count++;
 	}
+
+	qsort(matches, count, sizeof(char *), comp_strcasecmp_cb);
 
 	*matches_out = matches;
 	return count;
@@ -191,6 +186,14 @@ fail:
 	free(ret);
 
 	return NULL;
+}
+
+static int help_strcasecmp_cb(const void *p1, const void *p2)
+{
+	const struct ec_interact_help *h1 = p1;
+	const struct ec_interact_help *h2 = p2;
+
+	return strcasecmp(h1->desc, h2->desc);
 }
 
 /* this function builds the help string */
@@ -306,6 +309,8 @@ ssize_t ec_interact_get_helps(
 	}
 
 	ec_comp_free(cmpl);
+
+	qsort(helps, count, sizeof(struct ec_interact_help), help_strcasecmp_cb);
 	*helps_out = helps;
 
 	return count;
