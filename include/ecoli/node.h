@@ -566,26 +566,6 @@ void ec_node_dump(FILE *out, const struct ec_node *node);
 struct ec_node *ec_node_find(struct ec_node *node, const char *id);
 
 /**
- * Find the next node matching an identifier.
- *
- * After a successful call to ec_node_find() or ec_node_find_next(), it is possible to get the next
- * node that has the specified id. There are 2 options:
- *
- * - continue the depth-first search where it was interrupted.
- * - skip the children of the current node, and continue the depth-first search.
- *
- * @param root
- *   The root of the search, as passed to ec_node_find().
- * @param prev
- *   The node returned by the previous search.
- * @param id
- *   The node identifier string to match.
- * @return
- *   The next node matching the identifier, or NULL if not found.
- */
-struct ec_node *ec_node_find_next(struct ec_node *root, const struct ec_node *prev, const char *id);
-
-/**
  * Create an iterator on a grammar tree.
  *
  * A grammar tree is actually not really a tree, it is an oriented graph where loop can exist. For
