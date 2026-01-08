@@ -88,15 +88,15 @@ static struct ec_node *create_commands(void)
 	);
 	if (cmd == NULL)
 		goto fail;
-	if (ec_editline_set_callback(cmd, hello_cb) < 0)
+	if (ec_interact_set_callback(cmd, hello_cb) < 0)
 		goto fail;
-	if (ec_editline_set_help(cmd, "say hello to someone several times") < 0)
+	if (ec_interact_set_help(cmd, "say hello to someone several times") < 0)
 		goto fail;
-	if (ec_editline_set_help(ec_node_find(cmd, ID_JOHN), "specific help for john") < 0)
+	if (ec_interact_set_help(ec_node_find(cmd, ID_JOHN), "specific help for john") < 0)
 		goto fail;
-	if (ec_editline_set_help(ec_node_find(cmd, ID_NAME), "the name of the person") < 0)
+	if (ec_interact_set_help(ec_node_find(cmd, ID_NAME), "the name of the person") < 0)
 		goto fail;
-	if (ec_editline_set_help(ec_node_find(cmd, ID_COUNT), "an integer (0-10)") < 0)
+	if (ec_interact_set_help(ec_node_find(cmd, ID_COUNT), "an integer (0-10)") < 0)
 		goto fail;
 	ret = ec_node_or_add(cmdlist, cmd);
 	cmd = NULL; /* already freed, even on error */
@@ -105,9 +105,9 @@ static struct ec_node *create_commands(void)
 
 	/* the bye command */
 	cmd = EC_NODE_SEQ(EC_NO_ID, ec_node_str(EC_NO_ID, "bye"), ec_node_clone(names));
-	if (ec_editline_set_callback(cmd, bye_cb) < 0)
+	if (ec_interact_set_callback(cmd, bye_cb) < 0)
 		goto fail;
-	if (ec_editline_set_help(cmd, "say bye") < 0)
+	if (ec_interact_set_help(cmd, "say bye") < 0)
 		goto fail;
 	ret = ec_node_or_add(cmdlist, cmd);
 	cmd = NULL; /* already freed, even on error */
@@ -116,9 +116,9 @@ static struct ec_node *create_commands(void)
 
 	/* the exit command */
 	cmd = ec_node_str(EC_NO_ID, "exit");
-	if (ec_editline_set_callback(cmd, exit_cb) < 0)
+	if (ec_interact_set_callback(cmd, exit_cb) < 0)
 		goto fail;
-	if (ec_editline_set_help(cmd, "exit program") < 0)
+	if (ec_interact_set_help(cmd, "exit program") < 0)
 		goto fail;
 	ret = ec_node_or_add(cmdlist, cmd);
 	cmd = NULL; /* already freed, even on error */
