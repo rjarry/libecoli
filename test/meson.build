@@ -38,6 +38,7 @@ libecoli_tests = files(
 	'string.c',
 	'strvec.c',
 	'vec.c',
+	'yaml.c',
 )
 
 fs = import('fs')

@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <stdio.h>
+
 struct ec_node;
 
 /**
@@ -23,5 +25,22 @@ struct ec_node;
  *   The returned node must be freed by the caller with ec_node_free().
  */
 struct ec_node *ec_yaml_import(const char *filename);
+
+/**
+ * Export an ec_node tree to a YAML formatted stream.
+ *
+ * This function traverses the ec_node tree and outputs a YAML representation
+ * of the grammar structure including node type, id, help, attributes and
+ * configuration. The output can be used as a template or documentation
+ * for grammar definitions.
+ *
+ * @param out
+ *   The output stream where YAML content will be written.
+ * @param node
+ *   The root node of the grammar tree to export.
+ * @return
+ *   0 on success, or -1 on error (errno is set).
+ */
+int ec_yaml_export(FILE *out, const struct ec_node *node);
 
 /** @} */

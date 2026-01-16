@@ -14,6 +14,7 @@
 #include <ecoli/dict.h>
 #include <ecoli/editline.h>
 #include <ecoli/node.h>
+#include <ecoli/string.h>
 #include <ecoli/yaml.h>
 
 /* associate a yaml node to a ecoli node */
@@ -575,4 +576,207 @@ fail_no_doc:
 	ec_node_free(root);
 
 	return NULL;
+}
+
+/* export functions */
+
+static void export_indent(FILE *out, int indent)
+{
+	int i;
+
+	for (i = 0; i < indent; i++)
+		fprintf(out, "  ");
+}
+
+static int export_ec_config(
+	FILE *out,
+	const struct ec_config *config,
+	const struct ec_config_schema *schema,
+	int indent
+);
+
+static int export_ec_config_list(
+	FILE *out,
+	const struct ec_config *config,
+	const struct ec_config_schema *schema,
+	int indent
+)
+{
+	const struct ec_config_schema *subschema;
+	struct ec_config *item;
+
+	subschema = ec_config_schema_sub(schema);
+	if (subschema == NULL)
+		return -1;
+
+	for (item = ec_config_list_first((struct ec_config *)config); item != NULL;
+	     item = ec_config_list_next((struct ec_config *)config, item)) {
+		export_indent(out, indent);
+		fprintf(out, "- ");
+		if (export_ec_config(out, item, subschema, indent + 1) < 0)
+			return -1;
+	}
+	return 0;
+}
+
+static int export_ec_config_dict(
+	FILE *out,
+	const struct ec_config *config,
+	const struct ec_config_schema *schema,
+	int indent
+)
+{
+	const struct ec_config_schema *schema_elt;
+	struct ec_dict_elt_ref *iter;
+	const char *key;
+	struct ec_config *value;
+
+	for (iter = ec_dict_iter(config->dict); iter != NULL; iter = ec_dict_iter_next(iter)) {
+		key = ec_dict_iter_get_key(iter);
+		value = ec_dict_iter_get_val(iter);
+		if (key == NULL || value == NULL)
+			continue;
+		schema_elt = ec_config_schema_lookup(schema, key);
+		if (schema_elt == NULL)
+			continue;
+		export_indent(out, indent);
+		fprintf(out, "%s: ", key);
+		if (export_ec_config(out, value, schema_elt, indent + 1) < 0)
+			return -1;
+	}
+	return 0;
+}
+
+static int export_ec_node(FILE *out, const struct ec_node *node, int indent);
+
+static int export_ec_config(
+	FILE *out,
+	const struct ec_config *config,
+	const struct ec_config_schema *schema,
+	int indent
+)
+{
+	enum ec_config_type type;
+
+	if (config == NULL || schema == NULL)
+		return 0;
+
+	type = ec_config_get_type(config);
+
+	switch (type) {
+	case EC_CONFIG_TYPE_BOOL:
+		fprintf(out, "%s\n", config->boolean ? "true" : "false");
+		break;
+	case EC_CONFIG_TYPE_INT64:
+		fprintf(out, "%ld\n", (long)config->i64);
+		break;
+	case EC_CONFIG_TYPE_UINT64:
+		fprintf(out, "%lu\n", (unsigned long)config->u64);
+		break;
+	case EC_CONFIG_TYPE_STRING: {
+		char *quoted = ec_str_quote(config->string ? config->string : "", '"', true);
+		if (quoted == NULL)
+			return -1;
+		fprintf(out, "%s\n", quoted);
+		free(quoted);
+		break;
+	}
+	case EC_CONFIG_TYPE_NODE:
+		fprintf(out, "\n");
+		if (export_ec_node(out, config->node, indent) < 0)
+			return -1;
+		break;
+	case EC_CONFIG_TYPE_LIST:
+		fprintf(out, "\n");
+		if (export_ec_config_list(out, config, schema, indent) < 0)
+			return -1;
+		break;
+	case EC_CONFIG_TYPE_DICT:
+		fprintf(out, "\n");
+		if (export_ec_config_dict(out, config, schema, indent) < 0)
+			return -1;
+		break;
+	default:
+		return -1;
+	}
+	return 0;
+}
+
+static int export_ec_node(FILE *out, const struct ec_node *node, int indent)
+{
+	const struct ec_node_type *type;
+	const struct ec_config_schema *schema;
+	const struct ec_config *config;
+	const struct ec_dict *attrs;
+	const char *type_name, *node_id, *help;
+	char *quoted;
+
+	if (node == NULL)
+		return 0;
+
+	type = ec_node_type(node);
+	type_name = ec_node_get_type_name(node);
+	node_id = ec_node_id(node);
+	config = ec_node_get_config(node);
+	attrs = ec_node_attrs(node);
+	schema = ec_node_type_schema(type);
+
+	/* type */
+	export_indent(out, indent);
+	fprintf(out, "type: %s\n", type_name);
+
+	/* id (if set) */
+	if (node_id != NULL && node_id[0] != '\0') {
+		quoted = ec_str_quote(node_id, '"', false);
+		if (quoted == NULL)
+			return -1;
+		export_indent(out, indent);
+		fprintf(out, "id: %s\n", quoted);
+		free(quoted);
+	}
+
+	/* help (special attribute) */
+	if (attrs != NULL) {
+		help = ec_dict_get(attrs, EC_EDITLINE_HELP_ATTR);
+		if (help != NULL) {
+			quoted = ec_str_quote(help, '"', true);
+			if (quoted == NULL)
+				return -1;
+			export_indent(out, indent);
+			fprintf(out, "help: %s\n", quoted);
+			free(quoted);
+		}
+	}
+
+	/* config (node-type specific configuration) */
+	if (config != NULL && schema != NULL) {
+		const struct ec_config_schema *elt;
+		for (elt = schema; elt->type != EC_CONFIG_TYPE_NONE; elt++) {
+			struct ec_config *val;
+			if (elt->key == NULL)
+				continue;
+			/* skip reserved keys (type, id, help, attrs) */
+			if (ec_config_key_is_reserved(elt->key))
+				continue;
+			val = ec_config_dict_get(config, elt->key);
+			if (val == NULL)
+				continue;
+			export_indent(out, indent);
+			fprintf(out, "%s: ", elt->key);
+			if (export_ec_config(out, val, elt, indent + 1) < 0)
+				return -1;
+		}
+	}
+
+	return 0;
+}
+
+int ec_yaml_export(FILE *out, const struct ec_node *node)
+{
+	if (out == NULL || node == NULL) {
+		errno = EINVAL;
+		return -1;
+	}
+
+	return export_ec_node(out, node, 0);
 }
