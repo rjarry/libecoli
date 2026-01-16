@@ -50,7 +50,7 @@ int ec_test_check_parse(struct ec_node *node, int expected, ...);
 	({                                                                                         \
 		int ret_ = 0;                                                                      \
 		if (!(cond)) {                                                                     \
-			EC_TEST_ERR("(" #cond ") is wrong. " fmt##__VA_ARGS__);                    \
+			EC_TEST_ERR("(" #cond ") is wrong. " fmt, ##__VA_ARGS__);                  \
 			ret_ = -1;                                                                 \
 		}                                                                                  \
 		ret_;                                                                              \
