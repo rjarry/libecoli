@@ -51,4 +51,5 @@ endif
 
 subdir('test')
 subdir('examples')
+subdir('tools')
 subdir('doc')

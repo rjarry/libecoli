@@ -89,6 +89,11 @@ format:
 	@echo '[clang-format]'
 	$Q $(c_src) | $(CLANG_FORMAT) --files=/proc/self/fd/0 -i --verbose
 
+.PHONY: node-schema
+node-schema: build
+	@echo '[node-schema]'
+	$Q $(BUILDDIR)/tools/gen-node-schema/ecoli-gen-node-schema > doc/node-schema.md
+
 REVISION_RANGE ?= @{u}..
 
 .PHONY: check-commits
@@ -122,6 +127,7 @@ help:
 	$Q echo '  clean         Clean build directory'
 	$Q echo '  tag-release   Create a release commit and signed tag'
 	$Q echo '  tests         Run unit tests'
+	$Q echo '  node-schema   Generate and update node schema API doc'
 	$Q echo '  coverage      Run unit tests and generate test coverage report'
 	$Q echo
 	$Q echo 'Environment variables:'
