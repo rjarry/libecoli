@@ -37,21 +37,6 @@ struct ec_editline_help {
 #define EC_EDITLINE_HISTORY_SIZE 128
 
 /**
- * The key of the node attribute storing the contextual help.
- */
-#define EC_EDITLINE_HELP_ATTR "_help"
-
-/**
- * The key of the node attribute storing the command callback.
- */
-#define EC_EDITLINE_CB_ATTR "_cb"
-
-/**
- * The key of the node attribute storing the short description.
- */
-#define EC_EDITLINE_DESC_ATTR "_desc"
-
-/**
  * Flags passed at ec_editline initialization.
  */
 enum ec_editline_init_flags {
@@ -102,11 +87,6 @@ enum ec_editline_init_flags {
 	 */
 	EC_EDITLINE_DEFAULT_SIGHANDLER = 1 << 3,
 };
-
-/**
- * Type of callback invoked by ec_editline_interact() on successful parsing.
- */
-typedef int (*ec_editline_command_cb_t)(const struct ec_pnode *);
 
 /**
  * Type of callback invoked by ec_editline_interact() to check if loop should
@@ -227,143 +207,6 @@ const struct ec_node *ec_editline_get_node(const struct ec_editline *editline);
 int ec_editline_set_history(struct ec_editline *editline, size_t hist_size, const char *hist_file);
 
 /**
- * Get completion matches as an array of strings.
- *
- * @param cmpl
- *   The completions, as returned by ec_complete().
- * @param matches_out
- *   The pointer where the matches array will be returned.
- * @return
- *   The size of the array on success (>= 0), or -1 on error.
- */
-ssize_t ec_editline_get_completions(const struct ec_comp *cmpl, char ***matches_out);
-
-/**
- * Free the array of completion matches.
- *
- * @param matches
- *   The array of matches.
- * @param n
- *   The size of the array.
- */
-void ec_editline_free_completions(char **matches, size_t n);
-
-/**
- * Print completion matches as columns.
- *
- * @param editline
- *   The pointer to the ec_editline structure.
- * @param matches
- *   The string array of matches to display.
- * @param n
- *   The size of the array.
- * @return
- *   0 on success, or -1 on error.
- */
-int ec_editline_print_cols(struct ec_editline *editline, char const *const *matches, size_t n);
-
-/**
- * Get characters to append to the line for a completion.
- *
- * @param cmpl
- *   The completion object containing all the completion items.
- * @return
- *   An allocated string to be appended to the current line (must be freed by
- *   the caller using free()). Return NULL on error.
- */
-char *ec_editline_append_chars(const struct ec_comp *cmpl);
-
-/**
- * Get contextual helps from the current line.
- *
- * @param editline
- *   The pointer to the ec_editline structure.
- * @param line
- *   The line from which to get help. If NULL, use the line currently being
- *   edited.
- * @param helps_out
- *   The pointer where the helps array will be returned.
- * @return
- *   The size of the array on success (>= 0), or -1 on error.
- */
-ssize_t ec_editline_get_helps(
-	const struct ec_editline *editline,
-	const char *line,
-	struct ec_editline_help **helps_out
-);
-
-/**
- * Print helps generated with ec_editline_get_helps().
- *
- * @param editline
- *   The pointer to the ec_editline structure.
- * @param helps
- *   The helps array returned by ec_editline_get_helps().
- * @param n
- *   The array size returned by ec_editline_get_helps().
- * @return
- *   0 on success, or -1 on error.
- */
-int ec_editline_print_helps(
-	const struct ec_editline *editline,
-	const struct ec_editline_help *helps,
-	size_t n
-);
-
-/**
- * Free contextual helps.
- *
- * Free helps generated with ec_editline_get_helps() or
- * ec_editline_get_error_helps().
- *
- * @param helps
- *   The helps array.
- * @param n
- *   The array size.
- */
-void ec_editline_free_helps(struct ec_editline_help *helps, size_t n);
-
-/**
- * Get suggestions after a parsing error for the current line.
- *
- * @param editline
- *   The pointer to the ec_editline structure.
- * @param helps_out
- *   The pointer where the helps array will be returned.
- * @param char_idx
- *   A pointer to an integer where the index of the error in the line string
- *   is returned.
- * @return
- *   The size of the array on success (>= 0), or -1 on error.
- */
-ssize_t ec_editline_get_error_helps(
-	const struct ec_editline *editline,
-	struct ec_editline_help **helps_out,
-	size_t *char_idx
-);
-
-/**
- * Print suggestions generated with ec_editline_get_error_helps().
- *
- * @param editline
- *   The pointer to the ec_editline structure.
- * @param helps
- *   The helps array returned by ec_editline_get_helps().
- * @param n
- *   The array size returned by ec_editline_get_helps().
- * @param char_idx
- *   The index of the error in the line string.
- * @return
- *   0 on success, or -1 on error.
- */
-int ec_editline_print_error_helps(
-	const struct ec_editline *editline,
-	const struct ec_editline_help *helps,
-	size_t n,
-	size_t char_idx
-);
-
-/**
  * Set editline prompt.
  *
  * @param editline
@@ -445,7 +288,8 @@ struct ec_pnode *ec_editline_parse(struct ec_editline *editline);
  *
  * Run the command line, parsing and completing commands on demand. When a
  * command is parsed successfully, invoke the callback attached to the grammar
- * node as a "cb" attribute. The callback type must be ec_editline_command_cb_t.
+ * node as a EC_INTERACT_CB_ATTR attribute. The callback type must be
+ * @ec_interact_command_cb_t.
  *
  * On EOF, or if check_exit() function returns true, exit from the interactive
  * loop.
@@ -461,7 +305,7 @@ struct ec_pnode *ec_editline_parse(struct ec_editline *editline);
  *   0 if interactive loop exited gracefully, or -1 on error.
  */
 int ec_editline_interact(
-	struct ec_editline *el,
+	struct ec_editline *editline,
 	ec_editline_check_exit_cb_t check_exit_cb,
 	void *opaque
 );
@@ -480,53 +324,5 @@ int ec_editline_interact(
  *   An editline error code: CC_REFRESH, CC_ERROR, or CC_REDISPLAY.
  */
 int ec_editline_complete(EditLine *el, int c);
-
-/**
- * Set help on a grammar node.
- *
- * Set the node attribute EC_EDITLINE_HELP_ATTR on the node, containing the
- * given string. It is used by the ec_editline functions to display contextual
- * helps on completion or parsing error.
- *
- * @param node
- *   The ec_node on which to add the help attribute.
- * @param help
- *   The help string.
- * @return
- *   0 on success, or -1 on error.
- */
-int ec_editline_set_help(struct ec_node *node, const char *help);
-
-/**
- * Set callback function on a grammar node.
- *
- * Set the node attribute EC_EDITLINE_CB_ATTR on the node, containing the
- * pointer to a function invoked on successful parsing.
- *
- * @param node
- *   The ec_node on which to add the callback attribute.
- * @param cb
- *   The callback function pointer.
- * @return
- *   0 on success, or -1 on error.
- */
-int ec_editline_set_callback(struct ec_node *node, ec_editline_command_cb_t cb);
-
-/**
- * Set short description of a grammar node.
- *
- * Set the node attribute EC_EDITLINE_DESC_ATTR on the node, containing the
- * given string. It is used by the ec_editline functions to display the short
- * description of the contextual help, overriding the value provided by
- * ec_node_desc().
- *
- * @param node
- *   The ec_node on which to add the desc attribute.
- * @param desc
- *   The short description string.
- * @return
- *   0 on success, or -1 on error.
- */
-int ec_editline_set_desc(struct ec_node *node, const char *desc);
 
 /** @} */
