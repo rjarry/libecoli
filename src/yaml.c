@@ -12,7 +12,6 @@
 
 #include <ecoli/config.h>
 #include <ecoli/dict.h>
-#include <ecoli/editline.h>
 #include <ecoli/interact.h>
 #include <ecoli/node.h>
 #include <ecoli/string.h>
@@ -738,7 +737,7 @@ static int export_ec_node(FILE *out, const struct ec_node *node, int indent)
 
 	/* help (special attribute) */
 	if (attrs != NULL) {
-		help = ec_dict_get(attrs, EC_EDITLINE_HELP_ATTR);
+		help = ec_dict_get(attrs, EC_INTERACT_HELP_ATTR);
 		if (help != NULL) {
 			quoted = ec_str_quote(help, '"', true);
 			if (quoted == NULL)
