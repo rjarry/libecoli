@@ -38,8 +38,11 @@ libecoli_tests = files(
 	'string.c',
 	'strvec.c',
 	'vec.c',
-	'yaml.c',
 )
+
+if yaml_dep.found()
+	libecoli_tests += files('yaml.c')
+endif
 
 fs = import('fs')
 foreach t : libecoli_tests
