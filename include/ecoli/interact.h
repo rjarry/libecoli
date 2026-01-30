@@ -14,8 +14,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include <histedit.h>
-
 #include "complete.h"
 
 struct ec_node;

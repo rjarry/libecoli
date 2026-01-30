@@ -9,8 +9,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <histedit.h>
-
 #include <ecoli/complete.h>
 #include <ecoli/dict.h>
 #include <ecoli/interact.h>
