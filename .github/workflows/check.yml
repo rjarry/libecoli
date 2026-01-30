@@ -52,6 +52,26 @@ jobs:
         if: ${{ ! github.event.pull_request.commits }}
       - run: make coverage
 
+  docs:
+    if: ${{ github.actor != 'grout-bot' && github.event.pull_request.commits }}
+    runs-on: ubuntu-24.04
+    env:
+      MESON_EXTRA_OPTS: --auto-features=disabled -Ddoc=enabled
+    steps:
+      - name: install system dependencies
+        run: |
+          set -xe
+          sudo apt-get update -qy
+          sudo apt-get install -qy --no-install-recommends \
+            doxygen gcc graphviz libc-dev meson ninja-build pkg-config
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # force fetch all history
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
+      - run: git config --global --add safe.directory $PWD
+      - run: git rebase -x "git --no-pager log --oneline -1 && make" "HEAD~${{ github.event.pull_request.commits }}"
+
   lint:
     if: ${{ github.actor != 'grout-bot' }}
     runs-on: ubuntu-latest
