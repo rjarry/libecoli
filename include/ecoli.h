@@ -2,23 +2,6 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
-/**
- * @anchor main_page
- * @mainpage About Libecoli
- *
- * This is the C API documentation of libecoli. This library provides
- * helpers to build interactive command line interfaces.
- *
- * To create a command line parser, one should create a grammar graph
- * which is composed of @ref ecoli_nodes. Then an input can be
- * parsed or completed, respectively using the @ref ecoli_parse and @ref
- * ecoli_complete APIs.
- *
- * The library also provides helpers to create a an interactive command
- * line based on @ref ecoli_editline library, and a @ref ecoli_yaml parser for
- * grammar graphs.
- */
-
 #pragma once
 
 #include <ecoli/assert.h>
