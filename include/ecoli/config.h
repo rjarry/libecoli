@@ -44,17 +44,17 @@ enum ec_config_flags {
  * Structure describing the format of a configuration value.
  *
  * This structure is used in a const array which is referenced by a
- * struct ec_config. Each entry of the array represents a key/value
+ * struct ::ec_config. Each entry of the array represents a key/value
  * storage of the configuration dictionary.
  */
 struct ec_config_schema {
 	const char *key; /**< The key string (NULL for list elts). */
 	const char *desc; /**< A description of the value. */
 	enum ec_config_type type; /**< Type of the value */
-	enum ec_config_flags flags; /**< Flags, see @ec_config_flags */
+	enum ec_config_flags flags; /**< Flags, see ::ec_config_flags. */
 
 	/** If type is dict or list, the schema of the dict or list
-	 * elements. Else must be NULL. */
+	 * elements. Otherwise, must be NULL. */
 	const struct ec_config_schema *subschema;
 };
 
@@ -64,7 +64,7 @@ TAILQ_HEAD(ec_config_list, ec_config);
  * Structure storing the configuration data.
  */
 struct ec_config {
-	/** type of value stored in the union */
+	/** Type of value stored in the union. */
 	enum ec_config_type type;
 
 	union {
@@ -83,14 +83,12 @@ struct ec_config {
 	TAILQ_ENTRY(ec_config) next;
 };
 
-/* schema */
-
 /**
  * Validate a configuration schema array.
  *
  * @param schema
  *   Pointer to the first element of the schema array. The array
- *   must be terminated by a sentinel entry (type == EC_CONFIG_TYPE_NONE).
+ *   must be terminated by a sentinel entry `{.type = EC_CONFIG_TYPE_NONE}`.
  * @return
  *   0 if the schema is valid, or -1 on error (errno is set).
  */
@@ -103,7 +101,7 @@ int ec_config_schema_validate(const struct ec_config_schema *schema);
  *   Output stream on which the dump will be sent.
  * @param schema
  *   Pointer to the first element of the schema array. The array
- *   must be terminated by a sentinel entry (type == EC_CONFIG_TYPE_NONE).
+ *   must be terminated by a sentinel entry `{.type == EC_CONFIG_TYPE_NONE}`.
  * @param name
  *   The name of the schema.
  */
@@ -112,11 +110,11 @@ void ec_config_schema_dump(FILE *out, const struct ec_config_schema *schema, con
 /**
  * Find a schema entry matching the key.
  *
- * Browse the schema array and lookup for the given key.
+ * Browse the schema array and look up the given key.
  *
  * @param schema
  *   Pointer to the first element of the schema array. The array
- *   must be terminated by a sentinel entry (type == EC_CONFIG_TYPE_NONE).
+ *   must be terminated by a sentinel entry `{.type == EC_CONFIG_TYPE_NONE}`.
  * @param key
  *   Schema key name.
  * @return
@@ -161,8 +159,6 @@ bool ec_config_key_is_reserved(const char *name);
  * Array of reserved key names.
  */
 extern const char *ec_config_reserved_keys[];
-
-/* config */
 
 /**
  * Get the type of the configuration.
@@ -298,10 +294,10 @@ ssize_t ec_config_count(const struct ec_config *config);
 int ec_config_validate(const struct ec_config *dict, const struct ec_config_schema *schema);
 
 /**
- * Set a value in a hash table configuration
+ * Set a value in a hash table configuration.
  *
  * @param dict
- *   A hash table configuration to validate.
+ *   The hash table configuration.
  * @param key
  *   The key to update.
  * @param value
@@ -318,7 +314,7 @@ int ec_config_dict_set(struct ec_config *dict, const char *key, struct ec_config
  * The element is freed and should not be accessed.
  *
  * @param dict
- *   A hash table configuration to validate.
+ *   The hash table configuration.
  * @param key
  *   The key of the configuration to delete.
  * @return
@@ -341,11 +337,13 @@ struct ec_config *ec_config_dict_get(const struct ec_config *config, const char 
  *
  * Example of use:
  *
- * for (config = ec_config_list_iter(list);
+ * @code{.c}
+ * for (config = ec_config_list_first(list);
  *	config != NULL;
  *	config = ec_config_list_next(list, config)) {
  *		...
  * }
+ * @endcode
  *
  * @param list
  *   The list configuration to iterate.

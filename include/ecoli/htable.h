@@ -105,7 +105,7 @@ int ec_htable_set(
 );
 
 /**
- * Free a hash table an all its objects.
+ * Free a hash table and all its objects.
  *
  * @param htable
  *   The hash table.
@@ -123,7 +123,7 @@ void ec_htable_free(struct ec_htable *htable);
 size_t ec_htable_len(const struct ec_htable *htable);
 
 /**
- * Duplicate a hash table
+ * Duplicate a hash table.
  *
  * A reference counter is shared between the clones of
  * hash tables so that the objects are freed only when
@@ -161,6 +161,7 @@ void ec_htable_dump(FILE *out, const struct ec_htable *htable);
  *
  * The typical usage is as below:
  *
+ * @code{.c}
  *	for (iter = ec_htable_iter(htable);
  *	     iter != NULL;
  *	     iter = ec_htable_iter_next(iter)) {
@@ -168,11 +169,12 @@ void ec_htable_dump(FILE *out, const struct ec_htable *htable);
  *			ec_htable_iter_get_key(iter),
  *			ec_htable_iter_get_val(iter));
  *	}
+ * @endcode
  *
  * @param htable
  *   The hash table.
  * @return
- *   An iterator element, or NULL if the dict is empty.
+ *   An iterator element, or NULL if the htable is empty.
  */
 struct ec_htable_elt_ref *ec_htable_iter(const struct ec_htable *htable);
 
@@ -182,7 +184,7 @@ struct ec_htable_elt_ref *ec_htable_iter(const struct ec_htable *htable);
  * @param iter
  *   The hash table iterator.
  * @return
- *   An iterator element, or NULL there is no more element.
+ *   An iterator element, or NULL if there is no more element.
  */
 struct ec_htable_elt_ref *ec_htable_iter_next(struct ec_htable_elt_ref *iter);
 

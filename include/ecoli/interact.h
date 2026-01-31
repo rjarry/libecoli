@@ -44,7 +44,7 @@ struct ec_interact_help {
 #define EC_INTERACT_DESC_ATTR "_desc"
 
 /**
- * Type of callback attached with EC_INTERACT_CB_ATTR attribute.
+ * Type of callback attached with ::EC_INTERACT_CB_ATTR attribute.
  */
 typedef int (*ec_interact_command_cb_t)(const struct ec_pnode *);
 
@@ -56,7 +56,7 @@ typedef int (*ec_interact_command_cb_t)(const struct ec_pnode *);
  * @param matches_out
  *   The pointer where the matches array will be returned.
  * @param type_mask
- *   The mask of completion types to return (ex: EC_COMP_FULL | EC_COMP_PARTIAL)
+ *   The mask of completion types to return (e.g., `EC_COMP_FULL | EC_COMP_PARTIAL`).
  * @return
  *   The size of the array on success (>= 0), or -1 on error.
  */
@@ -81,7 +81,7 @@ void ec_interact_free_completions(char **matches, size_t n);
  *
  * @param out
  *   The pointer to the output stream.
- * @params width
+ * @param width
  *   The number of columns on terminal.
  * @param matches
  *   The string array of matches to display.
@@ -98,9 +98,10 @@ int ec_interact_print_cols(FILE *out, unsigned int width, char const *const *mat
  * @param cmpl
  *   The completion object containing all the completion items.
  * @return
- *   An allocated string to be appended to the current line (must be freed by the caller using
- *   free()). This string can be empty if there is no completion or if completions start with a
- *   different letter. Return NULL on error.
+ *   An allocated string to be appended to the current line (must be freed by
+ *   the caller using free()). This string can be empty if there is no
+ *   completion or if completions start with a different letter. Return NULL on
+ *   error.
  */
 char *ec_interact_append_chars(const struct ec_comp *cmpl);
 
@@ -127,7 +128,7 @@ ssize_t ec_interact_get_helps(
  *
  * @param out
  *   The pointer to the output stream.
- * @params width
+ * @param width
  *   The number of columns on terminal.
  * @param helps
  *   The helps array returned by ec_interact_get_helps().
@@ -183,7 +184,7 @@ ssize_t ec_interact_get_error_helps(
  *
  * @param out
  *   The pointer to the output stream.
- * @params width
+ * @param width
  *   The number of columns on terminal.
  * @param line
  *   The line used to generate the error helps.
@@ -208,7 +209,7 @@ int ec_interact_print_error_helps(
 /**
  * Set help on a grammar node.
  *
- * Set the node attribute EC_INTERACT_HELP_ATTR on the node, containing the
+ * Set the node attribute ::EC_INTERACT_HELP_ATTR on the node, containing the
  * given string. It is used by the ec_interact functions to display contextual
  * helps on completion or parsing error.
  *
@@ -224,7 +225,7 @@ int ec_interact_set_help(struct ec_node *node, const char *help);
 /**
  * Set callback function on a grammar node.
  *
- * Set the node attribute EC_INTERACT_CB_ATTR on the node, containing the
+ * Set the node attribute ::EC_INTERACT_CB_ATTR on the node, containing the
  * pointer to a function invoked on successful parsing.
  *
  * @param node
@@ -239,7 +240,7 @@ int ec_interact_set_callback(struct ec_node *node, ec_interact_command_cb_t cb);
 /**
  * Set short description of a grammar node.
  *
- * Set the node attribute EC_INTERACT_DESC_ATTR on the node, containing the
+ * Set the node attribute ::EC_INTERACT_DESC_ATTR on the node, containing the
  * given string. It is used by the ec_interact functions to display the short
  * description of the contextual help, overriding the value provided by
  * ec_node_desc().
@@ -256,9 +257,9 @@ int ec_interact_set_desc(struct ec_node *node, const char *desc);
 /**
  * Get callback attached to a parse tree.
  *
- * This function browses the parse tree and try to find an attribute EC_INTERACT_CB_ATTR attached to
- * a grammar node referenced in the tree. Return the value of this attribute, which is a function
- * pointer.
+ * This function browses the parse tree and try to find an attribute
+ * ::EC_INTERACT_CB_ATTR attached to a grammar node referenced in the tree.
+ * Return the value of this attribute, which is a function pointer.
  *
  * @param parse
  *   The parsed tree.

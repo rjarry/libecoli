@@ -8,7 +8,7 @@
  *
  * @brief Helpers for strings vectors manipulation.
  *
- * The ec_strvec API provide helpers to manipulate string vectors.
+ * The ::ec_strvec API provides helpers to manipulate string vectors.
  * When duplicating vectors, the strings are not duplicated in memory,
  * a reference counter is used.
  */
@@ -28,7 +28,7 @@ struct ec_strvec;
 struct ec_strvec *ec_strvec(void);
 
 /**
- * Allocate a new string vector
+ * Allocate a new string vector.
  *
  * The string vector is initialized with the list of const strings
  * passed as arguments.
@@ -42,7 +42,7 @@ struct ec_strvec *ec_strvec(void);
 		ec_strvec_from_array(_arr, EC_COUNT_OF(_arr));                                     \
 	})
 /**
- * Allocate a new string vector
+ * Allocate a new string vector.
  *
  * The string vector is initialized with the array of const strings
  * passed as arguments.
@@ -222,7 +222,7 @@ const struct ec_dict *ec_strvec_get_attrs(const struct ec_strvec *strvec, size_t
 int ec_strvec_set_attrs(struct ec_strvec *strvec, size_t idx, struct ec_dict *attrs);
 
 /**
- * Compare two string vectors
+ * Compare two string vectors.
  *
  * @param strvec1
  *   The pointer to the first string vector.

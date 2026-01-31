@@ -16,13 +16,13 @@
 #include <stddef.h>
 #include <stdint.h>
 
-/** count the number of identical chars at the beginning of 2 strings */
+/** Count the number of identical characters at the beginning of two strings. */
 size_t ec_strcmp_count(const char *s1, const char *s2);
 
-/** return 1 if 's' starts with 'beginning' */
+/** Return 1 if the string starts with the given prefix. */
 int ec_str_startswith(const char *s, const char *beginning);
 
-/** return true if string is only composed of spaces (' ', '\n', ...) */
+/** Return true if the string contains only whitespace characters. */
 bool ec_str_is_space(const char *s);
 
 /**
@@ -39,7 +39,7 @@ bool ec_str_is_space(const char *s);
  * @param val
  *   The pointer to the value to be set on success.
  * @return
- *   On success, return 0. Else, return -1 and set errno.
+ *   On success, return 0. Otherwise, return -1 and set errno.
  */
 int ec_str_parse_llint(const char *str, unsigned int base, int64_t min, int64_t max, int64_t *val);
 
@@ -57,7 +57,7 @@ int ec_str_parse_llint(const char *str, unsigned int base, int64_t min, int64_t 
  * @param val
  *   The pointer to the value to be set on success.
  * @return
- *   On success, return 0. Else, return -1 and set errno.
+ *   On success, return 0. Otherwise, return -1 and set errno.
  */
 int ec_str_parse_ullint(
 	const char *str,
@@ -76,7 +76,8 @@ int ec_str_parse_ullint(
  *   The quote character to use: usually " or ' but can be anything. If 0,
  *   select between " or ' automatically.
  * @param force
- *   If true, always add quotes, else add them only if the string contains spaces or quotes.
+ *   If true, always add quotes, else add them only if the string contains
+ *   spaces or quotes.
  * @return
  *   An allocated string, that must be freed by the caller using free().
  */
@@ -90,9 +91,11 @@ char *ec_str_quote(const char *str, char quote, bool force);
  * @param max_cols
  *   The maximum number of columns.
  * @param start_off
- *   The number of already consumed columns on the first line, filled with padding in other lines.
+ *   The number of already consumed columns on the first line, filled with
+ *   padding in other lines.
  * @return
- *   An allocated string containing the wrapped text. It must be freed by the user using free().
+ *   An allocated string containing the wrapped text. It must be freed by the
+ *   user using free().
  */
 char *ec_str_wrap(const char *str, size_t max_cols, size_t start_off);
 
