@@ -17,11 +17,13 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-struct ec_editline;
 struct ec_node;
 struct ec_pnode;
 struct ec_comp;
 struct editline;
+
+/** Editline instance for interactive command line editing. */
+struct ec_editline;
 
 /**
  * A structure describing a contextual help.

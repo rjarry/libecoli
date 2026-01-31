@@ -23,6 +23,9 @@
 
 #include <ecoli/assert.h>
 
+/**
+ * Log levels, from most critical to least critical.
+ */
 enum ec_log_level {
 	EC_LOG_EMERG = 0, /**< system is unusable */
 	EC_LOG_ALERT = 1, /**< action must be taken immediately */

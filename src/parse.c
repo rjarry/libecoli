@@ -462,13 +462,13 @@ size_t ec_pnode_len(const struct ec_pnode *pnode)
 	return ec_strvec_len(pnode->strvec);
 }
 
-size_t ec_pnode_matches(const struct ec_pnode *pnode)
+bool ec_pnode_matches(const struct ec_pnode *pnode)
 {
 	if (pnode == NULL)
-		return 0;
+		return false;
 
 	if (pnode->strvec == NULL)
-		return 0;
+		return false;
 
-	return 1;
+	return true;
 }

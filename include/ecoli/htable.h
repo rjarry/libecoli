@@ -18,9 +18,13 @@
 #include <stdint.h>
 #include <stdio.h>
 
+/** Callback function for freeing hash table elements. */
 typedef void (*ec_htable_elt_free_t)(void *);
 
+/** Hash table with arbitrary key types. */
 struct ec_htable;
+
+/** Hash table element reference for iteration. */
 struct ec_htable_elt_ref;
 
 /**
