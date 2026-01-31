@@ -30,19 +30,25 @@
 #include <sys/types.h>
 
 struct ec_node;
-struct ec_comp_item;
-struct ec_comp_group;
-struct ec_comp;
 struct ec_strvec;
+
+/** A completion item. */
+struct ec_comp_item;
+
+/** A group of completion items sharing the same parsing state. */
+struct ec_comp_group;
+
+/** A list of completion items and groups. */
+struct ec_comp;
 
 /**
  * Completion item type.
  */
 enum ec_comp_type {
-	EC_COMP_UNKNOWN = 0x1,
+	EC_COMP_UNKNOWN = 0x1, /**< Valid token but completion not possible. */
 	EC_COMP_FULL = 0x2, /**< The item is fully completed. */
 	EC_COMP_PARTIAL = 0x4, /**< The item is partially completed. */
-	EC_COMP_ALL = 0x7,
+	EC_COMP_ALL = 0x7, /**< All completion types. */
 };
 
 /**

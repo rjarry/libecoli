@@ -397,7 +397,18 @@ unsigned int ec_pnode_count(const struct ec_pnode *root, const char *id);
 struct ec_pnode *
 __ec_pnode_iter_next(const struct ec_pnode *root, struct ec_pnode *pnode, bool iter_children);
 
-/* keep the const if any */
+/**
+ * Get the next node in a parse tree iteration.
+ *
+ * @param root
+ *   The root of the parse tree being iterated.
+ * @param parse
+ *   The current parse node.
+ * @param iter_children
+ *   If true, iterate over children; if false, skip to siblings.
+ * @return
+ *   The next parse node, or NULL if iteration is complete.
+ */
 #define EC_PNODE_ITER_NEXT(root, parse, iter_children)                                             \
 	({                                                                                         \
 		const struct ec_pnode *p_ = parse; /* check type */                                \
@@ -420,13 +431,24 @@ __ec_pnode_iter_next(const struct ec_pnode *root, struct ec_pnode *pnode, bool i
 	for ((iter) = (root); (iter) != NULL; (iter) = EC_PNODE_ITER_NEXT((root), (iter), true))
 
 /**
- * Get the total number of elements in a parse node.
+ * Get the number of strings in the parsed string vector.
+ *
+ * @param pnode
+ *   A node in the parsing tree.
+ * @return
+ *   The number of strings in the parsed string vector, or 0 if the
+ *   node is NULL or has no string vector.
  */
 size_t ec_pnode_len(const struct ec_pnode *pnode);
 
 /**
- * Get the number of matches.
+ * Check if the parsing tree matches the input.
+ *
+ * @param pnode
+ *   A node in the parsing tree.
+ * @return
+ *   true if the parsing tree matches (has a string vector), false otherwise.
  */
-size_t ec_pnode_matches(const struct ec_pnode *pnode);
+bool ec_pnode_matches(const struct ec_pnode *pnode);
 
 /** @} */

@@ -17,6 +17,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+/** Callback function for freeing dictionary elements. */
 typedef void (*ec_dict_elt_free_t)(void *);
 
 /** Dictionary (string key hash table). */

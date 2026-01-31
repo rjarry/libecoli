@@ -11,9 +11,28 @@
 
 #include <ecoli/node.h>
 
+/**
+ * Create a string node that matches a specific string.
+ *
+ * @param id
+ *   The node identifier.
+ * @param str
+ *   The string to match.
+ * @return
+ *   The node, or NULL on error (errno is set).
+ */
 struct ec_node *ec_node_str(const char *id, const char *str);
 
-/* str is duplicated */
+/**
+ * Set the string to match on a string node.
+ *
+ * @param node
+ *   The string node.
+ * @param str
+ *   The string to match. It is duplicated internally.
+ * @return
+ *   0 on success, -1 on error (errno is set).
+ */
 int ec_node_str_set_str(struct ec_node *node, const char *str);
 
 /** @} */
