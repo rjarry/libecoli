@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_cmd Command node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that parses commands using a format string.
  */
 
 #pragma once

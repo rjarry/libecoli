@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_file File node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that matches and completes file paths.
  */
 
 #pragma once

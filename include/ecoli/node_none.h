@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_none None node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that never matches anything.
  */
 
 #pragma once

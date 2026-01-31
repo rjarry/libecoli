@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_seq Sequence node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that matches a sequence of child nodes in order.
  */
 
 #pragma once
