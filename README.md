@@ -23,9 +23,10 @@ This library provides helpers to build interactive command line interfaces.
 * Extensible: the user can write its own nodes to provide specific features.
 * C API.
 
-## Architecture
+## Documentation
 
-See [architecture.md](/doc/architecture.md).
+See the [API documentation](https://rjarry.github.io/libecoli/) for details on
+grammar nodes, parsing, completion, and the interactive editing API.
 
 ## License
 
