@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_re Regex node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that matches input against a regular expression.
  */
 
 #pragma once

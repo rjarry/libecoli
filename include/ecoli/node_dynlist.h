@@ -3,11 +3,14 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_dynlist Dynamic list node
+ * @ingroup ecoli_nodes
  * @{
  *
- * This node is able to parse a list of object names, returned by a user-defined function as
- * a string vector.
+ * @brief A node that matches names from a dynamic list.
+ *
+ * This node is able to parse a list of object names, returned by a user-defined
+ * function as a string vector.
  *
  * Some flags can alter the behavior of parsing and completion:
  * - Match names returned by the user callback.

@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_any Any node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that matches any single token.
  */
 
 #pragma once

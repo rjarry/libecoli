@@ -3,8 +3,10 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_init Initialization
  * @{
+ *
+ * @brief Library initialization and cleanup functions.
  */
 
 #pragma once

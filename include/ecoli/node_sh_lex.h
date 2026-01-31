@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_sh_lex Shell lexer node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A lexer node using shell-like tokenization rules.
  */
 
 #pragma once

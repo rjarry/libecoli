@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_int Integer node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief Nodes that match signed or unsigned integers.
  */
 
 #pragma once

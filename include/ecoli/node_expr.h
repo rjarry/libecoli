@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_expr Expression node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node for parsing and evaluating expressions with operators.
  */
 
 #pragma once
