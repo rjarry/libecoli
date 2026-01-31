@@ -22,7 +22,7 @@
  *
  * Do not use priorities < 100 for application code; internal libecoli
  * components may depend on those priorities and using them can lead to
- * uninitialized state, crashes, or undefined behaviour.
+ * uninitialized state, crashes, or undefined behavior.
  */
 #define EC_INIT_REGISTER(t)                                                                        \
 	static void ec_init_init_##t(void);                                                        \
@@ -44,7 +44,7 @@ typedef void(ec_exit_t)(void);
 TAILQ_HEAD(ec_init_list, ec_init);
 
 /**
- * A structure describing a test case.
+ * A structure describing initialization callbacks.
  */
 struct ec_init {
 	TAILQ_ENTRY(ec_init) next; /**< Next in list. */
@@ -57,7 +57,7 @@ struct ec_init {
  * Register an initialization function.
  *
  * @param test
- *   A pointer to a ec_init structure to be registered.
+ *   A pointer to an ::ec_init structure to be registered.
  */
 void ec_init_register(struct ec_init *test);
 

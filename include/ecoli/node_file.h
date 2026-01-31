@@ -24,7 +24,10 @@ struct ec_node_file_ops {
 	int (*fstatat)(int dirfd, const char *pathname, struct stat *buf, int flags);
 };
 
-/** @internal for tests */
+/**
+ * Set custom file operations for testing.
+ * @internal
+ */
 void ec_node_file_set_ops(const struct ec_node_file_ops *ops);
 
 /** @} */

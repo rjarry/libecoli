@@ -90,7 +90,7 @@ int ec_dict_del(struct ec_dict *dict, const char *key);
 int ec_dict_set(struct ec_dict *dict, const char *key, void *val, ec_dict_elt_free_t free_cb);
 
 /**
- * Free a hash table an all its objects.
+ * Free a hash table and all its objects.
  *
  * @param dict
  *   The hash table.
@@ -108,7 +108,7 @@ void ec_dict_free(struct ec_dict *dict);
 size_t ec_dict_len(const struct ec_dict *dict);
 
 /**
- * Duplicate a hash table
+ * Duplicate a hash table.
  *
  * A reference counter is shared between the clones of
  * hash tables so that the objects are freed only when
@@ -136,6 +136,7 @@ void ec_dict_dump(FILE *out, const struct ec_dict *dict);
  *
  * The typical usage is as below:
  *
+ * @code{.c}
  *	for (iter = ec_dict_iter(dict);
  *	     iter != NULL;
  *	     iter = ec_dict_iter_next(iter)) {
@@ -143,6 +144,7 @@ void ec_dict_dump(FILE *out, const struct ec_dict *dict);
  *			ec_dict_iter_get_key(iter),
  *			ec_dict_iter_get_val(iter));
  *	}
+ * @endcode
  *
  * @param dict
  *   The hash table.
@@ -157,7 +159,7 @@ struct ec_dict_elt_ref *ec_dict_iter(const struct ec_dict *dict);
  * @param iter
  *   The hash table iterator.
  * @return
- *   An iterator element, or NULL there is no more element.
+ *   An iterator element, or NULL if there is no more element.
  */
 struct ec_dict_elt_ref *ec_dict_iter_next(struct ec_dict_elt_ref *iter);
 

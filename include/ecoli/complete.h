@@ -11,15 +11,15 @@
  * This file provides helpers to list and manipulate the possible
  * completions for a given input.
  *
- * Use ec_complete_strvec() to complete a vector of strings when
+ * Use ::ec_complete_strvec() to complete a vector of strings when
  * the input is already split into several tokens. You can use
- * ec_complete() if you know that the size of the vector is
+ * ::ec_complete() if you know that the size of the vector is
  * 1. This is common if your grammar graph includes a lexer that
  * will tokenize the input.
  *
  * These two functions return a pointer to an ::ec_comp structure, that
  * lists the possible completions. The completions are grouped into
- * ec_comp_group. All completions items of a group shares the same parsing
+ * ::ec_comp_group. All completion items of a group share the same parsing
  * state and are issued by the same node.
  */
 
@@ -54,7 +54,7 @@ enum ec_comp_type {
 /**
  * Get the list of completions from a string input.
  *
- * It is equivalent that calling ec_complete_strvec() with a
+ * It is equivalent to calling ec_complete_strvec() with a
  * vector that only contains 1 element, the input string. Using this
  * function is often more convenient if you get your input from a
  * buffer, because you won't have to create a vector. Usually, it means
@@ -77,15 +77,15 @@ struct ec_comp *ec_complete(const struct ec_node *node, const char *str);
  *
  * This function tries to complete the last element of the given string
  * vector. For instance, to complete with file names in an equivalent of
- * the `cat` shell command, the passed vector should be ["cat", ""] (and
- * not ["cat"]). To complete with files starting with "x", the passed
- * vector should be ["cat", "x"].
+ * the `cat` shell command, the passed vector should be `["cat", ""]` (and
+ * not `["cat"]`). To complete with files starting with `"x"`, the passed
+ * vector should be `["cat", "x"]`.
  *
  * To get the completion list, the engine parses the beginning of the
  * input using the grammar graph. The resulting parsing tree is saved and
  * attached to each completion group.
  *
- * The result is a ec_comp structure pointer, which contains several
+ * The result is a ::ec_comp structure pointer, which contains several
  * groups of completion items.
  *
  * @param node
@@ -121,8 +121,8 @@ struct ec_strvec *ec_complete_strvec_expand(
 /**
  * Get the list of completions of a child node.
  *
- * This function is to be used by intermediate ecoli nodes, i.e. nodes
- * which have children (ex: ec_node_seq(), ec_node_or(), ...). It fills an
+ * This function is to be used by intermediate ecoli nodes, i.e., nodes
+ * which have children (e.g., ec_node_seq(), ec_node_or(), ...). It fills an
  * existing ::ec_comp structure, passed by the parent node.
  *
  * @param node
@@ -240,13 +240,13 @@ struct ec_dict *ec_comp_get_attrs(const struct ec_comp *comp);
  * Create a new completion item, and add it into the completion
  * list. A completion item has a type, which can be:
  *
- * - EC_COMP_FULL: the item is fully completed (common case, used
+ * - ::EC_COMP_FULL - the item is fully completed (common case, used
  *   for instance in the str node)
- * - EC_COMP_PARTIAL: the item is only partially completed (this
+ * - ::EC_COMP_PARTIAL - the item is only partially completed (this
  *   happens rarely, for instance in the file node, when a completion
  *   goes up to the next slash).
- * - EC_COMP_UNKNOWN: the node detects a valid token, but does not
- *   how to complete it (ex: the int node).
+ * - ::EC_COMP_UNKNOWN - the node detects a valid token, but does not know
+ *   how to complete it (e.g., the int node).
  *
  * @param comp
  *   The current completion list.
@@ -337,13 +337,13 @@ const struct ec_comp_group *ec_comp_item_get_grp(const struct ec_comp_item *item
  * @param item
  *   The completion item.
  * @return
- *   The type of this item (EC_COMP_UNKNOWN, EC_COMP_PARTIAL or
- *   EC_COMP_FULL).
+ *   The type of this item (::EC_COMP_UNKNOWN, ::EC_COMP_PARTIAL or
+ *   ::EC_COMP_FULL).
  */
 enum ec_comp_type ec_comp_item_get_type(const struct ec_comp_item *item);
 
 /**
- * Get the node associated to a completion item.
+ * Get the node associated with a completion item.
  *
  * @param item
  *   The completion item.
@@ -372,11 +372,11 @@ int ec_comp_item_set_str(struct ec_comp_item *item, const char *str);
  *
  * The display string corresponds to what is displayed when listing the
  * possible completions. Some nodes like ec_node_file() change the default
- * value display the base name instead of the full path.
+ * value to display the base name instead of the full path.
  *
  * @param item
  *   The completion item to update.
- * @param str
+ * @param display
  *   The new display string.
  * @return
  *   0 on success, or -1 on error (errno is set).
@@ -393,7 +393,7 @@ int ec_comp_item_set_display(struct ec_comp_item *item, const char *display);
  *
  * @param item
  *   The completion item to update.
- * @param str
+ * @param completion
  *   The new completion string.
  * @return
  *   0 on success, or -1 on error (errno is set).
@@ -411,27 +411,27 @@ const struct ec_node *ec_comp_group_get_node(const struct ec_comp_group *grp);
 /**
  * Get the completion group parsing state.
  *
- * All items of a completion group are issued by the same node.
- * This function returns a pointer to this node.
+ * The parsing state contains the parsing result of the input data
+ * preceding the completion. All items of a completion group share the
+ * same parsing state.
  *
  * @param grp
  *   The completion group.
  * @return
- *   The node that issued the completion group.
+ *   The parsing state of the completion group.
  */
 const struct ec_pnode *ec_comp_group_get_pstate(const struct ec_comp_group *grp);
 
 /**
  * Get the completion group attributes.
  *
- * The parsing state contains the parsing result of the input data
- * preceding the completion. All items of a completion group share the
- * same parsing state.
+ * Arbitrary attributes (stored in a dictionary) can be attached to a
+ * completion group.
  *
-  * @param grp
+ * @param grp
  *   The completion group.
  * @return
- *   The parsing state of the completion group.
+ *   The attributes of the completion group.
  */
 const struct ec_dict *ec_comp_group_get_attrs(const struct ec_comp_group *grp);
 
@@ -441,7 +441,7 @@ const struct ec_dict *ec_comp_group_get_attrs(const struct ec_comp_group *grp);
  * This function is the default completion method for nodes that do
  * not define one.
  *
- * This helper adds a completion item of type EC_COMP_UNKNOWN if the
+ * This helper adds a completion item of type ::EC_COMP_UNKNOWN if the
  * input string vector contains one element, to indicate that everything
  * before the last element of the string vector has been parsed
  * successfully, but the node doesn't know how to complete the last
@@ -471,8 +471,8 @@ int ec_complete_unknown(
  * @param comp
  *   The completion list.
  * @param type
- *   A logical OR of flags among EC_COMP_UNKNOWN, EC_COMP_PARTIAL and
- *   EC_COMP_FULL, to select the type to match.
+ *   A logical OR of flags among ::EC_COMP_UNKNOWN, ::EC_COMP_PARTIAL and
+ *   ::EC_COMP_FULL, to select the type to match.
  * @return
  *   The number of matching items.
  */
@@ -486,25 +486,25 @@ size_t ec_comp_count(const struct ec_comp *comp, enum ec_comp_type type);
  * @param comp
  *   The completion list.
  * @param type
- *   A logical OR of flags among EC_COMP_UNKNOWN, EC_COMP_PARTIAL and
- *   EC_COMP_FULL, to select the type to iterate.
+ *   A logical OR of flags among ::EC_COMP_UNKNOWN, ::EC_COMP_PARTIAL and
+ *   ::EC_COMP_FULL, to select the type to iterate.
  * @return
  *   A completion item.
  */
 struct ec_comp_item *ec_comp_iter_first(const struct ec_comp *comp, enum ec_comp_type type);
 
 /**
- * Get the first completion item matching the type.
+ * Get the next completion item matching the type.
  *
  * Also see EC_COMP_FOREACH().
  *
- * @param comp
- *   The completion list.
+ * @param item
+ *   The current completion item.
  * @param type
- *   A logical OR of flags among EC_COMP_UNKNOWN, EC_COMP_PARTIAL and
- *   EC_COMP_FULL, to select the type to iterate.
+ *   A logical OR of flags among ::EC_COMP_UNKNOWN, ::EC_COMP_PARTIAL and
+ *   ::EC_COMP_FULL, to select the type to iterate.
  * @return
- *   A completion item.
+ *   The next completion item, or NULL if there is no more.
  */
 struct ec_comp_item *ec_comp_iter_next(struct ec_comp_item *item, enum ec_comp_type type);
 
@@ -516,8 +516,8 @@ struct ec_comp_item *ec_comp_iter_next(struct ec_comp_item *item, enum ec_comp_t
  * @param comp
  *   The completion list.
  * @param type
- *   A logical OR of flags among EC_COMP_UNKNOWN, EC_COMP_PARTIAL and
- *   EC_COMP_FULL, to select the type to iterate.
+ *   A logical OR of flags among ::EC_COMP_UNKNOWN, ::EC_COMP_PARTIAL and
+ *   ::EC_COMP_FULL, to select the type to iterate.
  */
 #define EC_COMP_FOREACH(item, comp, type)                                                          \
 	for (item = ec_comp_iter_first(comp, type); item != NULL;                                  \

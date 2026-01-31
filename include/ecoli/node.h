@@ -8,42 +8,47 @@
  *
  * @brief Libecoli grammar nodes.
  *
- * The grammar node is a main structure of the ecoli library, used to define
- * how to match and complete the input tokens. A node is a generic object
- * that implements:
- * - a parse(node, input) method: check if an input matches
- * - a complete(node, input) method: return possible completions for
- *   a given input
+ * The grammar node is a main structure of the ecoli library, used to define how
+ * to match and complete the input tokens. A node is a generic object that
+ * implements:
+ *
+ * - a `parse(node, input)` method: check if an input matches
+ * - a `complete(node, input)` method: return possible completions for a given
+ *   input
  * - some other methods to initialize, free, ...
  *
- * One basic example is the string node (ec_node_str). A node
- * ec_node_str("foo") will match any token list starting with "foo",
- * for example:
- * - ["foo"]
- * - ["foo", "bar", ...]
- * But will not match:
- * - []
- * - ["bar", ...]
+ * One basic example is the string node (ec_node_str()). A node
+ * `ec_node_str("foo")` will match any token list starting with `"foo"`, for
+ * example:
  *
- * A node ec_node_str("foo") will complete with "foo" if the input
- * contains one token, with the same beginning than "foo":
- * - [""]
- * - ["f"]
- * - ["fo"]
- * - ["foo"]
+ * - `["foo"]`
+ * - `["foo", "bar", ...]`
+ * But will not match:
+ * - `[]`
+ * - `["bar", ...]`
+ *
+ * A node `ec_node_str("foo")` will complete with `"foo"` if the input contains
+ * one token, with the same beginning as `"foo"`:
+ *
+ * - `[""]`
+ * - `["f"]`
+ * - `["fo"]`
+ * - `["foo"]`
+ *
  * But it will not complete:
- * - []
- * - ["bar"]
- * - ["f", ""]
- * - ["", "f"]
+ *
+ * - `[]`
+ * - `["bar"]`
+ * - `["f", ""]`
+ * - `["", "f"]`
  *
  * A node can have child nodes. For instance, a sequence node
- * ec_node_seq(ec_node_str("foo"), ec_node_str("bar")) will match
- * a sequence: ["foo", "bar"].
+ * `ec_node_seq(ec_node_str("foo"), ec_node_str("bar"))` will match a sequence:
+ * `["foo", "bar"]`.
  *
- * Note: at some places in the documentation and the code, we may talk
- * about the grammar tree, but as loops are allowed, we should instead
- * talk about grammar graph.
+ * Note: at some places in the documentation and the code, we may talk about the
+ * grammar tree, but as loops are allowed, we should instead talk about grammar
+ * graph.
  */
 
 #pragma once
@@ -74,11 +79,11 @@ struct ec_config_schema;
 /**
  * Register a node type at library load.
  *
- * The node type is registered in a function that has the the
+ * The node type is registered in a function that has the
  * constructor attribute: the function is called at library load.
  *
  * @param t
- *   The name of the ec_node_type structure variable.
+ *   The name of the ::ec_node_type structure variable.
  */
 #define EC_NODE_TYPE_REGISTER(t)                                                                   \
 	static void ec_node_init_##t(void);                                                        \
@@ -91,7 +96,7 @@ struct ec_config_schema;
 /**
  * Register a node type at library load, overriding previous registration.
  *
- * The node type is registered in a function that has the the
+ * The node type is registered in a function that has the
  * constructor attribute: the function is called at library load.
  *
  * Be careful when using this macro, as the last type with a given name
@@ -99,7 +104,7 @@ struct ec_config_schema;
  * predict, especially within the same binary.
  *
  * @param t
- *   The name of the ec_node_type structure variable.
+ *   The name of the ::ec_node_type structure variable.
  */
 #define EC_NODE_TYPE_REGISTER_OVERRIDE(t)                                                          \
 	static void ec_node_init_##t(void);                                                        \
@@ -112,16 +117,16 @@ struct ec_config_schema;
 /**
  * Function type used to configure a node.
  *
- * The function pointer is not called directly, the helper ec_node_set_config() should be used
- * instead.
+ * The function pointer is not called directly, the helper ec_node_set_config()
+ * should be used instead.
  *
- * The configuration passed to this function pointer is valid, i.e. ec_config_validate() returned 0
- * on it.
+ * The configuration passed to this function pointer is valid, i.e.
+ * ec_config_validate() returned 0 on it.
  *
- * This function provided by a node type is supposed to do additional checks to the configuration
- * and store private, if needed. If it returns 0, ec_node_set_config() stores the generic
- * configuration in the node. The function can just return 0 if nothing needs to be stored in
- * private data.
+ * This function provided by a node type is supposed to do additional checks on
+ * the configuration and store private data, if needed. If it returns 0,
+ * ec_node_set_config() stores the generic configuration in the node. The
+ * function can just return 0 if nothing needs to be stored in private data.
  *
  * @param node
  *   The node to configure.
@@ -152,7 +157,7 @@ typedef int (*ec_node_set_config_t)(struct ec_node *node, const struct ec_config
  *   The string vector to be parsed.
  * @return
  *   On success, return the number of consumed items in the string vector
- *   (can be 0) or EC_PARSE_NOMATCH if the node cannot parse the string
+ *   (can be 0) or ::EC_PARSE_NOMATCH if the node cannot parse the string
  *   vector. On error, a negative value is returned and errno is set.
  */
 typedef int (*ec_parse_t)(
@@ -170,7 +175,7 @@ typedef int (*ec_parse_t)(
  *
  * This function completes the last element of the string vector.
  * For instance, node.type->complete(node, comp, ["ls"]) will
- * list all commands that starts with "ls", while
+ * list all commands that start with "ls", while
  * node.type->complete(node, comp, ["ls", ""]) will list all
  * possible values for the next argument.
  *
@@ -186,8 +191,8 @@ typedef int (*ec_parse_t)(
  *   do a more complex job (parsing strvec).
  *
  * A node that does not provide any method for the completion
- * will fallback to ec_complete_unknown(): this helper returns
- * a completion item of type EC_COMP_UNKNOWN, just to indicate
+ * will fall back to ec_complete_unknown(): this helper returns
+ * a completion item of type ::EC_COMP_UNKNOWN, just to indicate
  * that everything before the last element of the string vector
  * has been parsed successfully, but we don't know how to
  * complete the last element.
@@ -226,7 +231,7 @@ typedef int (*ec_complete_t)(
  * default behavior is to return the node type name inside `<>`, for
  * instance `<int>`. The string node type implements this method to
  * return the string value. An integer node could implement it
- * to return its range (ex: "1..10").
+ * to return its range (e.g., "1..10").
  *
  * The returned value is a pointer that must be freed by
  * the caller with free().
@@ -275,7 +280,7 @@ typedef void (*ec_node_free_priv_t)(struct ec_node *);
 typedef size_t (*ec_node_get_children_count_t)(const struct ec_node *);
 
 /**
- * Count the number of node children.
+ * Get the i-th child node.
  *
  * This function pointer should not be called directly. The
  * ec_node_get_child() helper should be used instead.
@@ -308,7 +313,7 @@ struct ec_node_type {
 	TAILQ_ENTRY(ec_node_type) next; /**< Next in list. */
 	const char *name; /**< Node type name. */
 	/** Configuration schema array, must be terminated by a sentinel
-	 *  (.type = EC_CONFIG_TYPE_NONE). */
+	 *  `{.type = EC_CONFIG_TYPE_NONE}`. */
 	const struct ec_config_schema *schema;
 	size_t size; /**< Size of private area */
 	ec_node_set_config_t set_config; /**< Validate and set configuration. */
@@ -328,15 +333,16 @@ struct ec_node_type {
 TAILQ_HEAD(ec_node_type_list, ec_node_type);
 
 /**
- * The list of registered node types. Must not be modified by user, except at initialization using
- * the EC_NODE_TYPE_REGISTER() or EC_NODE_TYPE_REGISTER_OVERRIDE() macros.
+ * The list of registered node types. Must not be modified by user, except at
+ * initialization using the EC_NODE_TYPE_REGISTER() or
+ * EC_NODE_TYPE_REGISTER_OVERRIDE() macros.
  */
 extern struct ec_node_type_list node_type_list;
 
 /**
  * Register a node type.
  *
- * The name of the type being registered is a uniq identifier. However,
+ * The name of the type being registered is a unique identifier. However,
  * it is possible to force the registration of a type with an existing
  * name by setting "override" to true. Note that the initial type is not
  * removed from the list, instead the new one is added before in the
@@ -362,7 +368,7 @@ int ec_node_type_register(struct ec_node_type *type, bool override);
 const struct ec_node_type *ec_node_type_lookup(const char *name);
 
 /**
- * Dump registered log types.
+ * Dump registered node types.
  *
  * @param out
  *   The stream where the dump is sent.
@@ -391,7 +397,7 @@ const struct ec_config_schema *ec_node_type_schema(const struct ec_node_type *ty
 const char *ec_node_type_name(const struct ec_node_type *type);
 
 /**
- * Create a new node from a known type is known
+ * Create a new node when the type is known.
  *
  * This function is typically called from the node constructor.
  *
@@ -407,8 +413,8 @@ struct ec_node *ec_node_from_type(const struct ec_node_type *type, const char *i
 /**
  * Create a new node from its type name.
  *
- * This function is typically called from user code, for node types that do not provide a specific
- * constructor.
+ * This function is typically called from user code, for node types that do not
+ * provide a specific constructor.
  *
  * @param typename
  *   The type name of the node to create.
@@ -422,20 +428,22 @@ struct ec_node *ec_node(const char *typename, const char *id);
 /**
  * Clone a grammar node.
  *
- * This function takes a reference to the node. If ec_node_free() is later called on this node, it
- * will decrease only the reference. The free is effective when the reference count reaches 0. The
- * reference counter is initialized to 1 at node creation.
+ * This function takes a reference to the node. If ec_node_free() is later
+ * called on this node, it will decrease only the reference. The free is
+ * effective when the reference count reaches 0. The reference counter is
+ * initialized to 1 at node creation.
  *
  * @param node
  *   The node to clone.
  * @return
- *   The pointer to the cloned node, always equal to the parameter. It returns NULL if the parameter
- *   was NULL: in this case, nothing is done.
+ *   The pointer to the cloned node, always equal to the parameter. It returns
+ *   NULL if the parameter was NULL: in this case, nothing is done.
  */
 struct ec_node *ec_node_clone(struct ec_node *node);
 
 /**
- * Decrement node reference counter and free the node if it is the last reference.
+ * Decrement node reference counter and free the node if it is the last
+ * reference.
  *
  * @param node
  *   The grammar node to free.
@@ -447,16 +455,16 @@ void ec_node_free(struct ec_node *node);
  *
  * For a node that supports generic configuration, set its configuration.
  *
- * After a call to this function, the config is owned by the node and must not be used by the caller
- * anymore.
+ * After a call to this function, the config is owned by the node and must not
+ * be used by the caller anymore.
  *
  * @param node
  *   The grammar node to configure.
  * @param config
  *   The configuration to apply on the node.
  * @return
- *   0 on success, or a negative value on error (in this case the config passed as parameter is
- *   freed).
+ *   0 on success, or a negative value on error (in this case the config passed
+ *   as parameter is freed).
  */
 int ec_node_set_config(struct ec_node *node, struct ec_config *config);
 
@@ -492,7 +500,7 @@ size_t ec_node_get_children_count(const struct ec_node *node);
  * @param child
  *   The pointer where the child node pointer will be stored on success.
  * @return
- *   The number of children.
+ *   0 on success, -1 on error.
  */
 int ec_node_get_child(const struct ec_node *node, size_t i, struct ec_node **child);
 
@@ -509,8 +517,8 @@ const struct ec_node_type *ec_node_type(const struct ec_node *node);
 /**
  * Get the attributes dict of the node.
  *
- * A user can add any attribute to a node. The attributes keys starting with an underscore are
- * reserved.
+ * A user can add any attribute to a node. The attributes keys starting with an
+ * underscore are reserved.
  *
  * @param node
  *   The grammar node.
@@ -535,8 +543,8 @@ const char *ec_node_id(const struct ec_node *node);
  * @param node
  *   The grammar node.
  * @return
- *   An allocated string containing the node short description that must be freed by the
- *   caller. Return NULL on error.
+ *   An allocated string containing the node short description that must be
+ *   freed by the caller. Return NULL on error.
  */
 char *ec_node_desc(const struct ec_node *node);
 
@@ -553,12 +561,12 @@ void ec_node_dump(FILE *out, const struct ec_node *node);
 /**
  * Find a node from its identifier string.
  *
- * Browse the tree using pre-order depth traversal, and return the first node that matches the given
- * identifier.
+ * Browse the tree using pre-order depth traversal, and return the first node
+ * that matches the given identifier.
  *
  * @param node
  *   The grammar tree.
- * @param node
+ * @param id
  *   The identifier to match.
  * @return
  *   A node matching the identifier.
@@ -568,39 +576,47 @@ struct ec_node *ec_node_find(struct ec_node *node, const char *id);
 /**
  * Create an iterator on a grammar tree.
  *
- * A grammar tree is actually not really a tree, it is an oriented graph where loop can exist. For
- * this reason, it is not possible to iterate the grammar graph without storing somewhere the list
- * of browsed nodes in order to break loops.
+ * A grammar tree is actually not really a tree, it is an oriented graph where
+ * loops can exist. For this reason, it is not possible to iterate the grammar
+ * graph without storing somewhere the list of browsed nodes in order to break
+ * loops.
  *
- * Another property of grammar graphs is that the same node can appear several times at different
- * places in the graph, having a different parent. These kind of nodes will be iterated only once.
+ * Another property of grammar graphs is that the same node can appear several
+ * times at different places in the graph, having a different parent. This kind
+ * of node will be iterated only once.
  *
  * The typical use is:
  *
+ * @code{.c}
  *	struct ec_node_iter *iter_root, *iter;
+ *
  *	iter_root = ec_node_iter(node);
  *	if (iter_root == NULL)
  *		goto fail;
- *	for (iter = iter_root; iter != NULL; iter = ec_node_iter_next(iter_root, iter, true)) {
+ *
+ *	for (iter = iter_root; iter != NULL;
+ *	     iter = ec_node_iter_next(iter_root, iter, true)) {
  *		do_something_with(ec_node_iter_get_node(iter));
  *	}
- *	ec_node_iter_free(iter_root);
  *
- * Technically, this function builds a tree from the the grammar graph. Each node of this tree
- * references a node of the grammar graph.
+ *	ec_node_iter_free(iter_root);
+ * @endcode
+ *
+ * Technically, this function builds a tree from the grammar graph. Each node of
+ * this tree references a node of the grammar graph.
  *
  * @param node
  *   The grammar graph to iterate
  * @return
- *   The grammar graph iterator on success, that must be freed using ec_node_iter_free(). Return
- *   NULL on error.
+ *   The grammar graph iterator on success, that must be freed using
+ *   ec_node_iter_free(). Return NULL on error.
  */
 struct ec_node_iter *ec_node_iter(struct ec_node *node);
 
 /**
  * Iterate to the next node.
  *
- * See @ec_node_iter().
+ * See ec_node_iter().
  *
  * @param root
  *   The iterator returned by ec_node_iter().
@@ -638,7 +654,8 @@ struct ec_node *ec_node_iter_get_node(struct ec_node_iter *iter);
  * @param iter
  *   The iterator node.
  * @return
- *   The parent of the iterator node in the iterator tree. Return NULL if it's the root.
+ *   The parent of the iterator node in the iterator tree. Return NULL if it's
+ *   the root.
  */
 struct ec_node_iter *ec_node_iter_get_parent(struct ec_node_iter *iter);
 

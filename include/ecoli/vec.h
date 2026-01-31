@@ -8,7 +8,7 @@
  *
  * @brief Helpers for vectors manipulation.
  *
- * The ec_vec API provide helpers to manipulate vectors of objects
+ * The ::ec_vec API provides helpers to manipulate vectors of objects
  * of any kind.
  */
 
@@ -20,14 +20,14 @@
 /**
  * Custom free callback.
  *
- * If NULL, default does nothing
+ * If NULL, the default does nothing.
  */
 typedef void (*ec_vec_elt_free_t)(void *ptr);
 
 /**
- * Custom copy callback
+ * Custom copy callback.
  *
- * If NULL, default is: `memcpy(dst, src, vec->elt_size)`
+ * If NULL, the default is: `memcpy(dst, src, vec->elt_size)`.
  */
 typedef void (*ec_vec_elt_copy_t)(void *dst, void *src);
 
@@ -59,7 +59,7 @@ struct ec_vec *ec_vec_ndup(const struct ec_vec *vec, size_t off, size_t len);
 /** Free a vector and all its contents. */
 void ec_vec_free(struct ec_vec *vec);
 
-/** Get the size of a vector. */
+/** Get the number of elements in a vector. */
 __attribute__((pure)) size_t ec_vec_len(const struct ec_vec *vec);
 
 /** @} */

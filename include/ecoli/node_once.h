@@ -12,25 +12,25 @@
 #include <ecoli/node.h>
 
 /**
- * This node behaves like its child, but prevent from parsing it several times.
+ * This node behaves like its child, but prevents it from being parsed more than once.
  *
  * Example:
  *
- * ```
+ * @code{.c}
  *   many(
  *     or(
  *       once(str("foo")),
  *       str("bar")))
- * ```
+ * @endcode
  *
- * Matches: [], ["foo", "bar"], ["bar", "bar"], ["foo", "bar", "bar"], ...
- * But not: ["foo", "foo"], ["foo", "bar", "foo"], ...
+ * Matches: `[]`, `["foo", "bar"]`, `["bar", "bar"]`, `["foo", "bar", "bar"]`, ...
+ * But not: `["foo", "foo"]`, `["foo", "bar", "foo"]`, ...
  *
- * on error, child is *not* freed
+ * On error, the child is not freed.
  */
 struct ec_node *ec_node_once(const char *id, struct ec_node *child);
 
-/** on error, child is freed */
+/** Set the child of a once node. On error, the child is freed. */
 int ec_node_once_set_child(struct ec_node *node, struct ec_node *child);
 
 /** @} */

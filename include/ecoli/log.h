@@ -8,11 +8,11 @@
  *
  * @brief Log API
  *
- * This file provide logging helpers:
+ * This file provides logging helpers:
  * - logging functions, supporting printf-like format
- * - several debug level (similar to syslog)
+ * - several debug levels (similar to syslog)
  * - named log types
- * - redirection of log to a user functions (default logs nothing)
+ * - redirection of logs to user functions (default logs nothing)
  */
 
 #pragma once
@@ -40,7 +40,7 @@ enum ec_log_level {
 /**
  * A structure describing a log type.
  *
- * It is defined as a static structure by the EC_LOG_TYPE_REGISTER() macro.
+ * It is defined as a static structure by the ::EC_LOG_TYPE_REGISTER() macro.
  */
 struct ec_log_type {
 	TAILQ_ENTRY(ec_log_type) next; /**< Next in list. */
@@ -55,7 +55,7 @@ struct ec_log_type {
  * This macro defines a function that will be called at startup (using
  * the "constructor" attribute). This function registers the named type
  * passed as argument, and sets a static global variable
- * "ec_log_local_type". This variable is used as the default log type
+ * `ec_log_local_type`. This variable is used as the default log type
  * for this file when using EC_LOG() or EC_VLOG().
  *
  * This macro can be present several times in a file. In this case, the
@@ -81,7 +81,7 @@ struct ec_log_type {
  * User log function type.
  *
  * It is advised that a user-defined log function drops all messages
- * that are at least as critical as ec_log_level_get(), as done by the
+ * that are less critical than ec_log_level_get(), as done by the
  * default handler.
  *
  * @param type
@@ -114,7 +114,7 @@ int ec_log_fct_register(ec_log_t usr_log, void *opaque);
  * Register a named log type.
  *
  * Register a new log type, which is identified by its name. The
- * function returns a log identifier associated to the log name. If the
+ * function returns a log identifier associated with the log name. If the
  * name is already registered, the function just returns its identifier.
  *
  * @param type
@@ -126,12 +126,12 @@ int ec_log_fct_register(ec_log_t usr_log, void *opaque);
 int ec_log_type_register(struct ec_log_type *type);
 
 /**
- * Return the log name associated to the log type identifier.
+ * Return the log name associated with the log type identifier.
  *
  * @param type
  *   The log type identifier.
  * @return
- *   The name associated to the log type, or "unknown". It always return
+ *   The name associated with the log type, or "unknown". It always returns
  *   a valid string (never NULL).
  */
 const char *ec_log_name(int type);
@@ -170,8 +170,8 @@ int ec_vlog(int type, enum ec_log_level level, const char *format, va_list ap);
 /**
  * Log a formatted string using the local log type.
  *
- * This macro requires that a log type is previously register with
- * EC_LOG_TYPE_REGISTER() since it uses the "ec_log_local_type"
+ * This macro requires that a log type is previously registered with
+ * ::EC_LOG_TYPE_REGISTER() since it uses the `ec_log_local_type`
  * variable.
  *
  * @param level
@@ -186,8 +186,8 @@ int ec_vlog(int type, enum ec_log_level level, const char *format, va_list ap);
 /**
  * Log a formatted string using the local log type.
  *
- * This macro requires that a log type is previously register with
- * EC_LOG_TYPE_REGISTER() since it uses the "ec_log_local_type"
+ * This macro requires that a log type is previously registered with
+ * ::EC_LOG_TYPE_REGISTER() since it uses the `ec_log_local_type`
  * variable.
  *
  * @param level
@@ -227,8 +227,6 @@ int ec_log_default_cb(int type, enum ec_log_level level, void *opaque, const cha
  * This level is used by the default log handler, ec_log_default_cb().
  * All messages that are at least as critical as the default level are
  * displayed.
- *
- * It is advised
  *
  * @param level
  *   The log level to be set.
