@@ -4,7 +4,7 @@
 PROJECT_NAME           = "Libecoli"
 PROJECT_BRIEF          = "Extensible COmmand LIne library"
 PROJECT_NUMBER         = @VERSION@
-INPUT                  = @TOPDIR@/include @TOPDIR@/include/ecoli @TOPDIR@/examples @TOPDIR@/doc
+INPUT                  = @TOPDIR@/include @TOPDIR@/include/ecoli @TOPDIR@/examples @TOPDIR@/doc @OUTPUT@
 OUTPUT_DIRECTORY       = @OUTPUT@
 FILE_PATTERNS          = *.h *.c *.md
 RECURSIVE              = YES

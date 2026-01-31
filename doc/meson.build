@@ -11,6 +11,19 @@ cdata.set('VERSION', meson.project_version())
 cdata.set('OUTPUT', meson.current_build_dir())
 cdata.set('TOPDIR', meson.project_source_root())
 
+ecoli_gen_node_schema = executable(
+	'gen-node-schema',
+	files('gen-node-schema.c'),
+	include_directories : inc,
+	link_with: libecoli,
+)
+
+node_schemas = custom_target(
+	'node-schemas',
+	output: 'node-schemas',
+	command: [ecoli_gen_node_schema, meson.current_build_dir(), '@OUTPUT@'],
+)
+
 man_cdata = configuration_data()
 man_cdata.merge_from(cdata)
 man_cdata.set('GENERATE_HTML', 'NO')
@@ -26,6 +39,7 @@ custom_target(
 	output: 'man',
 	command: [doxygen, '@INPUT@'],
 	build_by_default: true,
+	depends: node_schemas,
 	depend_files: doc_sources,
 	install: true,
 	install_dir: get_option('datadir'))
@@ -45,6 +59,7 @@ custom_target(
 	output: 'html',
 	command: [doxygen, '@INPUT@'],
 	build_by_default: true,
+	depends: node_schemas,
 	depend_files: doc_sources,
 	install: true,
 	install_dir: join_paths(get_option('datadir'), 'doc', 'libecoli'))
