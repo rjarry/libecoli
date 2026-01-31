@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_bypass Bypass node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A pass-through node useful for building graph loops.
  */
 
 #pragma once

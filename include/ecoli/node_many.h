@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_many Many node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that matches its child multiple times.
  */
 
 #pragma once

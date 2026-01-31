@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_option Option node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that makes its child optional.
  */
 
 #pragma once

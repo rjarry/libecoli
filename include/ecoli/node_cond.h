@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_cond Condition node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that conditionally matches based on an expression.
  */
 
 #pragma once

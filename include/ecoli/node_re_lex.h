@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_re_lex Regex lexer node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A lexer node using regular expressions for tokenization.
  */
 
 #pragma once

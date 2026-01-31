@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_empty Empty node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that matches an empty input.
  */
 
 #pragma once

@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_dynamic Dynamic node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node built dynamically at parse time by a callback.
  */
 
 #pragma once

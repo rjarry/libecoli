@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_str String node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that matches a specific string.
  */
 
 #pragma once

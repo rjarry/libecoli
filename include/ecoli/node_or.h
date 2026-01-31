@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_or Or node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that matches one of its child nodes.
  */
 
 #pragma once

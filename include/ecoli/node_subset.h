@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_subset Subset node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that matches any subset of its children in any order.
  */
 
 #pragma once
