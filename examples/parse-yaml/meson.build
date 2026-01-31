@@ -9,6 +9,7 @@ endif
 parse_yaml_sources = files(
 	'parse-yaml.c',
 )
+doc_sources += parse_yaml_sources
 
 ecoli_parse_yaml = executable(
 	'ecoli-parse-yaml',

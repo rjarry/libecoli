@@ -10,6 +10,7 @@ pool_editline_sources = files(
 	'ip_pool.c',
 	'main.c',
 )
+doc_sources += pool_editline_sources + files('ip_pool.h')
 
 ecoli_pool_editline = executable(
 	'ecoli-pool-editline',
