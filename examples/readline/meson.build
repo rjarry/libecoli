@@ -9,6 +9,7 @@ endif
 readline_sources = files(
 	'main.c',
 )
+doc_sources += readline_sources
 
 ecoli_readline = executable(
 	'ecoli-readline',

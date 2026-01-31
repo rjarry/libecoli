@@ -2,6 +2,37 @@
  * Copyright 2025, Olivier MATZ <zer0@droids-corp.org>
  */
 
+/**
+ * @example extension-editline/main.c
+ * Define custom node types with specialized parsing and completion.
+ *
+ * Demonstrates creating a custom grammar node type (bool_tuple) with its
+ * own parsing and completion logic. The bool_tuple node parses and completes
+ * tuples of booleans like "(true,false,true)" and converts them to an integer
+ * where each boolean becomes a bit (e.g. "(true,false,true)" = 101 binary = 5).
+ *
+ * The custom node (node_bool_tuple.c) implements:
+ * - Parsing: validates input matches the exact grammar (bool,bool,...)
+ * - Completion: provides context-aware suggestions at each parsing state
+ *   (opening paren, true/false keywords, comma, closing paren)
+ *
+ * The main program registers two commands:
+ * - "convert <bool_tuple>" - parses the tuple and prints its integer value
+ * - "exit" - quits the program
+ *
+ * Example session:
+ * @code
+ * extension> convert (true,false,true)
+ * Integer value for (true,false,true) is 5
+ * extension> convert (false,true)
+ * Integer value for (false,true) is 1
+ * extension> exit
+ * Exit !
+ * @endcode
+ *
+ * See also node_bool_tuple.c for the node type implementation.
+ */
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>

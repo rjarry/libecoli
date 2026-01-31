@@ -2,6 +2,30 @@
  * Copyright 2018, Olivier MATZ <zer0@droids-corp.org>
  */
 
+/**
+ * @example parse-yaml/parse-yaml.c
+ * Load grammar from YAML and parse or complete input.
+ *
+ * Demonstrates loading a grammar definition from a YAML file using
+ * ec_yaml_import() and using it to parse or complete command line input.
+ *
+ * Example session using test.yaml grammar:
+ * @code
+ * $ ./parse-yaml -i test.yaml -o /dev/stdout
+ * parse-yaml> hello john
+ * ec_node1_id='sh_lex'
+ * ec_node1_type='sh_lex'
+ * ec_node1_strvec_len=1
+ * ec_node1_str0='hello john'
+ * ec_node1_first_child='ec_node2'
+ * ec_node2_id='hello'
+ * ...
+ * $ ./parse-yaml -i test.yaml -o /dev/null -c hello ""
+ * john
+ * mike
+ * @endcode
+ */
+
 #include <errno.h>
 #include <getopt.h>
 #include <stdio.h>

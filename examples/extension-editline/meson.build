@@ -10,6 +10,7 @@ extension_editline_sources = files(
 	'main.c',
 	'node_bool_tuple.c',
 )
+doc_sources += extension_editline_sources
 
 ecoli_extension_editline = executable(
 	'ecoli-extension-editline',

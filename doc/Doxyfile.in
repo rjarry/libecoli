@@ -4,11 +4,12 @@
 PROJECT_NAME           = "Libecoli"
 PROJECT_BRIEF          = "Extensible COmmand LIne library"
 PROJECT_NUMBER         = @VERSION@
-INPUT                  = @TOPDIR@/include @TOPDIR@/include/ecoli
+INPUT                  = @TOPDIR@/include @TOPDIR@/include/ecoli @TOPDIR@/examples
 OUTPUT_DIRECTORY       = @OUTPUT@
-FILE_PATTERNS          = *.h
+FILE_PATTERNS          = *.h *.c
+RECURSIVE              = YES
 
-EXCLUDE_SYMBOLS        = __* TAILQ_* free* init* realloc malloc boolean complete desc dict u64 test type size string subschema parse node name list key i64 help set_config schema priority exit get_child get_children_count eval_* @1* @3* lstat opendir readdir closedir dirfd fstatat
+EXCLUDE_SYMBOLS        = __* TAILQ_* free* init* realloc malloc boolean complete desc dict u64 test type size string subschema parse node name list key i64 help set_config schema priority exit get_child get_children_count eval_* @1* @3* lstat opendir readdir closedir dirfd fstatat ip_pool*
 
 
 OPTIMIZE_OUTPUT_FOR_C   = YES
