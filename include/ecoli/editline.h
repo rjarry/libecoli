@@ -45,8 +45,9 @@ enum ec_editline_init_flags {
 	/**
 	 * Ask the terminal to not send signals (STOP, SUSPEND, ...). The
 	 * `ctrl-c`, `ctrl-z` will be interpreted as standard characters. An
-	 * action can be associated to these characters with:
+	 * action can be associated with these characters with:
 	 *
+	 * @code{.c}
 	 *	static int cb(EditLine *editline, int c) {
 	 *	{
 	 *		see editline documentation for details
@@ -56,6 +57,7 @@ enum ec_editline_init_flags {
 	 *		handle_error;
 	 *	if (el_set(el, EL_BIND, "^C", "ed-break", NULL))
 	 *		handle_error;
+	 * @endcode
 	 *
 	 * The default behavior (without this flag) is to let the signal pass: ctrl-c
 	 * will stop program and ctrl-z will suspend it.
@@ -63,8 +65,8 @@ enum ec_editline_init_flags {
 	EC_EDITLINE_DISABLE_SIGNALS = 1 << 0,
 
 	/**
-	 * Disable history. The default behavior creates an history with
-	 * EC_EDITLINE_HISTORY_SIZE entries. To change this value, use
+	 * Disable history. The default behavior creates a history with
+	 * ::EC_EDITLINE_HISTORY_SIZE entries. To change this value, use
 	 * ec_editline_set_history().
 	 */
 	EC_EDITLINE_DISABLE_HISTORY = 1 << 1,
@@ -73,10 +75,12 @@ enum ec_editline_init_flags {
 	 * Disable completion. The default behavior is to complete when
 	 * `?` or `<tab>` is hit. You can register your own callback with:
 	 *
+	 * @code{.c}
 	 *	if (el_set(el, EL_ADDFN, "ed-complete", "Complete buffer", callback))
 	 *		handle_error;
 	 *	if (el_set(el, EL_BIND, "^I", "ed-complete", NULL))
 	 *		handle_error;
+	 * @endcode
 	 *
 	 * The default used callback is ec_editline_complete().
 	 */
@@ -100,7 +104,7 @@ typedef int (*ec_editline_check_exit_cb_t)(void *opaque);
 /**
  * Create an editline instance with default behavior.
  *
- * It allocates and initializes an ec_editline structure, calls editline's
+ * It allocates and initializes an ::ec_editline structure, calls editline's
  * el_init(), and does the editline configuration according to given flags.
  *
  * After that, the user must call ec_editline_set_node() to attach the grammar
@@ -116,7 +120,7 @@ typedef int (*ec_editline_check_exit_cb_t)(void *opaque);
  * @param f_err
  *   The error stream to use.
  * @param flags
- *   Flags to customize initialization. See @ec_editline_init_flags.
+ *   Flags to customize initialization. See ::ec_editline_init_flags.
  * @return
  *   The allocated ec_editline structure, or NULL on error.
  */
@@ -132,15 +136,15 @@ struct ec_editline *ec_editline(
  * Free an editline structure allocated with ec_editline().
  *
  * @param editline
- *   The pointer to the ec_editline structure to free.
+ *   The pointer to the ::ec_editline structure to free.
  */
 void ec_editline_free(struct ec_editline *editline);
 
 /**
- * Return the wrapped editline instance attached to the ec_editline structure.
+ * Return the wrapped editline instance attached to the ::ec_editline structure.
  *
  * @param editline
- *   The pointer to the ec_editline structure.
+ *   The pointer to the ::ec_editline structure.
  */
 struct editline *ec_editline_get_el(struct ec_editline *editline);
 
@@ -148,14 +152,14 @@ struct editline *ec_editline_get_el(struct ec_editline *editline);
  * Get terminal width and height.
  *
  * @param editline
- *   The pointer to the ec_editline structure.
- * @params width
+ *   The pointer to the ::ec_editline structure.
+ * @param width
  *   The pointer where the number of columns is stored on success.
- * @params height
+ * @param height
  *   The pointer where the number of rows is stored on success.
  * @return
- *   0 on success, or -1 on error (in this case the value pointed by width and height are not
- *   modified).
+ *   0 on success, or -1 on error (in this case the value pointed by width and
+ *   height are not modified).
  */
 int ec_editline_term_size(
 	const struct ec_editline *editline,
@@ -171,9 +175,9 @@ int ec_editline_term_size(
  * attached as a string to nodes using a node attribute EC_EDITLINE_HELP_ATTR.
  *
  * @param editline
- *   The pointer to the ec_editline structure.
+ *   The pointer to the ::ec_editline structure.
  * @param node
- *   The pointer to the sh_lex ec_node to use as grammar.
+ *   The pointer to the sh_lex ::ec_node to use as grammar.
  * @return
  *   0 on success, or -1 on error. errno is set to EINVAL if the node is not
  *   of type sh_lex.
@@ -184,21 +188,21 @@ int ec_editline_set_node(struct ec_editline *editline, const struct ec_node *nod
  * Return the ecoli node attached to the editline structure.
  *
  * @param editline
- *   The pointer to the ec_editline structure.
+ *   The pointer to the ::ec_editline structure.
  * @return
- *   The pointer to the ec_node.
+ *   The pointer to the ::ec_node.
  */
 const struct ec_node *ec_editline_get_node(const struct ec_editline *editline);
 
 /**
  * Change the history size.
  *
- * The default behavior is to have an history whose size
- * is EC_EDITLINE_HISTORY_SIZE. This can be changed with this
+ * The default behavior is to have a history whose size
+ * is ::EC_EDITLINE_HISTORY_SIZE. This can be changed with this
  * function.
  *
  * @param editline
- *   The pointer to the ec_editline structure.
+ *   The pointer to the ::ec_editline structure.
  * @param hist_size
  *   The desired size of the history.
  * @param hist_file
@@ -212,7 +216,7 @@ int ec_editline_set_history(struct ec_editline *editline, size_t hist_size, cons
  * Set editline prompt.
  *
  * @param editline
- *   The pointer to the ec_editline structure.
+ *   The pointer to the ::ec_editline structure.
  * @param prompt
  *   The prompt string to use.
  * @return
@@ -224,6 +228,7 @@ int ec_editline_set_prompt(struct ec_editline *editline, const char *prompt);
  * Set editline escaped prompt.
  *
  * From el_set(3):
+ *
  * If the start/stop delim character is found in the prompt, the character
  * itself is not printed, but characters after it are printed directly to the
  * terminal without affecting the state of the current line. A subsequent second
@@ -234,7 +239,7 @@ int ec_editline_set_prompt(struct ec_editline *editline, const char *prompt);
  * character in the prompt.
  *
  * @param editline
- *   The pointer to the ec_editline structure.
+ *   The pointer to the ::ec_editline structure.
  * @param prompt
  *   The prompt string to use.
  * @param delim
@@ -248,7 +253,7 @@ int ec_editline_set_prompt_esc(struct ec_editline *editline, const char *prompt,
  * Get the current edited line.
  *
  * @param editline
- *   The pointer to the ec_editline structure.
+ *   The pointer to the ::ec_editline structure.
  * @param trim_after_cursor
  *   If true, remove all characters starting from cursor (included).
  * @return
@@ -264,7 +269,7 @@ char *ec_editline_curline(const struct ec_editline *editline, bool trim_after_cu
  * and adds it to the history.
  *
  * @param editline
- *   The pointer to the ec_editline structure.
+ *   The pointer to the ::ec_editline structure.
  * @return
  *   An allocated string containing the edited line, that must be freed by the
  *   caller using free().
@@ -278,10 +283,10 @@ char *ec_editline_gets(struct ec_editline *editline);
  * the grammar node on success.
  *
  * @param editline
- *   The pointer to the ec_editline structure.
+ *   The pointer to the ::ec_editline structure.
  * @return
- *   An allocated ec_pnode containing the parse result. It must be freed by the
- *   using using ec_pnode_free(). Return NULL on error.
+ *   An allocated ::ec_pnode containing the parse result. It must be freed by the
+ *   caller using ec_pnode_free(). Return NULL on error.
  */
 struct ec_pnode *ec_editline_parse(struct ec_editline *editline);
 
@@ -290,14 +295,14 @@ struct ec_pnode *ec_editline_parse(struct ec_editline *editline);
  *
  * Run the command line, parsing and completing commands on demand. When a
  * command is parsed successfully, invoke the callback attached to the grammar
- * node as a EC_INTERACT_CB_ATTR attribute. The callback type must be
- * @ec_interact_command_cb_t.
+ * node as a ::EC_INTERACT_CB_ATTR attribute. The callback type must be
+ * ::ec_interact_command_cb_t.
  *
  * On EOF, or if check_exit() function returns true, exit from the interactive
  * loop.
  *
  * @param editline
- *   The pointer to the ec_editline structure.
+ *   The pointer to the ::ec_editline structure.
  * @param check_exit_cb
  *   Optional function pointer executed before each loop iteration to check if
  *   loop should be exited (when the function return true).
@@ -315,8 +320,8 @@ int ec_editline_interact(
 /**
  * Default completion callback used by editline.
  *
- * It displays the list of completions with <tab>, and a contextual help
- * with <?>.
+ * It displays the list of completions with TAB, and a contextual help
+ * with '?'.
  *
  * @param el
  *   The pointer to libedit Editline structure.

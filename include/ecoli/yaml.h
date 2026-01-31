@@ -16,7 +16,7 @@
 struct ec_node;
 
 /**
- * Parse a YAML file and build an ec_node tree from it.
+ * Parse a YAML file and build an ::ec_node tree from it.
  *
  * @param filename
  *   The path to the file to be parsed.
@@ -27,9 +27,9 @@ struct ec_node;
 struct ec_node *ec_yaml_import(const char *filename);
 
 /**
- * Export an ec_node tree to a YAML formatted stream.
+ * Export an ::ec_node tree to a YAML formatted stream.
  *
- * This function traverses the ec_node tree and outputs a YAML representation
+ * This function traverses the ::ec_node tree and outputs a YAML representation
  * of the grammar structure including node type, id, help, attributes and
  * configuration. The output can be used as a template or documentation
  * for grammar definitions.

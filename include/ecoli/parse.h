@@ -15,7 +15,7 @@
  * tree that describes which part of the input matches which node.
  *
  * The parsing tree is sometimes referenced by another node than the
- * root node. Use ec_pnode_get_root() to get the root node in that case.
+ * root node. Use ::ec_pnode_get_root() to get the root node in that case.
  */
 
 #pragma once
@@ -73,24 +73,24 @@ void ec_pnode_free_children(struct ec_pnode *pnode);
 struct ec_pnode *ec_pnode_dup(const struct ec_pnode *pnode);
 
 /**
- * Get the string vector associated to a parsing node.
+ * Get the string vector associated with a parsing node.
  *
- * When an input is parsed successfully (i.e. the input string vector
+ * When an input is parsed successfully (i.e., the input string vector
  * matches the grammar tree), the matching string vector is copied
  * inside the associated parsing node.
  *
- * For instance, parsing the input ["foo", "bar"] on a grammar which is
- * a sequence of strings, the attached string vector will be ["foo",
- * "bar"] on the root pnode, ["foo"] on the first leaf, and ["bar"] on
+ * For instance, parsing the input `["foo", "bar"]` on a grammar which is
+ * a sequence of strings, the attached string vector will be `["foo",
+ * "bar"]` on the root pnode, `["foo"]` on the first leaf, and `["bar"]` on
  * the second leaf.
  *
- * If the parsing tree does not match (see ec_pnode_matches()), it
+ * If the parsing tree does not match (see ec_pnode_matches()),
  * the associated string vector is NULL.
  *
  * @param pnode
  *   The parsing node. If NULL, the function returns NULL.
  * @return
- *   The string vector associated to the parsing node, or NULL
+ *   The string vector associated with the parsing node, or NULL
  *   if the node is not yet parsed (this happens when building the
  *   parsing tree), or if the parsing tree does not match the
  *   input.
@@ -118,8 +118,8 @@ struct ec_pnode *ec_parse(const struct ec_node *node, const char *str);
  * Generate a parsing tree by parsing the input string vector using the
  * given grammar tree.
  *
- * The parsing tree is composed of struct ec_pnode, and each of them is
- * associated to a struct ec_node (the grammar node), to the string vector
+ * The parsing tree is composed of ::ec_pnode, and each of them is
+ * associated with a ::ec_node (the grammar node), to the string vector
  * that matched the subtree, and to optional attributes.
  *
  * When the input matches the grammar tree, the string vector associated
@@ -148,7 +148,7 @@ struct ec_pnode *ec_parse_strvec(const struct ec_node *node, const struct ec_str
  * Parse a string vector using a grammar tree, from a parent node.
  *
  * This function is usually called from an intermediate node (like
- * ec_node_seq, ec_node_or, ...) to backfill the parsing tree, which is
+ * ec_node_seq(), ec_node_or(), ...) to backfill the parsing tree, which is
  * built piece by piece while browsing the grammar tree.
  *
  * ec_parse_child() creates a new child in this parsing tree, and calls
@@ -164,7 +164,7 @@ struct ec_pnode *ec_parse_strvec(const struct ec_node *node, const struct ec_str
  *   The input string vector.
  * @return
  *   On success: the number of matched elements in the input string
- *   vector (which can be 0), or EC_PARSE_NOMATCH (which is a positive
+ *   vector (which can be 0), or ::EC_PARSE_NOMATCH (which is a positive
  *   value) if the input does not match the grammar. On error, -1 is
  *   returned, and errno is set.
  */
@@ -265,11 +265,11 @@ struct ec_pnode *ec_pnode_get_last_child(const struct ec_pnode *pnode);
 /**
  * Get the next sibling node.
  *
- * If pnode is the root of the parsing tree, return NULL. Else return
+ * If pnode is the root of the parsing tree, return NULL. Otherwise, return
  * the next sibling node.
  *
  * @param pnode
- *   A node in the parsing tree..
+ *   A node in the parsing tree.
  * @return
  *   The next sibling, or NULL if there is no sibling.
  */
@@ -300,9 +300,9 @@ const struct ec_node *ec_pnode_get_node(const struct ec_pnode *pnode);
  * Unlink and free the last child.
  *
  * Shortcut to unlink and free the last child of a node. It is a quite
- * common operation in intermediate nodes (like ec_node_seq,
- * ec_node_many, ...) to remove a subtree that was temporarily added
- * when during the completion process.
+ * common operation in intermediate nodes (like ec_node_seq(),
+ * ec_node_many(), ...) to remove a subtree that was temporarily added
+ * during the completion process.
  *
  * @param pnode
  *   A node in the parsing tree which has at least one child.
@@ -310,7 +310,7 @@ const struct ec_node *ec_pnode_get_node(const struct ec_pnode *pnode);
 void ec_pnode_del_last_child(struct ec_pnode *pnode);
 
 /**
- * Get attributes associated to a node in a parsing tree.
+ * Get attributes associated with a node in a parsing tree.
  *
  * Attributes are key/values that are stored in a dictionary
  * and attached to a node in the parsing tree. An attribute can be
@@ -389,10 +389,13 @@ const struct ec_pnode *ec_pnode_find_next(
 unsigned int ec_pnode_count(const struct ec_pnode *root, const char *id);
 
 /**
- * Iterate among parse tree
+ * Iterate over a parse tree
  *
  * Use it with:
+ *
+ * @code{.c}
  * for (iter = pnode; iter != NULL; iter = EC_PNODE_ITER_NEXT(pnode, iter, 1))
+ * @endcode
  */
 struct ec_pnode *
 __ec_pnode_iter_next(const struct ec_pnode *root, struct ec_pnode *pnode, bool iter_children);
