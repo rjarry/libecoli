@@ -22,7 +22,7 @@
 #include <ecoli/utils.h>
 
 struct ec_editline {
-	EditLine *el;
+	struct editline *el;
 	History *history;
 	char *hist_file;
 	HistEvent histev;
@@ -49,7 +49,7 @@ int ec_editline_term_size(
 	return 0;
 }
 
-static char *prompt_cb(EditLine *el)
+static char *prompt_cb(struct editline *el)
 {
 	struct ec_editline *editline;
 	void *clientdata;
@@ -119,7 +119,7 @@ struct ec_editline *ec_editline(
 )
 {
 	struct ec_editline *editline = NULL;
-	EditLine *el;
+	struct editline *el;
 
 	if (f_in == NULL || f_out == NULL || f_err == NULL) {
 		errno = EINVAL;
@@ -204,7 +204,7 @@ void ec_editline_free(struct ec_editline *editline)
 	free(editline);
 }
 
-EditLine *ec_editline_get_el(struct ec_editline *editline)
+struct editline *ec_editline_get_el(struct ec_editline *editline)
 {
 	return editline->el;
 }
@@ -227,7 +227,7 @@ int ec_editline_set_node(struct ec_editline *editline, const struct ec_node *nod
 
 int ec_editline_set_history(struct ec_editline *editline, size_t hist_size, const char *hist_file)
 {
-	EditLine *el = editline->el;
+	struct editline *el = editline->el;
 
 	if (editline->history != NULL)
 		history_end(editline->history);
@@ -294,7 +294,7 @@ fail:
 	return NULL;
 }
 
-int ec_editline_complete(EditLine *el, int c)
+int ec_editline_complete(struct editline *el, int c)
 {
 	struct ec_editline *editline;
 	int ret = CC_REFRESH;
@@ -432,7 +432,7 @@ fail:
 
 char *ec_editline_gets(struct ec_editline *editline)
 {
-	EditLine *el = editline->el;
+	struct editline *el = editline->el;
 	char *line_copy = NULL;
 	const char *line;
 	int count;

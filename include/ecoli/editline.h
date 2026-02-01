@@ -15,13 +15,13 @@
 #pragma once
 
 #include <stdbool.h>
-
-#include <histedit.h>
+#include <stdio.h>
 
 struct ec_editline;
 struct ec_node;
 struct ec_pnode;
 struct ec_comp;
+struct editline;
 
 /**
  * A structure describing a contextual help.
@@ -140,7 +140,7 @@ void ec_editline_free(struct ec_editline *editline);
  * @param editline
  *   The pointer to the ec_editline structure.
  */
-EditLine *ec_editline_get_el(struct ec_editline *editline);
+struct editline *ec_editline_get_el(struct ec_editline *editline);
 
 /**
  * Get terminal width and height.
@@ -323,6 +323,6 @@ int ec_editline_interact(
  * @return
  *   An editline error code: CC_REFRESH, CC_ERROR, or CC_REDISPLAY.
  */
-int ec_editline_complete(EditLine *el, int c);
+int ec_editline_complete(struct editline *el, int c);
 
 /** @} */
