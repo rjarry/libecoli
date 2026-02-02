@@ -26,6 +26,7 @@ custom_target(
 	output: 'man',
 	command: [doxygen, '@INPUT@'],
 	build_by_default: true,
+	depend_files: doc_sources,
 	install: true,
 	install_dir: get_option('datadir'))
 
@@ -44,5 +45,6 @@ custom_target(
 	output: 'html',
 	command: [doxygen, '@INPUT@'],
 	build_by_default: true,
+	depend_files: doc_sources,
 	install: true,
 	install_dir: join_paths(get_option('datadir'), 'doc', 'libecoli'))

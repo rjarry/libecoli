@@ -19,6 +19,7 @@ add_project_arguments('-D_GNU_SOURCE', language : 'c')
 
 inc = include_directories('include')
 libecoli_sources = []
+doc_sources = []
 
 subdir('src')
 subdir('include')
