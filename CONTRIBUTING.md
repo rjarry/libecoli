@@ -38,13 +38,13 @@ commits). Follow these general rules:
   is not limited in length and may span over multiple paragraphs. Use proper
   English syntax, grammar and punctuation.
 - Address only one issue/topic per commit.
-- Describe your changes in imperative mood, e.g. *"make xyzzy do frotz"*
+- Describe your changes in the imperative mood, e.g. *"make xyzzy do frotz"*
   instead of *"[This patch] makes xyzzy do frotz"* or *"[I] changed xyzzy to do
   frotz"*, as if you are giving orders to the codebase to change its behaviour.
 - If you are fixing a GitHub issue, add an appropriate `Closes: <ISSUE_URL>`
   trailer.
 - If you are fixing a regression introduced by another commit, add a `Fixes:
-  <SHORT_ID_12_LONG> "<COMMIT_TITLE>"` trailer.
+  <sha> ("<title>")` trailer.
 - When in doubt, follow the format and layout of the recent existing commits.
 - The following trailers are accepted in commits. If you are using multiple
   trailers in a commit, it's preferred to also order them according to this
@@ -76,7 +76,7 @@ There is a great reference for commit messages in the
 IMPORTANT: you must sign-off your work using `git commit --signoff`. Follow the
 [Linux kernel developer's certificate of origin][linux-signoff] for more
 details. All contributions are made under the
-[BSD-3-Clause][https://spdx.org/licenses/BSD-3-Clause.html] license. Please use
+[BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) license. Please use
 your real name and not a pseudonym. Here is an example:
 
     Signed-off-by: Robin Jarry <rjarry@redhat.com>
@@ -149,7 +149,7 @@ with a `Tested-by` trailer.
 You can follow the review process on GitHub [web
 UI](https://github.com/rjarry/libecoli/pulls).
 
-Wait for feedback. Address comments and amend changes to your original commit(s).
+Wait for feedback. Address comments and amend your original commit(s).
 Then you should push to refresh your branch which will update the pull request:
 
 ```console
