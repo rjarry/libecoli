@@ -19,7 +19,7 @@
 struct ec_node;
 
 /**
- * Build a node table from a node list in a ec_config.
+ * Build a node table from a node list in an ::ec_config.
  *
  * The function takes a node configuration as parameter, which must be a
  * node list. From it, a node table is built. A reference is taken for
@@ -52,7 +52,7 @@ struct ec_node **ec_node_config_node_list_to_table(const struct ec_config *confi
  *   List of pointer to ec_node structures, terminated with
  *   EC_VA_END.
  * @return
- *   A pointer to an ec_config structure. In this case, the
+ *   A pointer to an ::ec_config structure. In this case, the
  *   nodes will be freed when the config structure will be freed.
  *   On error, NULL is returned (and errno is set), and the
  *   nodes are freed.

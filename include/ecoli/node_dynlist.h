@@ -3,11 +3,14 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_dynlist Dynamic list node
+ * @ingroup ecoli_nodes
  * @{
  *
- * This node is able to parse a list of object names, returned by a user-defined function as
- * a string vector.
+ * @brief A node that matches names from a dynamic list.
+ *
+ * This node is able to parse a list of object names, returned by a user-defined
+ * function as a string vector.
  *
  * Some flags can alter the behavior of parsing and completion:
  * - Match names returned by the user callback.
@@ -21,8 +24,8 @@ struct ec_node;
 struct ec_pnode;
 
 /**
- * Callback invoked by parse() or complete() to build the strvec containing the list of object
- * names.
+ * Callback invoked by parse() or complete() to build the strvec containing the
+ * list of object names.
  *
  * @param pstate
  *   The current parsing state.
@@ -48,7 +51,8 @@ enum ec_node_dynlist_flags {
 	DYNLIST_MATCH_REGEXP = 1 << 1,
 
 	/**
-	 * Don't match names returned by the user callback, even if it matches the regexp.
+	 * Don't match names returned by the user callback, even if it matches
+	 * the regexp.
 	 */
 	DYNLIST_EXCLUDE_LIST = 1 << 2,
 };
@@ -56,9 +60,11 @@ enum ec_node_dynlist_flags {
 /**
  * Create a dynlist node.
  *
- * The parsing and completion depends on a list returned by a user provided callback, a regular
- * expression, and flags.
+ * The parsing and completion depend on a list returned by a user-provided
+ * callback, a regular expression, and flags.
  *
+ * @param id
+ *   The node identifier.
  * @param get
  *   The function that returns the list of object names as a string vector.
  * @param opaque

@@ -2,6 +2,36 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+/**
+ * @example readline/main.c
+ * Integration with GNU readline instead of libedit.
+ *
+ * Demonstrates how to use libecoli's completion API with GNU readline
+ * by implementing custom completion functions.
+ *
+ * Example session:
+ * @code
+ * > hello john 5
+ * parse(match=yes, len=3)
+ *  seq(match=yes, len=3)
+ *   str(hello)(match=yes, len=1) "hello"
+ *   or(name)(match=yes, len=1)
+ *    str(john)(match=yes, len=1) "john"
+ *   int(int)(match=yes, len=1) "5"
+ * > good morning bob
+ * parse(match=yes, len=3)
+ *  cmd(match=yes, len=3)
+ *   cmd(name)(match=yes, len=1) "bob"
+ * > buy potatoes
+ * parse(match=yes, len=2)
+ *  cmd(match=yes, len=2)
+ * > bye
+ * parse(match=yes, len=1)
+ *  seq(match=yes, len=1)
+ *   str(bye)(match=yes, len=1) "bye"
+ * @endcode
+ */
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>

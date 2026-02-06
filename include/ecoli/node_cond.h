@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_cond Condition node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A node that conditionally matches based on an expression.
  */
 
 #pragma once
@@ -21,7 +24,7 @@ struct ec_node;
  * @param id
  *   The node identifier.
  * @param cond_str
- *   The condition string. This is an function-based expression.
+ *   The condition string. This is a function-based expression.
  * @param child
  *   The ecoli child node.
  * @return

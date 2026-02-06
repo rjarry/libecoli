@@ -21,7 +21,7 @@
 /**
  * Abort if the condition is false.
  *
- * If expression is false this macro will prints an error message to
+ * If expression is false, this macro will print an error message to
  * standard error and terminates the program by calling abort(3).
  *
  * @param expr

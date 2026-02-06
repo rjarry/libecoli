@@ -3,8 +3,11 @@
  */
 
 /**
- * @addtogroup ecoli_nodes
+ * @defgroup ecoli_node_bypass Bypass node
+ * @ingroup ecoli_nodes
  * @{
+ *
+ * @brief A pass-through node useful for building graph loops.
  */
 
 #pragma once
@@ -12,7 +15,7 @@
 #include <ecoli/node.h>
 
 /**
- * A node that does nothing else than calling the child node.
+ * A node that does nothing other than calling the child node.
  * It can be helpful to build loops in a node graph.
  */
 struct ec_node *ec_node_bypass(const char *id, struct ec_node *node);

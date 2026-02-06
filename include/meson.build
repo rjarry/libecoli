@@ -43,5 +43,6 @@ libecoli_headers = files(
 	'ecoli/vec.h',
 	'ecoli/yaml.h',
 )
+doc_sources += libecoli_headers
 
 install_headers(libecoli_headers, preserve_path: true)

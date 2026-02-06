@@ -2,6 +2,35 @@
  * Copyright 2025, Olivier MATZ <zer0@droids-corp.org>
  */
 
+/**
+ * @example pool-editline/main.c
+ * Dynamic completion from runtime data structures.
+ *
+ * Demonstrates using ec_node_dynlist() to generate completions from
+ * runtime data. The example manages IP address pools and provides
+ * completion for pool names and addresses.
+ *
+ * Example session:
+ * @code
+ * pool> pool list
+ * No pool
+ * pool> pool add servers
+ * pool> pool add clients
+ * pool> pool list
+ * servers
+ * clients
+ * pool> addr pool servers add 192.168.1.1
+ * pool> addr pool servers add 192.168.1.2
+ * pool> addr pool servers list
+ * 192.168.1.1
+ * 192.168.1.2
+ * pool> addr pool servers del 192.168.1.1
+ * pool> pool del clients
+ * pool> exit
+ * Exit !
+ * @endcode
+ */
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>

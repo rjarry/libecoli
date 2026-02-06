@@ -20,17 +20,14 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    container: fedora:latest
     env:
       MESON_EXTRA_OPTS: --auto-features=disabled -Ddoc=enabled
     permissions:
       contents: read
     steps:
       - name: install system dependencies
-        run: |
-          set -xe
-          sudo apt-get update -qy
-          sudo apt-get install -qy --no-install-recommends \
-            doxygen gcc graphviz libc-dev meson ninja-build pkg-config
+        run: dnf install doxygen gcc graphviz make meson ninja-build pkgconf
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
       - run: make

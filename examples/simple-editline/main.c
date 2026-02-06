@@ -2,6 +2,27 @@
  * Copyright 2025, Olivier MATZ <zer0@droids-corp.org>
  */
 
+/**
+ * @example simple-editline/main.c
+ * Basic interactive CLI with commands, help, and completion.
+ *
+ * Demonstrates building a grammar using sequence, or, and option nodes,
+ * setting help text and callbacks on commands, and using the editline
+ * integration for interactive input with TAB completion.
+ *
+ * Example session:
+ * @code
+ * simple> hello john
+ * you say hello to john
+ * simple> hello mike 3
+ * you say hello to mike 3 times
+ * simple> bye johnny
+ * you say bye to johnny
+ * simple> exit
+ * Exit !
+ * @endcode
+ */
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>

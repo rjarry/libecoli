@@ -9,6 +9,7 @@ endif
 simple_editline_sources = files(
 	'main.c',
 )
+doc_sources += simple_editline_sources
 
 ecoli_simple_editline = executable(
 	'ecoli-simple-editline',
