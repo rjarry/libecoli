@@ -40,10 +40,11 @@ struct ec_dict *ec_dict(void);
  * @param dict
  *   The hash table.
  * @param key
- *   The key string.
+ *   The key string. Must not be NULL.
  * @return
  *   The element if it is found, or NULL on error (errno is set).
  *   In case of success but the element is NULL, errno is set to 0.
+ *   If key is NULL, errno is set to EINVAL.
  */
 void *ec_dict_get(const struct ec_dict *dict, const char *key);
 
@@ -53,9 +54,10 @@ void *ec_dict_get(const struct ec_dict *dict, const char *key);
  * @param dict
  *   The hash table.
  * @param key
- *   The key string.
+ *   The key string. Must not be NULL.
  * @return
- *   true if it contains the key, else false.
+ *   true if it contains the key, false otherwise.
+ *   If key is NULL, false is returned and errno is set to EINVAL.
  */
 bool ec_dict_has_key(const struct ec_dict *dict, const char *key);
 
@@ -65,7 +67,7 @@ bool ec_dict_has_key(const struct ec_dict *dict, const char *key);
  * @param dict
  *   The hash table.
  * @param key
- *   The key string.
+ *   The key string. Must not be NULL.
  * @return
  *   0 on success, or -1 on error (errno is set).
  */
@@ -77,7 +79,7 @@ int ec_dict_del(struct ec_dict *dict, const char *key);
  * @param dict
  *   The hash table.
  * @param key
- *   The key string.
+ *   The key string. Must not be NULL.
  * @param val
  *   The pointer to be saved in the hash table.
  * @param free_cb
