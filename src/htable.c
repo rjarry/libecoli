@@ -349,6 +349,7 @@ static int ec_htable_init_func(void)
 	ret = read(fd, &ec_htable_seed, sizeof(ec_htable_seed));
 	if (ret != sizeof(ec_htable_seed)) {
 		fprintf(stderr, "failed to read /dev/urandom\n");
+		close(fd);
 		return -1;
 	}
 	close(fd);
