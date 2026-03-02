@@ -82,6 +82,9 @@ static char *ec_node_str_desc(const struct ec_node *node)
 {
 	struct ec_node_str *priv = ec_node_priv(node);
 
+	if (priv->string == NULL)
+		return NULL;
+
 	return strdup(priv->string);
 }
 

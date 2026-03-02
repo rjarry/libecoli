@@ -268,7 +268,7 @@ static int ec_node_cmd_eval_parenthesis(
 static void ec_node_cmd_eval_free(void *result, void *userctx)
 {
 	(void)userctx;
-	free(result);
+	ec_node_free(result);
 }
 
 static const struct ec_node_expr_eval_ops expr_ops = {
@@ -312,7 +312,9 @@ static struct ec_node *ec_node_cmd_build_expr(void)
 	);
 	if (ret < 0)
 		goto fail;
-	ec_node_expr_add_parenthesis(expr, ec_node_str(EC_NO_ID, "("), ec_node_str(EC_NO_ID, ")"));
+	ret = ec_node_expr_add_parenthesis(
+		expr, ec_node_str(EC_NO_ID, "("), ec_node_str(EC_NO_ID, ")")
+	);
 	if (ret < 0)
 		goto fail;
 

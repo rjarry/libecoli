@@ -182,7 +182,8 @@ struct ec_node *ec_node_bypass(const char *id, struct ec_node *child)
 	if (node == NULL)
 		goto fail;
 
-	ec_node_bypass_set_child(node, child);
+	if (ec_node_bypass_set_child(node, child) < 0)
+		goto fail;
 	child = NULL;
 
 	return node;

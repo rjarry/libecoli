@@ -152,7 +152,7 @@ static int ec_node_int_set_config(struct ec_node *node, const struct ec_config *
 		priv->check_max = true;
 		priv->max = max_value->i64;
 	} else {
-		priv->check_min = false;
+		priv->check_max = false;
 	}
 	if (base_value != NULL)
 		priv->base = base_value->u64;
@@ -262,7 +262,7 @@ static int ec_node_uint_set_config(struct ec_node *node, const struct ec_config 
 		priv->check_max = true;
 		priv->max = max_value->u64;
 	} else {
-		priv->check_min = false;
+		priv->check_max = false;
 	}
 	if (base_value != NULL)
 		priv->base = base_value->u64;

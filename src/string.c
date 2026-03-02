@@ -161,7 +161,7 @@ char *ec_str_quote(const char *str, char quote, bool force)
 		} else if (!isprint(c) && c != '\n') {
 			char buf[5];
 
-			snprintf(buf, sizeof(buf), "\\x%2.2x", c);
+			snprintf(buf, sizeof(buf), "\\x%2.2x", (unsigned char)c);
 			memcpy(o, buf, 4);
 			o += 4;
 		} else {
@@ -193,10 +193,13 @@ static int append_token(struct wrap_state *state, const char *token, size_t toke
 
 	/* allocate a larger buffer if needed (the "5" below is a margin above the worst case) */
 	if (state->output == NULL || state->size - state->len < token_len + state->start_off + 5) {
-		size_t new_size;
+		size_t new_size, need;
 		char *tmp;
 
+		need = state->len + token_len + state->start_off + 5;
 		new_size = state->size == 0 ? 256 : state->size * 2;
+		while (new_size < need)
+			new_size *= 2;
 		tmp = malloc(new_size);
 		if (tmp == NULL)
 			return -1;
