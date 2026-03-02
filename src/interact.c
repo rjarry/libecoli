@@ -451,7 +451,7 @@ int ec_interact_print_error_helps(
 )
 {
 	fprintf(out, "  %s", line);
-	if (line[strlen(line)] != '\n')
+	if (strcspn(line, "\n") == strlen(line))
 		fprintf(out, "\n");
 	fprintf(out, "  %*s^\n", (int)char_idx, "");
 	fprintf(out, "Expected:\n");
