@@ -161,7 +161,7 @@ char *ec_str_quote(const char *str, char quote, bool force)
 		} else if (!isprint(c) && c != '\n') {
 			char buf[5];
 
-			snprintf(buf, sizeof(buf), "\\x%2.2x", c);
+			snprintf(buf, sizeof(buf), "\\x%2.2x", (unsigned char)c);
 			memcpy(o, buf, 4);
 			o += 4;
 		} else {
