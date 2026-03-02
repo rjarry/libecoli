@@ -623,7 +623,12 @@ eval_condition(const struct ec_pnode *cond, const struct ec_pnode *pstate)
 
 		iter = ec_pnode_find((void *)arg_list, "id_arg");
 		while (iter != NULL) {
-			args = realloc(args, (n_arg + 1) * sizeof(*args));
+			struct cond_result **tmp;
+
+			tmp = realloc(args, (n_arg + 1) * sizeof(*args));
+			if (tmp == NULL)
+				goto fail;
+			args = tmp;
 			args[n_arg] = eval_condition(iter, pstate);
 			if (args[n_arg] == NULL)
 				goto fail;
