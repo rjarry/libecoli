@@ -445,7 +445,7 @@ char *ec_editline_gets(struct ec_editline *editline)
 	if (line_copy == NULL)
 		goto fail;
 
-	line_copy[strlen(line_copy) - 1] = '\0'; /* remove \n */
+	line_copy[strcspn(line_copy, "\r\n")] = '\0'; /* strip line end characters */
 
 	if (editline->history != NULL && !ec_str_is_space(line_copy)) {
 		history(editline->history, &editline->histev, H_ENTER, line_copy);
