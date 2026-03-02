@@ -334,11 +334,12 @@ struct ec_strvec *ec_strvec_sh_lex_str(const char *str, ec_strvec_flag_t flags, 
 
 #define append(buffer, position, character)                                                        \
 	do {                                                                                       \
-		buffer[position++] = character;                                                    \
-		if (position >= sizeof(buffer)) {                                                  \
+		if (position + 1 >= sizeof(buffer)) {                                              \
 			errno = ENOBUFS;                                                           \
 			goto fail;                                                                 \
 		}                                                                                  \
+		buffer[position++] = character;                                                    \
+		buffer[position] = '\0'; /* make sure token is always terminated */                \
 	} while (0)
 
 	if (str == NULL) {
@@ -392,7 +393,6 @@ struct ec_strvec *ec_strvec_sh_lex_str(const char *str, ec_strvec_flag_t flags, 
 			case SPACE:
 				/* end of token */
 				quote = '\0';
-				token[t] = '\0';
 				if (ec_strvec_add(strvec, token) < 0)
 					goto fail;
 				if (sh_lex_set_attrs(
@@ -476,7 +476,6 @@ struct ec_strvec *ec_strvec_sh_lex_str(const char *str, ec_strvec_flag_t flags, 
 		state = IN_WORD;
 	}
 	if (state == IN_WORD && t > 0) {
-		token[t] = '\0';
 		if (ec_strvec_add(strvec, token) < 0)
 			goto fail;
 		if (sh_lex_set_attrs(strvec, ec_strvec_len(strvec) - 1, arg_start, i) < 0)
