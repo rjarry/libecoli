@@ -2,6 +2,7 @@
  * Copyright 2016, Olivier MATZ <zer0@droids-corp.org>
  */
 
+#include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,13 +18,6 @@
 #include "htable_private.h"
 
 EC_LOG_TYPE_REGISTER(dict);
-
-static size_t _strlen(const char *s)
-{
-	if (s == NULL)
-		return 0;
-	return strlen(s);
-}
 
 struct ec_dict_elt {
 	struct ec_htable_elt htable;
@@ -44,22 +38,38 @@ struct ec_dict *ec_dict(void)
 
 bool ec_dict_has_key(const struct ec_dict *dict, const char *key)
 {
-	return ec_htable_has_key(&dict->htable, key, _strlen(key) + 1);
+	if (key == NULL) {
+		errno = EINVAL;
+		return false;
+	}
+	return ec_htable_has_key(&dict->htable, key, strlen(key) + 1);
 }
 
 void *ec_dict_get(const struct ec_dict *dict, const char *key)
 {
-	return ec_htable_get(&dict->htable, key, _strlen(key) + 1);
+	if (key == NULL) {
+		errno = EINVAL;
+		return NULL;
+	}
+	return ec_htable_get(&dict->htable, key, strlen(key) + 1);
 }
 
 int ec_dict_del(struct ec_dict *dict, const char *key)
 {
-	return ec_htable_del(&dict->htable, key, _strlen(key) + 1);
+	if (key == NULL) {
+		errno = EINVAL;
+		return -1;
+	}
+	return ec_htable_del(&dict->htable, key, strlen(key) + 1);
 }
 
 int ec_dict_set(struct ec_dict *dict, const char *key, void *val, ec_dict_elt_free_t free_cb)
 {
-	return ec_htable_set(&dict->htable, key, _strlen(key) + 1, val, free_cb);
+	if (key == NULL) {
+		errno = EINVAL;
+		return -1;
+	}
+	return ec_htable_set(&dict->htable, key, strlen(key) + 1, val, free_cb);
 }
 
 void ec_dict_free(struct ec_dict *dict)
