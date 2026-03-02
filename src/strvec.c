@@ -334,11 +334,11 @@ struct ec_strvec *ec_strvec_sh_lex_str(const char *str, ec_strvec_flag_t flags, 
 
 #define append(buffer, position, character)                                                        \
 	do {                                                                                       \
-		buffer[position++] = character;                                                    \
-		if (position >= sizeof(buffer)) {                                                  \
+		if (position + 1 >= sizeof(buffer)) {                                              \
 			errno = ENOBUFS;                                                           \
 			goto fail;                                                                 \
 		}                                                                                  \
+		buffer[position++] = character;                                                    \
 	} while (0)
 
 	if (str == NULL) {
