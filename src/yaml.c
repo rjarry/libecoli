@@ -533,12 +533,12 @@ struct ec_node *ec_yaml_import(const char *filename)
 	file = fopen(filename, "rb");
 	if (file == NULL) {
 		fprintf(stderr, "Failed to open file %s\n", filename);
-		goto fail_no_doc;
+		goto fail_no_parser;
 	}
 
 	if (yaml_parser_initialize(&parser) == 0) {
 		fprintf(stderr, "Failed to initialize yaml parser\n");
-		goto fail_no_doc;
+		goto fail_no_parser;
 	}
 
 	yaml_parser_set_input_file(&parser, file);
@@ -570,6 +570,7 @@ fail:
 	yaml_document_delete(&document);
 fail_no_doc:
 	yaml_parser_delete(&parser);
+fail_no_parser:
 	if (file != NULL)
 		fclose(file);
 	free_table(&table);
