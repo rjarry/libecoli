@@ -844,10 +844,10 @@ __ec_config_dump(FILE *out, const char *key, const struct ec_config *value, size
 			ret = asprintf(&val_str, "false");
 		break;
 	case EC_CONFIG_TYPE_INT64:
-		ret = asprintf(&val_str, "%" PRIu64, value->u64);
+		ret = asprintf(&val_str, "%" PRIi64, value->i64);
 		break;
 	case EC_CONFIG_TYPE_UINT64:
-		ret = asprintf(&val_str, "%" PRIi64, value->i64);
+		ret = asprintf(&val_str, "%" PRIu64, value->u64);
 		break;
 	case EC_CONFIG_TYPE_STRING:
 		ret = asprintf(&val_str, "%s", value->string);
