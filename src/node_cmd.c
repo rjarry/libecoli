@@ -312,7 +312,9 @@ static struct ec_node *ec_node_cmd_build_expr(void)
 	);
 	if (ret < 0)
 		goto fail;
-	ec_node_expr_add_parenthesis(expr, ec_node_str(EC_NO_ID, "("), ec_node_str(EC_NO_ID, ")"));
+	ret = ec_node_expr_add_parenthesis(
+		expr, ec_node_str(EC_NO_ID, "("), ec_node_str(EC_NO_ID, ")")
+	);
 	if (ret < 0)
 		goto fail;
 
