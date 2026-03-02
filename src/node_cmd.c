@@ -268,7 +268,7 @@ static int ec_node_cmd_eval_parenthesis(
 static void ec_node_cmd_eval_free(void *result, void *userctx)
 {
 	(void)userctx;
-	free(result);
+	ec_node_free(result);
 }
 
 static const struct ec_node_expr_eval_ops expr_ops = {
