@@ -3,7 +3,7 @@
 
 project('libecoli',
 	'c',
-	version : '0.10.1',
+	version : '0.11.0',
 	license : 'BSD-3-clause',
 	default_options: [
 		'warning_level=2',
