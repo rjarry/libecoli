@@ -27,8 +27,29 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo", "foo");
 	testres |= EC_TEST_CHECK_PARSE(node, 2, "bar", "bar");
 	testres |= EC_TEST_CHECK_PARSE(node, 2, "bar", "foo");
-	testres |= EC_TEST_CHECK_PARSE(node, 0, " ");
-	testres |= EC_TEST_CHECK_PARSE(node, 0, "foox");
+	testres |= EC_TEST_CHECK_PARSE(node, -1, " ");
+	testres |= EC_TEST_CHECK_PARSE(node, -1, "foox");
+	ec_node_free(node);
+
+	/* test that a non-matching subset does not shadow or branches */
+	node = EC_NODE_OR(
+		EC_NO_ID,
+		EC_NODE_SUBSET(
+			EC_NO_ID,
+			ec_node_str(EC_NO_ID, "foo"),
+			ec_node_str(EC_NO_ID, "bar"),
+			ec_node_str(EC_NO_ID, "toto")
+		),
+		ec_node_str(EC_NO_ID, "id")
+	);
+	if (node == NULL) {
+		EC_LOG(EC_LOG_ERR, "cannot create node\n");
+		return -1;
+	}
+	testres |= EC_TEST_CHECK_PARSE(node, 1, "id");
+	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo");
+	testres |= EC_TEST_CHECK_PARSE(node, 2, "foo", "bar");
+	testres |= EC_TEST_CHECK_PARSE(node, -1, "x");
 	ec_node_free(node);
 
 	/* test completion */

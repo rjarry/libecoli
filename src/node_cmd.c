@@ -254,7 +254,10 @@ static int ec_node_cmd_eval_parenthesis(
 			return -1;
 		ec_node_free(in);
 	} else if (!strcmp(ec_strvec_val(vec, 0), "(")) {
-		out = in;
+		out = ec_node_option(EC_NO_ID, ec_node_clone(in));
+		if (out == NULL)
+			return -1;
+		ec_node_free(in);
 	} else {
 		errno = EINVAL;
 		return -1;
