@@ -200,12 +200,14 @@ static int ec_node_cmd_eval_bin_op(
 			*result = out;
 		}
 	} else if (!strcmp(ec_strvec_val(vec, 0), ",")) {
-		if (!strcmp(ec_node_get_type_name(in2), "subset")) {
+		if (!strcmp(ec_node_get_type_name(in2), "subset")
+		    && ec_node_subset_get_min(in2) == 1) {
 			if (ec_node_subset_add(in2, ec_node_clone(in1)) < 0)
 				return -1;
 			ec_node_free(in1);
 			*result = in2;
-		} else if (!strcmp(ec_node_get_type_name(in1), "subset")) {
+		} else if (!strcmp(ec_node_get_type_name(in1), "subset")
+			   && ec_node_subset_get_min(in1) == 1) {
 			if (ec_node_subset_add(in1, ec_node_clone(in2)) < 0)
 				return -1;
 			ec_node_free(in2);
@@ -219,6 +221,29 @@ static int ec_node_cmd_eval_bin_op(
 			*result = out;
 		}
 		if (ec_node_subset_set_min(*result, 1) < 0)
+			return -1;
+	} else if (!strcmp(ec_strvec_val(vec, 0), "&")) {
+		if (!strcmp(ec_node_get_type_name(in1), "subset")
+		    && ec_node_subset_get_min(in1) > 1) {
+			if (ec_node_subset_add(in1, ec_node_clone(in2)) < 0)
+				return -1;
+			ec_node_free(in2);
+			*result = in1;
+		} else if (!strcmp(ec_node_get_type_name(in2), "subset")
+			   && ec_node_subset_get_min(in2) > 1) {
+			if (ec_node_subset_add(in2, ec_node_clone(in1)) < 0)
+				return -1;
+			ec_node_free(in1);
+			*result = in2;
+		} else {
+			out = EC_NODE_SUBSET(EC_NO_ID, ec_node_clone(in1), ec_node_clone(in2));
+			if (out == NULL)
+				return -1;
+			ec_node_free(in1);
+			ec_node_free(in2);
+			*result = out;
+		}
+		if (ec_node_subset_set_min(*result, ec_node_get_children_count(*result)) < 0)
 			return -1;
 	} else {
 		errno = EINVAL;
@@ -294,6 +319,9 @@ static struct ec_node *ec_node_cmd_build_expr(void)
 	ret = ec_node_expr_set_val_node(expr, ec_node_re(EC_NO_ID, "[a-zA-Z0-9._-]+"));
 	if (ret < 0)
 		goto fail;
+	ret = ec_node_expr_add_bin_op(expr, ec_node_str(EC_NO_ID, "&"));
+	if (ret < 0)
+		goto fail;
 	ret = ec_node_expr_add_bin_op(expr, ec_node_str(EC_NO_ID, ","));
 	if (ret < 0)
 		goto fail;
@@ -340,7 +368,7 @@ static struct ec_node *ec_node_cmd_build_parser(struct ec_node *expr)
 	ret = ec_node_re_lex_add(lex, "[a-zA-Z0-9._-]+", 1, NULL);
 	if (ret < 0)
 		goto fail;
-	ret = ec_node_re_lex_add(lex, "[*+|,()]", 1, NULL);
+	ret = ec_node_re_lex_add(lex, "[*+|,&()]", 1, NULL);
 	if (ret < 0)
 		goto fail;
 	ret = ec_node_re_lex_add(lex, "\\[", 1, NULL);
@@ -454,11 +482,12 @@ static const struct ec_config_schema ec_node_cmd_schema[] = {
 	{
 		.key = "expr",
 		.desc = "The expression to match. Supported operators "
-			"are or '|', list ',', many '+', many-or-zero '*', "
+			"are or '|', list ',', all '&', many '+', many-or-zero '*', "
 			"option '[]', group '()'. An identifier (alphanumeric) can "
 			"reference a node whose node_id matches. Else it is "
 			"interpreted as ec_node_str() matching this string. "
-			"The ',' operator requires at least one match. "
+			"The ',' operator requires at least one match, "
+			"the '&' operator requires all to match (in any order). "
 			"Example: command [option] (subset1, subset2) x|y",
 		.type = EC_CONFIG_TYPE_STRING,
 	},

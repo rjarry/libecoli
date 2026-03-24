@@ -33,6 +33,20 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK_PARSE(node, -1, "foo");
 	ec_node_free(node);
 
+	/* test '&' operator: all elements required in any order */
+	node = EC_NODE_CMD(EC_NO_ID, "command foo & bar & toto end");
+	if (node == NULL) {
+		EC_LOG(EC_LOG_ERR, "cannot create node\n");
+		return -1;
+	}
+	testres |= EC_TEST_CHECK_PARSE(node, 5, "command", "foo", "bar", "toto", "end");
+	testres |= EC_TEST_CHECK_PARSE(node, 5, "command", "toto", "foo", "bar", "end");
+	testres |= EC_TEST_CHECK_PARSE(node, 5, "command", "bar", "toto", "foo", "end");
+	testres |= EC_TEST_CHECK_PARSE(node, -1, "command", "foo", "bar", "end");
+	testres |= EC_TEST_CHECK_PARSE(node, -1, "command", "foo", "end");
+	testres |= EC_TEST_CHECK_PARSE(node, -1, "command", "end");
+	ec_node_free(node);
+
 	/* test ',' operator: at least one element required */
 	node = EC_NODE_CMD(EC_NO_ID, "command foo, bar, toto end");
 	if (node == NULL) {
