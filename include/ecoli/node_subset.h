@@ -48,6 +48,20 @@ struct ec_node *__ec_node_subset(const char *id, ...);
 struct ec_node *ec_node_subset(const char *id);
 
 /**
+ * Create an empty subset node with a minimum number of children that must match.
+ *
+ * Use ec_node_subset_add() to add children.
+ *
+ * @param id
+ *   The node identifier.
+ * @param min
+ *   The minimum number of children that must match.
+ * @return
+ *   The node, or NULL on error (errno is set).
+ */
+struct ec_node *ec_node_subset_min(const char *id, unsigned int min);
+
+/**
  * Add a child to a subset node.
  *
  * @param node
@@ -59,5 +73,31 @@ struct ec_node *ec_node_subset(const char *id);
  *   0 on success, -1 on error (errno is set).
  */
 int ec_node_subset_add(struct ec_node *node, struct ec_node *child);
+
+/**
+ * Set the minimum number of children that must match.
+ *
+ * By default, a subset node accepts zero matching children. Use this
+ * function to require a minimum number of children to match for the
+ * parse to succeed.
+ *
+ * @param node
+ *   The subset node.
+ * @param min
+ *   The minimum number of children that must match.
+ * @return
+ *   0 on success, -1 on error (errno is set).
+ */
+int ec_node_subset_set_min(struct ec_node *node, unsigned int min);
+
+/**
+ * Get the minimum number of children that must match.
+ *
+ * @param node
+ *   The subset node.
+ * @return
+ *   The minimum number, or 0 if the node is not a subset.
+ */
+unsigned int ec_node_subset_get_min(const struct ec_node *node);
 
 /** @} */

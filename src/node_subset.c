@@ -24,6 +24,7 @@ EC_LOG_TYPE_REGISTER(node_subset);
 struct ec_node_subset {
 	struct ec_node **table;
 	unsigned int len;
+	unsigned int min;
 };
 
 struct parse_result {
@@ -136,10 +137,10 @@ static int ec_node_subset_parse(
 	if (ret < 0)
 		goto fail;
 
-	/* if no child node matches, return a matching empty strvec */
-	if (result.parse_len == 0)
-		return 0;
+	if (result.parse_len < priv->min)
+		return EC_PARSE_NOMATCH;
 
+	/* if no child node matches, return a matching empty strvec */
 	return result.len;
 
 fail:
@@ -303,6 +304,43 @@ int ec_node_subset_add(struct ec_node *node, struct ec_node *child)
 fail:
 	ec_node_free(child);
 	return -1;
+}
+
+int ec_node_subset_set_min(struct ec_node *node, unsigned int min)
+{
+	struct ec_node_subset *priv = ec_node_priv(node);
+
+	if (ec_node_check_type(node, &ec_node_subset_type) < 0)
+		return -1;
+
+	priv->min = min;
+
+	return 0;
+}
+
+unsigned int ec_node_subset_get_min(const struct ec_node *node)
+{
+	const struct ec_node_subset *priv = ec_node_priv(node);
+
+	if (ec_node_check_type(node, &ec_node_subset_type) < 0)
+		return 0;
+
+	return priv->min;
+}
+
+struct ec_node *ec_node_subset_min(const char *id, unsigned int min)
+{
+	struct ec_node_subset *priv;
+	struct ec_node *node;
+
+	node = ec_node_from_type(&ec_node_subset_type, id);
+	if (node == NULL)
+		return NULL;
+
+	priv = ec_node_priv(node);
+	priv->min = min;
+
+	return node;
 }
 
 struct ec_node *__ec_node_subset(const char *id, ...)

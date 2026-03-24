@@ -31,6 +31,73 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK_PARSE(node, 0, "foox");
 	ec_node_free(node);
 
+	/* test with min=1 (at least one child must match) */
+	node = EC_NODE_SUBSET(
+		EC_NO_ID,
+		ec_node_str(EC_NO_ID, "foo"),
+		ec_node_str(EC_NO_ID, "bar"),
+		ec_node_str(EC_NO_ID, "toto")
+	);
+	if (node == NULL) {
+		EC_LOG(EC_LOG_ERR, "cannot create node\n");
+		return -1;
+	}
+	ec_node_subset_set_min(node, 1);
+	testres |= EC_TEST_CHECK_PARSE(node, -1);
+	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo");
+	testres |= EC_TEST_CHECK_PARSE(node, 2, "foo", "bar");
+	testres |= EC_TEST_CHECK_PARSE(node, 3, "bar", "foo", "toto");
+	testres |= EC_TEST_CHECK_PARSE(node, -1, "x");
+	ec_node_free(node);
+
+	/* test with min=len (all children must match) */
+	node = EC_NODE_SUBSET(
+		EC_NO_ID,
+		ec_node_str(EC_NO_ID, "foo"),
+		ec_node_str(EC_NO_ID, "bar"),
+		ec_node_str(EC_NO_ID, "toto")
+	);
+	if (node == NULL) {
+		EC_LOG(EC_LOG_ERR, "cannot create node\n");
+		return -1;
+	}
+	ec_node_subset_set_min(node, 3);
+	testres |= EC_TEST_CHECK_PARSE(node, -1);
+	testres |= EC_TEST_CHECK_PARSE(node, -1, "foo");
+	testres |= EC_TEST_CHECK_PARSE(node, -1, "foo", "bar");
+	testres |= EC_TEST_CHECK_PARSE(node, 3, "bar", "foo", "toto");
+	testres |= EC_TEST_CHECK_PARSE(node, 3, "toto", "bar", "foo");
+	testres |= EC_TEST_CHECK_PARSE(node, 3, "foo", "toto", "bar", "x");
+	testres |= EC_TEST_CHECK_PARSE(node, -1, "x");
+	ec_node_free(node);
+
+	/* test that a non-matching subset with min=1 does not shadow or branches */
+	{
+		struct ec_node *subset;
+
+		subset = EC_NODE_SUBSET(
+			EC_NO_ID,
+			ec_node_str(EC_NO_ID, "foo"),
+			ec_node_str(EC_NO_ID, "bar"),
+			ec_node_str(EC_NO_ID, "toto")
+		);
+		if (subset == NULL) {
+			EC_LOG(EC_LOG_ERR, "cannot create node\n");
+			return -1;
+		}
+		ec_node_subset_set_min(subset, 1);
+		node = EC_NODE_OR(EC_NO_ID, subset, ec_node_str(EC_NO_ID, "id"));
+		if (node == NULL) {
+			EC_LOG(EC_LOG_ERR, "cannot create node\n");
+			return -1;
+		}
+		testres |= EC_TEST_CHECK_PARSE(node, 1, "id");
+		testres |= EC_TEST_CHECK_PARSE(node, 1, "foo");
+		testres |= EC_TEST_CHECK_PARSE(node, 2, "foo", "bar");
+		testres |= EC_TEST_CHECK_PARSE(node, -1, "x");
+		ec_node_free(node);
+	}
+
 	/* test completion */
 	node = EC_NODE_SUBSET(
 		EC_NO_ID,
