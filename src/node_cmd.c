@@ -218,6 +218,8 @@ static int ec_node_cmd_eval_bin_op(
 			ec_node_free(in2);
 			*result = out;
 		}
+		if (ec_node_subset_set_min(*result, 1) < 0)
+			return -1;
 	} else {
 		errno = EINVAL;
 		return -1;
@@ -456,6 +458,7 @@ static const struct ec_config_schema ec_node_cmd_schema[] = {
 			"option '[]', group '()'. An identifier (alphanumeric) can "
 			"reference a node whose node_id matches. Else it is "
 			"interpreted as ec_node_str() matching this string. "
+			"The ',' operator requires at least one match. "
 			"Example: command [option] (subset1, subset2) x|y",
 		.type = EC_CONFIG_TYPE_STRING,
 	},

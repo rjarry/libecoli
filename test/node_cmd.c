@@ -11,7 +11,7 @@ EC_TEST_MAIN()
 
 	node = EC_NODE_CMD(
 		EC_NO_ID,
-		"command [option] (subset1, subset2, subset3, subset4) x|y z*",
+		"command [option] [subset1, subset2, subset3, subset4] x|y z*",
 		ec_node_int("x", 0, 10, 10),
 		ec_node_int("y", 20, 30, 10)
 	);
@@ -31,6 +31,18 @@ EC_TEST_MAIN()
 	testres |= EC_TEST_CHECK_PARSE(node, 5, "command", "option", "23", "z", "z");
 	testres |= EC_TEST_CHECK_PARSE(node, -1, "command", "15");
 	testres |= EC_TEST_CHECK_PARSE(node, -1, "foo");
+	ec_node_free(node);
+
+	/* test ',' operator: at least one element required */
+	node = EC_NODE_CMD(EC_NO_ID, "command foo, bar, toto end");
+	if (node == NULL) {
+		EC_LOG(EC_LOG_ERR, "cannot create node\n");
+		return -1;
+	}
+	testres |= EC_TEST_CHECK_PARSE(node, 5, "command", "foo", "bar", "toto", "end");
+	testres |= EC_TEST_CHECK_PARSE(node, 3, "command", "foo", "end");
+	testres |= EC_TEST_CHECK_PARSE(node, 4, "command", "bar", "foo", "end");
+	testres |= EC_TEST_CHECK_PARSE(node, -1, "command", "end");
 	ec_node_free(node);
 
 	node = EC_NODE_CMD(
