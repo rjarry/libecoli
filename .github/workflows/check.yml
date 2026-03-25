@@ -28,6 +28,7 @@ jobs:
           set -xe
           sudo apt-get update -qy
           sudo apt-get install -qy --no-install-recommends \
+            clang \
             doxygen \
             gcc \
             gcovr \
@@ -39,7 +40,8 @@ jobs:
             libyaml-dev \
             meson \
             ninja-build \
-            pkg-config
+            pkg-config \
+            python3
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
