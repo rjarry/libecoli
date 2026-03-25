@@ -267,6 +267,11 @@ static struct ec_node_type ec_node_expr_type = {
 
 EC_NODE_TYPE_REGISTER(ec_node_expr_type);
 
+struct ec_node *ec_node_expr(const char *id)
+{
+	return ec_node_from_type(&ec_node_expr_type, id);
+}
+
 int ec_node_expr_set_val_node(struct ec_node *node, struct ec_node *val_node)
 {
 	struct ec_node_expr *priv = ec_node_priv(node);

@@ -157,6 +157,11 @@ static struct ec_node_type ec_node_or_type = {
 
 EC_NODE_TYPE_REGISTER(ec_node_or_type);
 
+struct ec_node *ec_node_or(const char *id)
+{
+	return ec_node_from_type(&ec_node_or_type, id);
+}
+
 int ec_node_or_add(struct ec_node *node, struct ec_node *child)
 {
 	const struct ec_config *cur_config = NULL;

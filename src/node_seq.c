@@ -243,6 +243,11 @@ static struct ec_node_type ec_node_seq_type = {
 
 EC_NODE_TYPE_REGISTER(ec_node_seq_type);
 
+struct ec_node *ec_node_seq(const char *id)
+{
+	return ec_node_from_type(&ec_node_seq_type, id);
+}
+
 int ec_node_seq_add(struct ec_node *node, struct ec_node *child)
 {
 	const struct ec_config *cur_config = NULL;
