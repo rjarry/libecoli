@@ -274,6 +274,11 @@ static struct ec_node_type ec_node_subset_type = {
 
 EC_NODE_TYPE_REGISTER(ec_node_subset_type);
 
+struct ec_node *ec_node_subset(const char *id)
+{
+	return ec_node_from_type(&ec_node_subset_type, id);
+}
+
 int ec_node_subset_add(struct ec_node *node, struct ec_node *child)
 {
 	struct ec_node_subset *priv = ec_node_priv(node);
