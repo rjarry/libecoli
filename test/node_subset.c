@@ -19,7 +19,7 @@ EC_TEST_MAIN()
 		EC_LOG(EC_LOG_ERR, "cannot create node\n");
 		return -1;
 	}
-	testres |= EC_TEST_CHECK_PARSE(node, -1);
+	testres |= EC_TEST_CHECK_PARSE(node, 0);
 	testres |= EC_TEST_CHECK_PARSE(node, 1, "foo");
 	testres |= EC_TEST_CHECK_PARSE(node, 1, "bar");
 	testres |= EC_TEST_CHECK_PARSE(node, 2, "foo", "bar", "titi");
