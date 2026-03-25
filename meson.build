@@ -50,6 +50,33 @@ else
 		description : 'Extensible COmmand LIne library.')
 endif
 
+if find_program('clang').found() and find_program('python').found()
+	sym_check_cmd = [
+		files('devtools/gen_sym_check.py'),
+		meson.current_source_dir() / 'include',
+	]
+	if not yaml_dep.found()
+		sym_check_cmd += ['--exclude', 'ecoli/yaml.h']
+	endif
+	if not edit_dep.found()
+		sym_check_cmd += ['--exclude', 'ecoli/editline.h']
+	endif
+	sym_check_c = custom_target('sym_check.c',
+		output : 'sym_check.c',
+		capture : true,
+		command : sym_check_cmd,
+		depend_files : doc_sources,
+	)
+	executable('sym_check',
+		sym_check_c,
+		include_directories : inc,
+		link_with : libecoli,
+		dependencies : deps,
+		build_by_default : true,
+		install : false,
+	)
+endif
+
 subdir('test')
 subdir('examples')
 subdir('doc')
