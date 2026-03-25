@@ -130,9 +130,6 @@ static int ec_node_subset_parse(
 	struct parse_result result;
 	int ret;
 
-	if (ec_strvec_len(strvec) == 0)
-		return EC_PARSE_NOMATCH;
-
 	memset(&result, 0, sizeof(result));
 
 	ret = __ec_node_subset_parse(&result, priv->table, priv->len, pstate, strvec);
