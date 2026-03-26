@@ -50,7 +50,7 @@ else
 		description : 'Extensible COmmand LIne library.')
 endif
 
-if find_program('clang').found() and find_program('python').found()
+if find_program('clang', required: false).found() and find_program('python', required: false).found()
 	sym_check_cmd = [
 		files('devtools/gen_sym_check.py'),
 		meson.current_source_dir() / 'include',
