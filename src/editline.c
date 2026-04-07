@@ -488,6 +488,159 @@ fail:
 	return NULL;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
+/* Deprecated wrappers for symbols moved to interact.h. */
+
+ssize_t ec_editline_get_completions(const struct ec_comp *cmpl, char ***matches_out)
+{
+	return ec_interact_get_completions(cmpl, matches_out, EC_COMP_FULL | EC_COMP_PARTIAL);
+}
+
+void ec_editline_free_completions(char **matches, size_t n)
+{
+	ec_interact_free_completions(matches, n);
+}
+
+int ec_editline_print_cols(struct ec_editline *editline, char const *const *matches, size_t n)
+{
+	unsigned int width = 80, height;
+	FILE *out;
+
+	if (el_get(editline->el, EL_GETFP, 1, &out))
+		return -1;
+
+	ec_editline_term_size(editline, &width, &height);
+
+	return ec_interact_print_cols(out, width, matches, n);
+}
+
+char *ec_editline_append_chars(const struct ec_comp *cmpl)
+{
+	return ec_interact_append_chars(cmpl);
+}
+
+ssize_t ec_editline_get_helps(
+	const struct ec_editline *editline,
+	const char *line,
+	struct ec_editline_help **helps_out
+)
+{
+	char *curline = NULL;
+	ssize_t ret;
+
+	if (line == NULL) {
+		curline = ec_editline_curline(editline, true);
+		if (curline == NULL)
+			return -1;
+		line = curline;
+	}
+
+	ret = ec_interact_get_helps(editline->node, line, (struct ec_interact_help **)helps_out);
+	free(curline);
+	return ret;
+}
+
+int ec_editline_print_helps(
+	const struct ec_editline *editline,
+	const struct ec_editline_help *helps,
+	size_t n
+)
+{
+	unsigned int width = 80, height;
+	FILE *out;
+
+	if (el_get(editline->el, EL_GETFP, 1, &out))
+		return -1;
+
+	ec_editline_term_size(editline, &width, &height);
+	if (width > 100)
+		width = 100;
+	if (width < 50)
+		width = 50;
+
+	return ec_interact_print_helps(out, width, (const struct ec_interact_help *)helps, n);
+}
+
+void ec_editline_free_helps(struct ec_editline_help *helps, size_t n)
+{
+	ec_interact_free_helps((struct ec_interact_help *)helps, n);
+}
+
+ssize_t ec_editline_get_error_helps(
+	const struct ec_editline *editline,
+	struct ec_editline_help **helps_out,
+	size_t *char_idx
+)
+{
+	char *line;
+
+	if (editline == NULL || helps_out == NULL) {
+		errno = EINVAL;
+		return -1;
+	}
+
+	line = ec_editline_curline(editline, false);
+	if (line == NULL)
+		return 0;
+
+	ssize_t ret = ec_interact_get_error_helps(
+		editline->node, line, (struct ec_interact_help **)helps_out, char_idx
+	);
+	free(line);
+	return ret;
+}
+
+int ec_editline_print_error_helps(
+	const struct ec_editline *editline,
+	const struct ec_editline_help *helps,
+	size_t n,
+	size_t char_idx
+)
+{
+	unsigned int width = 80, height;
+	char *line = NULL;
+	FILE *out;
+	int ret;
+
+	if (el_get(editline->el, EL_GETFP, 1, &out))
+		return -1;
+
+	ec_editline_term_size(editline, &width, &height);
+	if (width > 100)
+		width = 100;
+	if (width < 50)
+		width = 50;
+
+	line = ec_editline_curline(editline, false);
+	if (line == NULL)
+		return -1;
+
+	ret = ec_interact_print_error_helps(
+		out, width, line, (const struct ec_interact_help *)helps, n, char_idx
+	);
+	free(line);
+	return ret;
+}
+
+int ec_editline_set_help(struct ec_node *node, const char *help)
+{
+	return ec_interact_set_help(node, help);
+}
+
+int ec_editline_set_callback(struct ec_node *node, ec_interact_command_cb_t cb)
+{
+	return ec_interact_set_callback(node, cb);
+}
+
+int ec_editline_set_desc(struct ec_node *node, const char *desc)
+{
+	return ec_interact_set_desc(node, desc);
+}
+
+#pragma GCC diagnostic pop
+
 int ec_editline_interact(
 	struct ec_editline *editline,
 	ec_editline_check_exit_cb_t check_exit_cb,

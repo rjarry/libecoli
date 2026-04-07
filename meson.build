@@ -72,6 +72,7 @@ if find_program('clang', required: false).found() and find_program('python', req
 		include_directories : inc,
 		link_with : libecoli,
 		dependencies : deps,
+		c_args : ['-Wno-deprecated-declarations'],
 		build_by_default : true,
 		install : false,
 	)

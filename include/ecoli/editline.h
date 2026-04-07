@@ -26,14 +26,6 @@ struct editline;
 struct ec_editline;
 
 /**
- * A structure describing a contextual help.
- */
-struct ec_editline_help {
-	char *desc; /**< The short description of the item. */
-	char *help; /**< The associated help. */
-};
-
-/**
  * Default history size.
  */
 #define EC_EDITLINE_HISTORY_SIZE 128
@@ -331,5 +323,88 @@ int ec_editline_interact(
  *   An editline error code: CC_REFRESH, CC_ERROR, or CC_REDISPLAY.
  */
 int ec_editline_complete(struct editline *el, int c);
+
+/*
+ * Deprecated aliases for symbols moved to interact.h.
+ */
+
+#include "interact.h"
+#include "utils.h"
+
+/** @cond DEPRECATED */
+
+#define EC_EDITLINE_HELP_ATTR EC_DEPRECATED_MACRO("use EC_INTERACT_HELP_ATTR") EC_INTERACT_HELP_ATTR
+#define EC_EDITLINE_CB_ATTR EC_DEPRECATED_MACRO("use EC_INTERACT_CB_ATTR") EC_INTERACT_CB_ATTR
+#define EC_EDITLINE_DESC_ATTR EC_DEPRECATED_MACRO("use EC_INTERACT_DESC_ATTR") EC_INTERACT_DESC_ATTR
+
+struct EC_DEPRECATED("use struct ec_interact_help") ec_editline_help {
+	char *desc;
+	char *help;
+};
+
+typedef ec_interact_command_cb_t
+	ec_editline_command_cb_t EC_DEPRECATED("use ec_interact_command_cb_t");
+
+/*
+ * Suppress deprecation warnings for function declarations that reference
+ * deprecated types in their signatures.
+ */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
+EC_DEPRECATED("use ec_interact_get_completions") ssize_t
+ec_editline_get_completions(const struct ec_comp *cmpl, char ***matches_out);
+
+EC_DEPRECATED("use ec_interact_free_completions")
+void ec_editline_free_completions(char **matches, size_t n);
+
+EC_DEPRECATED("use ec_interact_print_cols")
+int ec_editline_print_cols(struct ec_editline *editline, char const *const *matches, size_t n);
+
+EC_DEPRECATED("use ec_interact_append_chars")
+char *ec_editline_append_chars(const struct ec_comp *cmpl);
+
+EC_DEPRECATED("use ec_interact_get_helps") ssize_t ec_editline_get_helps(
+	const struct ec_editline *editline,
+	const char *line,
+	struct ec_editline_help **helps_out
+);
+
+EC_DEPRECATED("use ec_interact_print_helps")
+int ec_editline_print_helps(
+	const struct ec_editline *editline,
+	const struct ec_editline_help *helps,
+	size_t n
+);
+
+EC_DEPRECATED("use ec_interact_free_helps")
+void ec_editline_free_helps(struct ec_editline_help *helps, size_t n);
+
+EC_DEPRECATED("use ec_interact_get_error_helps") ssize_t ec_editline_get_error_helps(
+	const struct ec_editline *editline,
+	struct ec_editline_help **helps_out,
+	size_t *char_idx
+);
+
+EC_DEPRECATED("use ec_interact_print_error_helps")
+int ec_editline_print_error_helps(
+	const struct ec_editline *editline,
+	const struct ec_editline_help *helps,
+	size_t n,
+	size_t char_idx
+);
+
+EC_DEPRECATED("use ec_interact_set_help")
+int ec_editline_set_help(struct ec_node *node, const char *help);
+
+EC_DEPRECATED("use ec_interact_set_callback")
+int ec_editline_set_callback(struct ec_node *node, ec_interact_command_cb_t cb);
+
+EC_DEPRECATED("use ec_interact_set_desc")
+int ec_editline_set_desc(struct ec_node *node, const char *desc);
+
+#pragma GCC diagnostic pop
+
+/** @endcond */
 
 /** @} */
