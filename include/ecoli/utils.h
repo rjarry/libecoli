@@ -30,4 +30,15 @@
  */
 #define EC_COUNT_OF(x) ((sizeof(x) / sizeof(0 [x])) / ((size_t)(!(sizeof(x) % sizeof(0 [x])))))
 
+/**
+ * Mark a function or type as deprecated.
+ */
+#define EC_DEPRECATED(msg) __attribute__((deprecated(msg)))
+
+/**
+ * Emit a deprecation warning when a macro is expanded.
+ */
+#define EC_DEPRECATED_MACRO_(x) _Pragma(#x)
+#define EC_DEPRECATED_MACRO(msg) EC_DEPRECATED_MACRO_(GCC warning msg)
+
 /** @} */
