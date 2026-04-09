@@ -11,6 +11,13 @@ on:
     branches:
       - master
   pull_request:
+  workflow_dispatch:
+    inputs:
+      tmate:
+        type: boolean
+        description: Run the build with tmate debugging enabled
+        required: false
+        default: false
 
 jobs:
   build:
@@ -29,6 +36,7 @@ jobs:
           sudo apt-get update -qy
           sudo apt-get install -qy --no-install-recommends \
             clang \
+            curl \
             doxygen \
             gcc \
             gcovr \
@@ -41,7 +49,9 @@ jobs:
             meson \
             ninja-build \
             pkg-config \
+            tmate \
             python3
+          curl -L https://git.sr.ht/~rjarry/dotfiles/blob/main/tmux.conf > ~/.tmate.conf
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -53,6 +63,11 @@ jobs:
       - run: make tests check-symbols
         if: ${{ ! github.event.pull_request.commits }}
       - run: make coverage
+      - uses: mxschmitt/action-tmate@v3
+        with:
+          install-dependencies: false
+          limit-access-to-actor: true
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.tmate && !cancelled() }}
 
   docs:
     if: ${{ github.actor != 'grout-bot' && github.event.pull_request.commits }}
