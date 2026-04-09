@@ -10,6 +10,7 @@ libecoli_headers = files(
 	'ecoli/editline.h',
 	'ecoli/htable.h',
 	'ecoli/init.h',
+	'ecoli/interact.h',
 	'ecoli/log.h',
 	'ecoli/murmurhash.h',
 	'ecoli/node.h',
