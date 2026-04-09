@@ -50,7 +50,7 @@ check-symbols: build
 	if ! echo "$$deps" | grep -q yaml; then set -- "$$@" --exclude yaml.h; fi && \
 	if ! echo "$$deps" | grep -q edit; then set -- "$$@" --exclude editline.h; fi && \
 	devtools/gen_sym_check.py "$$@" "$$includedir" | \
-	$(CC) $$cflags -Wno-deprecated-declarations $$ldflags -x c - -o /dev/null
+	$(CC) $$cflags -Wno-deprecated-declarations -x c - $$ldflags -o /dev/null
 
 .PHONY: coverage
 coverage: tests
