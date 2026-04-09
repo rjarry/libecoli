@@ -48,9 +48,9 @@ jobs:
           fetch-depth: 0 # force fetch all history
           ref: ${{ github.event.pull_request.head.sha || github.ref }}
       - run: git config --global --add safe.directory $PWD
-      - run: git rebase -x "git --no-pager log --oneline -1 && make tests" "HEAD~${{ github.event.pull_request.commits }}"
+      - run: git rebase -x "git --no-pager log --oneline -1 && make tests check-symbols" "HEAD~${{ github.event.pull_request.commits }}"
         if: ${{ github.event.pull_request.commits }}
-      - run: make tests
+      - run: make tests check-symbols
         if: ${{ ! github.event.pull_request.commits }}
       - run: make coverage
 

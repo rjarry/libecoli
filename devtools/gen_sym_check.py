@@ -97,13 +97,13 @@ def main():
         "-ast-dump=json",
         "-fsyntax-only",
         "-I" + args.include_dir,
+        "-include",
+        "ecoli.h",
         "-x",
         "c",
-        "-",
+        "/dev/null",
     )
-    result = subprocess.run(
-        cmd, capture_output=True, text=True, input="#include <ecoli.h>\n"
-    )
+    result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         parser.error(result.stderr)
 

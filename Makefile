@@ -34,6 +34,24 @@ install: build
 	$Q meson install -C $(BUILDDIR) $(ninja_opts) \
 		$(if $(DESTDIR),--destdir $(DESTDIR))
 
+.PHONY: check-symbols
+check-symbols: build
+	$Q set -xa && \
+	root=$(abspath $(BUILDDIR))/install && \
+	rm -rf "$$root" && \
+	meson install -C $(BUILDDIR) --quiet --destdir "$$root" && \
+	PKG_CONFIG_SYSROOT_DIR=$$root && \
+	PKG_CONFIG_PATH=`find $$root -type f -name libecoli.pc -printf '%h\n'` && \
+	deps=`meson introspect $(BUILDDIR) --targets | jq -r  '.[] | select(.name == "ecoli") | .dependencies | .[]'` && \
+	cflags=`pkgconf --env-only --cflags libecoli` && \
+	ldflags=`pkgconf --env-only --libs libecoli` && \
+	includedir=`pkgconf --env-only --variable=includedir libecoli` && \
+	set -- && \
+	if ! echo "$$deps" | grep -q yaml; then set -- "$$@" --exclude yaml.h; fi && \
+	if ! echo "$$deps" | grep -q edit; then set -- "$$@" --exclude editline.h; fi && \
+	devtools/gen_sym_check.py "$$@" "$$includedir" | \
+	$(CC) $$cflags -Wno-deprecated-declarations $$ldflags -x c - -o /dev/null
+
 .PHONY: coverage
 coverage: tests
 	$Q mkdir -p $(BUILDDIR)/coverage
