@@ -77,7 +77,7 @@ $(BUILDDIR)/build.ninja:
 CLANG_FORMAT ?= clang-format
 c_src = git ls-files '*.[ch]'
 all_files = git ls-files ':!:subprojects'
-licensed_files = git ls-files ':!:*.svg' ':!:LICENSE' ':!:*.md' ':!:todo.txt' ':!:.*'
+licensed_files = git ls-files ':!:*.svg' ':!:LICENSE' ':!:*.md' ':!:todo.txt' ':!:.*' ':!:*.asc'
 
 .PHONY: lint
 lint:
