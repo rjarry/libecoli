@@ -28,6 +28,7 @@ man_cdata = configuration_data()
 man_cdata.merge_from(cdata)
 man_cdata.set('GENERATE_HTML', 'NO')
 man_cdata.set('GENERATE_MAN', 'YES')
+man_cdata.set('EXAMPLES_INPUT', '')
 doxygen_man_conf = configure_file(
 	input: 'Doxyfile.in',
 	output: 'Doxyfile.man',
@@ -48,6 +49,7 @@ html_cdata = configuration_data()
 html_cdata.merge_from(cdata)
 html_cdata.set('GENERATE_HTML', 'YES')
 html_cdata.set('GENERATE_MAN', 'NO')
+html_cdata.set('EXAMPLES_INPUT', meson.project_source_root() / 'examples')
 doxygen_html_conf = configure_file(
 	input: 'Doxyfile.in',
 	output: 'Doxyfile.html',
