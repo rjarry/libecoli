@@ -26,7 +26,9 @@ GENERATE_DEPRECATEDLIST = YES
 INTERNAL_DOCS           = NO
 VERBATIM_HEADERS        = NO
 ALPHABETICAL_INDEX      = NO
-FULL_PATH_NAMES         = NO
+FULL_PATH_NAMES         = YES
+STRIP_FROM_PATH         = @TOPDIR@/include
+STRIP_FROM_INC_PATH     = @TOPDIR@/include
 WARN_AS_ERROR           = NO
 MARKDOWN_SUPPORT        = YES
 
@@ -41,9 +43,8 @@ SORT_MEMBER_DOCS        = NO
 SOURCE_BROWSER          = YES
 
 GENERATE_HTML           = @GENERATE_HTML@
-GENERATE_XML            = NO
+GENERATE_XML            = @GENERATE_XML@
 GENERATE_LATEX          = NO
-GENERATE_MAN            = @GENERATE_MAN@
+GENERATE_MAN            = NO
 
-MAN_LINKS               = YES
-MAN_OUTPUT              = man
+XML_OUTPUT              = xml
