@@ -31,17 +31,20 @@ fi
 for xml in $groups; do
 	doxygen2man -m -p libecoli -s 3 \
 		-H "Libecoli Programmer's Manual" \
-		-C "Olivier Matz" \
+		-C "Olivier Matz, Robin Jarry" \
 		-S "2010" \
 		-d "$xml_dir" \
 		-o "$output_dir" \
-		"$xml"
+		"$xml" || [ "$?" -gt 128 ]
 done
 
 # Fix include paths in generated man pages.
 xpath='string(//memberdef[@kind="function"][name="%s"]/location/@file)'
 for manpage in "$output_dir"/*.3; do
-	[ -f "$manpage" ] || continue
+	if ! [ -s "$manpage" ]; then
+		rm -f "$manpage"
+		continue
+	fi
 	func_name=$(basename -s .3 "$manpage")
 	inc=$(xmllint --xpath "$(printf "$xpath" "$func_name")" \
 		"$xml_dir"/group__*.xml 2>/dev/null | xargs echo)
@@ -51,6 +54,10 @@ for manpage in "$output_dir"/*.3; do
 done
 
 # Strip the systematic ", Inc. All rights reserved." suffix to all copyrights
-sed -i 's/, Inc\. All rights reserved\.//' "$output_dir"/*.3
+sed -Ei 's/, Inc\. All rights reserved//' "$output_dir"/*.3
+# Strip empty DESCRIPTION sections
+sed -Ezi 's/\.SH DESCRIPTION\n\.(SH|RE)/.\1/' "$output_dir"/*.3
+# Trim trailing whitespace
+sed -Ei 's/[[:space:]]+$//' "$output_dir"/*.3
 
 touch "$stamp"
