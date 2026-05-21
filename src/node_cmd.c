@@ -206,8 +206,12 @@ static int ec_node_cmd_eval_bin_op(
 				return -1;
 			ec_node_free(in1);
 			*result = in2;
-		} else if (!strcmp(ec_node_get_type_name(in1), "subset")
-			   && ec_node_subset_get_min(in1) == 1) {
+		} else if (
+			/* clang-format off */
+			!strcmp(ec_node_get_type_name(in1), "subset")
+			&& ec_node_subset_get_min(in1) == 1
+			/* clang-format on */
+		) {
 			if (ec_node_subset_add(in1, ec_node_clone(in2)) < 0)
 				return -1;
 			ec_node_free(in2);
@@ -229,8 +233,12 @@ static int ec_node_cmd_eval_bin_op(
 				return -1;
 			ec_node_free(in2);
 			*result = in1;
-		} else if (!strcmp(ec_node_get_type_name(in2), "subset")
-			   && ec_node_subset_get_min(in2) > 1) {
+		} else if (
+			/* clang-format off */
+			!strcmp(ec_node_get_type_name(in2), "subset")
+			&& ec_node_subset_get_min(in2) > 1
+			/* clang-format on */
+		) {
 			if (ec_node_subset_add(in2, ec_node_clone(in1)) < 0)
 				return -1;
 			ec_node_free(in1);

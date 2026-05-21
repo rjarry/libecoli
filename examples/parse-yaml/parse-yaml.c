@@ -38,11 +38,14 @@ static char *input_file;
 static char *output_file;
 static bool complete;
 
-static const char short_options[] = "h" /* help */
-				    "i:" /* input-file */
-				    "o:" /* output-file */
-				    "c" /* complete */
+/* clang-format off */
+static const char short_options[] =
+	"h" /* help */
+	"i:" /* input-file */
+	"o:" /* output-file */
+	"c" /* complete */
 	;
+/* clang-format on */
 
 #define OPT_HELP "help"
 #define OPT_INPUT_FILE "input-file"

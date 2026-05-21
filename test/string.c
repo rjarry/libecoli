@@ -9,40 +9,44 @@
 
 #include "test.h"
 
-const char *text = " \n\n dedddesde desd desd        desdesd des desd des des des des\n"
-		   "dedddesde desd desd desdesd des desd des des des des\n"
-		   "dedddesde desd desd        desdesd des desd des des des des\n"
-		   "dedddddddddddddddddddddddddddcccddddddddcdddddddddededes\n"
-		   "dedddesde desd desd        desdesd des desd des des des des\n"
-		   "dedddesde desd desd        desdesd des desd des des des des\n "
-		   "\n"
-		   "dedddesde desd desd        desdesd des desd des des des des  \n"
-		   "dedddddddddddddddddddddddddddcccddddddddcdddddddddededes\n"
-		   "dedddesde desd desd        desdesd des desd des des des des\n\n  \n \n"
-		   "dedddesde desd desd        desdesd des desd des des des des\n"
-		   "dedddesde desd desd        desdesd des desd des des des des\n"
-		   "\n";
+/* clang-format off */
+const char *text =
+	" \n\n dedddesde desd desd        desdesd des desd des des des des\n"
+	"dedddesde desd desd desdesd des desd des des des des\n"
+	"dedddesde desd desd        desdesd des desd des des des des\n"
+	"dedddddddddddddddddddddddddddcccddddddddcdddddddddededes\n"
+	"dedddesde desd desd        desdesd des desd des des des des\n"
+	"dedddesde desd desd        desdesd des desd des des des des\n "
+	"\n"
+	"dedddesde desd desd        desdesd des desd des des des des  \n"
+	"dedddddddddddddddddddddddddddcccddddddddcdddddddddededes\n"
+	"dedddesde desd desd        desdesd des desd des des des des\n\n  \n \n"
+	"dedddesde desd desd        desdesd des desd des des des des\n"
+	"dedddesde desd desd        desdesd des desd des des des des\n"
+	"\n"
+	;
 
-const char *wrapped_text = "dedddesde desd desd desdesd des desd des\n"
-			   "                              des des des dedddesde desd desd desdesd\n"
-			   "                              des desd des des des des dedddesde desd\n"
-			   "                              desd desdesd des desd des des des des\n"
-			   "                              "
-			   "dedddddddddddddddddddddddddddcccddddddddcdddddddddededes\n"
-			   "                              dedddesde desd desd desdesd des desd "
-			   "des\n"
-			   "                              des des des dedddesde desd desd desdesd\n"
-			   "                              des desd des des des des dedddesde desd\n"
-			   "\n"
-			   "                              desd desdesd des desd des des des des\n"
-			   "                              "
-			   "dedddddddddddddddddddddddddddcccddddddddcdddddddddededes\n"
-			   "                              dedddesde desd desd desdesd des desd "
-			   "des\n"
-			   "                              des des des dedddesde desd desd desdesd\n"
-			   "\n"
-			   "                              des desd des des des des dedddesde desd\n"
-			   "                              desd desdesd des desd des des des des";
+const char *wrapped_text =
+	"dedddesde desd desd desdesd des desd des\n"
+	"                              des des des dedddesde desd desd desdesd\n"
+	"                              des desd des des des des dedddesde desd\n"
+	"                              desd desdesd des desd des des des des\n"
+	"                              "
+	"dedddddddddddddddddddddddddddcccddddddddcdddddddddededes\n"
+	"                              dedddesde desd desd desdesd des desd des\n"
+	"                              des des des dedddesde desd desd desdesd\n"
+	"                              des desd des des des des dedddesde desd\n"
+	"\n"
+	"                              desd desdesd des desd des des des des\n"
+	"                              "
+	"dedddddddddddddddddddddddddddcccddddddddcdddddddddededes\n"
+	"                              dedddesde desd desd desdesd des desd des\n"
+	"                              des des des dedddesde desd desd desdesd\n"
+	"\n"
+	"                              des desd des des des des dedddesde desd\n"
+	"                              desd desdesd des desd des des des des"
+	;
+/* clang-format on */
 
 EC_TEST_MAIN()
 {

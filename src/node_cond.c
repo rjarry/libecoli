@@ -504,8 +504,12 @@ eval_cmp(const struct ec_pnode *pstate, struct cond_result **in, size_t in_len)
 	if (in[1]->type == INT) {
 		eq = in[1]->int64 == in[2]->int64;
 		gt = in[1]->int64 > in[2]->int64;
-	} else if (in[1]->type == NODESET
-		   && ec_htable_len(in[1]->htable) != ec_htable_len(in[2]->htable)) {
+	} else if (
+		/* clang-format off */
+		in[1]->type == NODESET
+		&& ec_htable_len(in[1]->htable) != ec_htable_len(in[2]->htable)
+		/* clang-format on */
+	) {
 		eq = false;
 	} else if (in[1]->type == NODESET) {
 		eq = true;
