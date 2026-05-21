@@ -52,7 +52,7 @@ jobs:
             tmate \
             python3
           curl -L https://git.sr.ht/~rjarry/dotfiles/blob/main/tmux.conf > ~/.tmate.conf
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
           fetch-depth: 0 # force fetch all history
@@ -81,7 +81,7 @@ jobs:
           sudo apt-get update -qy
           sudo apt-get install -qy --no-install-recommends \
             doxygen gcc graphviz libc-dev meson ninja-build pkg-config
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
           fetch-depth: 0 # force fetch all history
@@ -95,7 +95,7 @@ jobs:
     container: fedora:latest
     steps:
       - run: dnf install -y gawk make clang-tools-extra git codespell
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
           fetch-depth: 0 # force fetch all history
@@ -114,7 +114,7 @@ jobs:
       REVISION_RANGE: "HEAD~${{ github.event.pull_request.commits }}.."
     steps:
       - run: dnf install -y make git jq curl codespell
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
           fetch-depth: 0 # force fetch all history

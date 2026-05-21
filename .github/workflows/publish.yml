@@ -28,10 +28,10 @@ jobs:
     steps:
       - name: install system dependencies
         run: dnf install -y --nodocs --setopt=install_weak_deps=0 doxygen gcc graphviz make meson ninja-build pkgconf
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v6
       - run: make
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5
         id: deployment
         with:
           path: build/doc/html/
@@ -46,5 +46,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v5
         id: deployment
