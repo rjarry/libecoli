@@ -2,6 +2,8 @@
 # Copyright 2019, Olivier MATZ <zer0@droids-corp.org>
 
 doxygen = find_program('doxygen', required: get_option('doc'))
+doxygen2man = find_program('doxygen2man', required: get_option('doc'))
+xmllint = find_program('xmllint', required: get_option('doc'))
 if not doxygen.found()
   subdir_done()
 endif
@@ -24,31 +26,52 @@ node_schemas = custom_target(
 	command: [ecoli_gen_node_schema, meson.current_build_dir(), '@OUTPUT@'],
 )
 
-man_cdata = configuration_data()
-man_cdata.merge_from(cdata)
-man_cdata.set('GENERATE_HTML', 'NO')
-man_cdata.set('GENERATE_MAN', 'YES')
-man_cdata.set('EXAMPLES_INPUT', '')
-doxygen_man_conf = configure_file(
-	input: 'Doxyfile.in',
-	output: 'Doxyfile.man',
-	configuration: man_cdata,
-	install: false)
-custom_target(
-	'doxygen-man',
-	input: doxygen_man_conf,
-	output: 'man',
-	command: [doxygen, '@INPUT@'],
-	build_by_default: true,
-	depends: node_schemas,
-	depend_files: doc_sources,
-	install: true,
-	install_dir: get_option('datadir'))
+if doxygen2man.found() and xmllint.found()
+	xml_cdata = configuration_data()
+	xml_cdata.merge_from(cdata)
+	xml_cdata.set('GENERATE_HTML', 'NO')
+	xml_cdata.set('GENERATE_XML', 'YES')
+	xml_cdata.set('EXAMPLES_INPUT', '')
+	doxygen_xml_conf = configure_file(
+		input: 'Doxyfile.in',
+		output: 'Doxyfile.xml',
+		configuration: xml_cdata,
+		install: false)
+	doxygen_xml = custom_target(
+		'doxygen-xml',
+		input: doxygen_xml_conf,
+		output: 'xml',
+		command: [doxygen, '@INPUT@'],
+		build_by_default: true,
+		depends: node_schemas,
+		depend_files: doc_sources,
+		install: false)
+
+	custom_target(
+		'man-pages',
+		output: 'man-pages.stamp',
+		command: [
+			files('gen-man-pages.sh'),
+			meson.current_build_dir() / 'xml',
+			meson.project_source_root() / 'include',
+			meson.current_build_dir() / 'man',
+			'@OUTPUT@',
+		],
+		depends: doxygen_xml,
+		depend_files: doc_sources,
+		build_by_default: true,
+		install: false)
+
+	meson.add_install_script(
+		files('install-man-pages.sh'),
+		meson.current_build_dir() / 'man',
+		get_option('mandir'))
+endif
 
 html_cdata = configuration_data()
 html_cdata.merge_from(cdata)
 html_cdata.set('GENERATE_HTML', 'YES')
-html_cdata.set('GENERATE_MAN', 'NO')
+html_cdata.set('GENERATE_XML', 'NO')
 html_cdata.set('EXAMPLES_INPUT', meson.project_source_root() / 'examples')
 doxygen_html_conf = configure_file(
 	input: 'Doxyfile.in',

@@ -38,6 +38,7 @@ jobs:
             clang \
             curl \
             doxygen \
+            doxygen2man \
             gcc \
             gcovr \
             graphviz \
@@ -45,6 +46,7 @@ jobs:
             libc-dev \
             libedit-dev \
             libreadline-dev \
+            libxml2-utils \
             libyaml-dev \
             meson \
             ninja-build \
@@ -80,7 +82,15 @@ jobs:
           set -xe
           sudo apt-get update -qy
           sudo apt-get install -qy --no-install-recommends \
-            doxygen gcc graphviz libc-dev meson ninja-build pkg-config
+            doxygen \
+            doxygen2man \
+            gcc \
+            graphviz \
+            libc-dev \
+            libxml2-utils \
+            meson \
+            ninja-build \
+            pkg-config
       - uses: actions/checkout@v6
         with:
           persist-credentials: false

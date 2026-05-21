@@ -27,7 +27,17 @@ jobs:
       contents: read
     steps:
       - name: install system dependencies
-        run: dnf install -y --nodocs --setopt=install_weak_deps=0 doxygen gcc graphviz make meson ninja-build pkgconf
+        run: |
+          dnf install -y --nodocs --setopt=install_weak_deps=0 \
+            doxygen \
+            doxygen2man \
+            gcc \
+            graphviz \
+            libxml2 \
+            make \
+            meson \
+            ninja-build \
+            pkgconf
       - uses: actions/checkout@v6
       - uses: actions/configure-pages@v6
       - run: make
