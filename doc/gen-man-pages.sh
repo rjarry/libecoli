@@ -35,6 +35,7 @@ for xml in $groups; do
 		-S "2010" \
 		-d "$xml_dir" \
 		-o "$output_dir" \
+		-D "$(date +%Y-%m-%d ${SOURCE_DATE_EPOCH:+-d @${SOURCE_DATE_EPOCH}})" \
 		"$xml" || [ "$?" -gt 128 ]
 done
 
