@@ -301,7 +301,7 @@ int ec_editline_complete(struct editline *el, int c)
 	struct ec_comp *cmpl = NULL;
 	char *append = NULL;
 	unsigned int height;
-	unsigned int width;
+	unsigned int width = 80;
 	size_t comp_count;
 	void *clientdata;
 	char *line = NULL;
@@ -654,7 +654,7 @@ int ec_editline_interact(
 	const struct ec_node *node;
 	size_t char_idx = 0;
 	unsigned int height;
-	unsigned int width;
+	unsigned int width = 80;
 	char *line = NULL;
 	ssize_t n;
 	FILE *out;
